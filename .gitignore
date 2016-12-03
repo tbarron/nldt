@@ -1,0 +1,6 @@
+.cache
+DODO.txt
+__pycache__
+pytest.ini
+*.pyc
+*~
