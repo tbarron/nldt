@@ -239,13 +239,14 @@ class moment(object):
         """
         Compute the end of the indicated day. If not today, we assume 'next'.
         """
+        point = self.moment or time.time()
         if wday_name:
-            now = time.localtime()
+            now = time.localtime(point)
             wday_num = WEEKDAYS[wday_name]
             diff = (7 + wday_num - now.tm_wday - 1) % 7 + 1
         else:
             diff = 0
-        point_in_day = time.time() + diff*24*3600
+        point_in_day = point + diff*24*3600
         ref = time.localtime(point_in_day)
         fmt = "%Y-%m-%d %H:%M:%S"
         ref_s = time.strftime("%Y-%m-%d 23:59:59", ref)
@@ -283,9 +284,10 @@ class moment(object):
         Compute the epoch time of the indicated future weekday
         """
         wday_num = WEEKDAYS[wday_name]
-        now = time.localtime()
+        ref = self.moment or time.time()
+        now = time.localtime(ref)
         diff = (7 + now.tm_wday - wday_num - 1) % 7 + 1
-        rval = time.time() - diff*24*3600
+        rval = ref - diff*24*3600
         return rval
 
     # -------------------------------------------------------------------------
@@ -365,6 +367,10 @@ class moment(object):
             ml = re.findall(weekday_rgx, spec)
             if ml:
                 rval = self.end_of_day(ml[0])
+            elif 'last week' in spec:
+                now = self.moment or time.time()
+                tmp = moment(now - 7*24*3600)
+                rval = tmp.end_of_week()
             elif 'week' in spec:
                 rval = self.end_of_week()
             elif 'month' in spec:
@@ -388,7 +394,10 @@ class moment(object):
                 rval = self.last_weekday(ml[0])
             else:
                 if 'week' in spec:
-                    rval = self.last_weekday('mon')
+                    ref = self.moment or time.time()
+                    ref -= 7*24*3600
+                    tmp = moment(ref)
+                    rval = tmp.last_weekday('mon')
                 elif 'month' in spec:
                     rval = self.last_month()
                 elif 'year' in spec:
