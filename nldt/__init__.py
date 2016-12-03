@@ -359,6 +359,9 @@ class moment(object):
         if rval is not None:
             return rval
 
+        if spec in self.nldict:
+            return self.nldict[spec](self.moment)
+
         weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
         if spec == 'tomorrow':
             rval = time.time() + 24*3600
