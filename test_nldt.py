@@ -181,7 +181,7 @@ def test_obj_yesterday():
     """
     eoy = nldt.moment("2007-12-01")
     last = eoy.yesterday()
-    assert last() == '2007-11-30 00:00:00'
+    assert last() == '2007-11-30'
 
 
 # -----------------------------------------------------------------------------
@@ -238,11 +238,19 @@ def nl_oracle(spec):
         start = nldt.tomorrow()
         while int(start('%u'))-1 != wdidx:
             start = start.tomorrow()
+        return start()
     elif spec == 'last week':
         wdidx = nldt.weekday_index('mon')
         start = nldt.yesterday()
         while int(start('%u'))-1 != wdidx:
             start = start.yesterday()
+        return start()
+    elif spec == 'end of the week':
+        wdidx = 6
+        start = nldt.moment()
+        while int(start('%u'))-1 != wdidx:
+            start = start.tomorrow()
+        return start()
 
     (direction, day) = spec.split()
     if direction == 'next':
