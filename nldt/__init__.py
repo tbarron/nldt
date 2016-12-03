@@ -5,6 +5,7 @@ import time
 
 
 DAY = 24*3600
+WEEK = 7 * DAY
 
 # -----------------------------------------------------------------------------
 def dst():
@@ -49,34 +50,6 @@ def weekday_index(weekday):
     rval = WEEKDAYS[idx]
     return rval
 
-
-# -----------------------------------------------------------------------------
-def compute_tomorrow(moment=None):
-    """
-    internal
-
-    Compute tomorrow relative to moment (or now if moment not provided)
-    """
-    ref = moment or time.time()
-    ref += DAY
-    rval = ref - (ref % DAY) + time.timezone
-    return rval
-
-
-# -----------------------------------------------------------------------------
-def end_of_last_week(moment=None):
-    """
-    Compute the end of last week relative to moment
-    """
-    ref = moment or time.time()
-    ref -= 7 * DAY
-    reflt = time.localtime(ref)
-    diff = 6 - reflt.tm_wday
-    eow = ref + diff * DAY
-    eowlt = time.localtime(eow)
-    eow_s = time.strftime("%Y-%m-%d 23:59:59", eowlt)
-    rval = time.mktime(time.strptime(eow_s, "%Y-%m-%d %H:%M:%S"))
-    return rval
 
 # -----------------------------------------------------------------------------
 class moment(object):
@@ -143,8 +116,8 @@ class moment(object):
                "%d %B, %Y %H",
                "%d %B, %Y",
                ]
-    nldict = {'end of last week': end_of_last_week,
-              'tomorrow': compute_tomorrow,
+    nldict = {'end of last week': 'end_of_last_week',
+              'tomorrow': '_tomorrow',
               }
 
     # -------------------------------------------------------------------------
@@ -155,6 +128,11 @@ class moment(object):
            week', 'Dec 3 1972', an epoch time)
          - a parsing format
         """
+        if 'fixedup' not in self.nldict:
+            for key in self.nldict:
+                if self.nldict[key] in dir(self):
+                    self.nldict[key] = getattr(self, self.nldict[key])
+            self.nldict['fixedup'] = True
         if len(args) < 1:
             self.moment = int(time.time())
         elif len(args) < 2:
@@ -426,13 +404,23 @@ class moment(object):
         return time.tzname[lt.tm_isdst]
 
     # -------------------------------------------------------------------------
+    def _tomorrow(self, ref=None):
+        """
+        internal
+
+        """
+        tmr = ref or self.moment
+        tmr += DAY
+        rval = tmr - (tmr % DAY) + time.timezone
+        return rval
+
+    # -------------------------------------------------------------------------
     def tomorrow(self):
         """
         Return a moment object containing the moment beginning the day that
         follows the one containing the stored moment
         """
-        tmr = self.moment + DAY
-        rval = moment(tmr - (tmr % DAY) + time.timezone)
+        rval = moment(self._tomorrow())
         return rval
 
     # -------------------------------------------------------------------------
@@ -443,4 +431,15 @@ class moment(object):
         """
         yest = self.moment - DAY
         rval = moment(yest - (yest % DAY) + time.timezone)
+        return rval
+
+    # -------------------------------------------------------------------------
+    def end_of_last_week(self, ref=None):
+        """
+        Return the moment that ends last week
+        """
+        ref = ref or self.moment or time.time()
+        ref -= WEEK
+        tmp = moment(ref)
+        rval = tmp.end_of_day('sun')
         return rval

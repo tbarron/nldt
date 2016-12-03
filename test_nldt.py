@@ -334,7 +334,7 @@ def nl_oracle(spec):
                           ('monday week'),
                           ('tuesday week'),
                           ('wednesday week'),
-                          ('thurssday week'),
+                          ('thursday week'),
                           ('friday week'),
                           ('saturday week'),
                           ('sunday week'),
