@@ -189,6 +189,14 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def __str__(self):
+        """
+        Return a human-readable representation of this object
+        """
+        return time.strftime('%Y-%m-%d %H:%M:%S',
+                             time.localtime(self.moment))
+
+    # -------------------------------------------------------------------------
     def dst(self):
         """
         Return True or False to indicate whether Daylight Savings Time is in
