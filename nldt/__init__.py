@@ -153,15 +153,15 @@ class moment(object):
          - a parsing format
         """
         if len(args) < 1:
-            self.moment = time.time()
+            self.moment = int(time.time())
         elif len(args) < 2:
             if type(args[0]) == str:
                 self.moment = None
                 self.moment = self.parse_return(args[0])
             elif isinstance(args[0], numbers.Number):
-                self.moment = float(args[0])
+                self.moment = int(args[0])
         else:
-            self.moment = time.mktime(time.strptime(args[0], args[1]))
+            self.moment = int(time.mktime(time.strptime(args[0], args[1])))
 
     # -------------------------------------------------------------------------
     def __call__(self, format=None):
@@ -186,7 +186,7 @@ class moment(object):
         """
         Return a string that will regenerate this object if eval'd
         """
-        rval = "nldt.moment({:f})".format(self.moment)
+        rval = "nldt.moment({:d})".format(int(self.moment))
         return rval
 
     # -------------------------------------------------------------------------
@@ -211,7 +211,7 @@ class moment(object):
         """
         Return the stored date as an epoch time
         """
-        return self.moment
+        return int(self.moment)
 
     # -------------------------------------------------------------------------
     def localtime(self):
