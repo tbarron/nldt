@@ -10,6 +10,8 @@ seconds. Points in time (moment instances) are stored as the number of
 seconds since midnight at the beginning of January 1, 1970. Durations are
 stored as the number of seconds in the time interval.
 
+## Quick Start ##
+
 Query the configured timezone
 
     >>> import nldt
@@ -23,25 +25,27 @@ Check whether Daylight Savings Time is in force now
 
 Check whether Daylight Savings Time is in force on a given date
 
-    >>> nldt.when('2016-07-01').dst()
+    >>> nldt.moment('2016-07-01').dst()
     True
-    >>> nldt.when('2016-12-01').dst()
+    >>> nldt.moment('2016-12-01').dst()
     False
 
-Note that when DST is in force, the timezone will change. For example, on
-2016-07-01,
+Note that the timezone value will vary with whether DST is in force. For
+example, on 2016-07-01,
 
     >>> nldt.timezone()
     'EDT'
 
 Get the curent time
 
-    >>> nldt.when().epoch()
-    1480757873.157439
-    >>> time.time()
-    1480757873.994515
-    >>> nldt.moment().epoch() - time.time()
-    -8.106231689453125e-06
+    >>> now = nldt.moment()
+    >>> now
+    2016-11-30
+
+The default display format is ISO. To get the epoch time,
+
+    >>> now.epoch()
+    1480482000
 
 The default display format is the ISO date
 
@@ -54,12 +58,92 @@ But all the strftime format specifiers are available
     >>> now("%b %d, %Y")
     'Nov 30, 2016'
 
-Some simple offsets (e.g., yesterday, tomorrow) are available as methods on
-the object
+## Reference ##
 
-    >>> then = now.tomorrow()
-    >>> then()
-    '2016-12-01'
+An object representing the current moment:
+
+    >>> now = nldt.moment()
+
+Available public methods:
+
+    >>> now()                # __call__(fmt=None)
+    '2016-12-03'
+
+The __call__() method with no arguments displays the stored moment as an
+ISO date. With a format, the stored moment is formatted according to the
+argument:
+
+    >>> now('%D %T')
+    '12/03/16 12:27:49'
+
+The __repr__() method produces a string that can be eval'd to unambiguously
+generate an identical object:
+
+    >>> a
+    nldt.moment(1480786154)
+
+The __str__() method produces a human readable string
+
+    >>> str(a)
+    '2016-12-03 12:29:14'
+
+The __eq__() method is defined so that two moment objects based on the same
+time index are considered equal.
+
+    >>> a = nldt.moment('2016-12-02')
+    >>> b = nldt.moment('yesterday')
+    >>> a == b
+    True
+
+The dst() method returns True or False to indicate whether Daylight Savings
+Time is in force.
+
+    >>> yes = nldt.moment('2016-07-01')
+    >>> yes.dst()
+    True
+    >>> no = nldt.moment('2016-12-01')
+    >>> no.dst()
+    False
+
+The epoch() method returns the stored moment as an epoch time.
+
+    >>> yes.epoch()
+    1467345600
+
+The localtime() method returns the tm tuple for the stored moment.
+
+    >>> yes.localtime()
+    time.struct_time(tm_year=2016, tm_mon=7, tm_mday=1,
+                     tm_hour=0, tm_min=0, tm_sec=0,
+                     tm_wday=4, tm_yday=183, tm_isdst=1)
+
+The timezone() method returns the configured timezone based on whether the
+stored time indicates DST is in force.
+
+    >>> yes.timezone()
+    'EDT'
+    >>> no.timezone()
+    'EST'
+
+The parse() method accepts a string argument containing a date/time
+specification or a relative time expression in natural language and updates
+the stored stored moment to match.
+
+    >>> foo = nldt.moment()
+    >>> str(foo)
+    '2016-12-03 12:46:38'
+    >>> foo.parse('next week')
+    >>> str(foo)
+    '2016-12-05 00:00:00'
+    >>> foo.parse('last friday')
+    >>> str(foo)
+    '2016-12-02 00:00:00'
+    >>> foo.parse('next thursday')
+    >>> str(foo)
+    '2016-12-08 00:00:00'
+
+
+## More Tricks ##
 
 The nldt module will try to intuit the format of dates passed to it
 
@@ -170,3 +254,20 @@ of the week with Sunday == 0.
 
 The python time.localtime() function returns a tm structure with tm_wday
 being 0 for Monday through 6 for Sunday.
+
+
+    now = nldt.moment()
+    then = now
+    then.update(tomorrow)
+    diff = then - now
+
+
+    now.update('next week')
+    now.update('second wednesday of next july')
+    now.yesterday()
+    now.last_week()
+    now.last_month()
+    now.parse('end of last month')
+    now.last_month('<')
+    now.last_month('>')
+    now.last_month(
