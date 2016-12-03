@@ -48,6 +48,34 @@ def weekday_index(weekday):
 
 
 # -----------------------------------------------------------------------------
+def compute_tomorrow(moment=None):
+    """
+    internal
+
+    Compute tomorrow relative to moment (or now if moment not provided)
+    """
+    ref = moment or time.time()
+    ref += 24*3600
+    rval = ref - (ref % (24*3600)) + time.timezone
+    return rval
+
+
+# -----------------------------------------------------------------------------
+def end_of_last_week(moment=None):
+    """
+    Compute the end of last week relative to moment
+    """
+    ref = moment or time.time()
+    ref -= 7*24*3600
+    reflt = time.localtime(ref)
+    diff = 6 - reflt.tm_wday
+    eow = ref + diff*24*3600
+    eowlt = time.localtime(eow)
+    eow_s = time.strftime("%Y-%m-%d 23:59:59", eowlt)
+    rval = time.mktime(time.strptime(eow_s, "%Y-%m-%d %H:%M:%S"))
+    return rval
+
+# -----------------------------------------------------------------------------
 class moment(object):
     """
     This class describes objects representing a point in time
@@ -112,6 +140,10 @@ class moment(object):
                "%d %B, %Y %H",
                "%d %B, %Y",
                ]
+    nldict = {'end of last week': end_of_last_week,
+              'tomorrow': compute_tomorrow,
+              }
+
     # -------------------------------------------------------------------------
     def __init__(self, *args):
         """
