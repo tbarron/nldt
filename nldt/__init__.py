@@ -164,6 +164,21 @@ class moment(object):
 
 
     # -------------------------------------------------------------------------
+    def __eq__(self, other):
+        """
+        Two moment objects are equal if their moment attributes are
+        """
+        return self.moment == other.moment
+
+    # -------------------------------------------------------------------------
+    def __repr__(self):
+        """
+        Return a string that will regenerate this object if eval'd
+        """
+        rval = "nldt.moment({:f})".format(self.moment)
+        return rval
+
+    # -------------------------------------------------------------------------
     def dst(self):
         """
         Return True or False to indicate whether Daylight Savings Time is in
@@ -303,7 +318,7 @@ class moment(object):
             return time.mktime(tm)
         else:
             return None
-        
+
     # -------------------------------------------------------------------------
     def parse_return(self, spec):
         """

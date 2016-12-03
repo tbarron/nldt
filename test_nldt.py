@@ -5,6 +5,14 @@ import nldt
 
 
 # -----------------------------------------------------------------------------
+def test_repr():
+    """
+    The __repr__ method should provide enough info to rebuild the object
+    """
+    c = nldt.moment()
+    assert eval(repr(c)) == c
+
+# -----------------------------------------------------------------------------
 def test_ambig():
     """
     For ambiguous dates like '01-02-03' (could be Jan 2, 2003 (US order), 1 Feb
