@@ -310,6 +310,7 @@ class moment(object):
         """
         Compute the epoch time of the indicated future weekday
         """
+        ref = self.moment or time.time()
         wday_num = WEEKDAYS[wday_name]
         now = time.localtime()
         diff = (7 + wday_num - now.tm_wday - 1) % 7 + 1
