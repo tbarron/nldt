@@ -163,95 +163,6 @@ def test_intuit(inp, fmt, exp):
 
     
 # -----------------------------------------------------------------------------
-def nl_oracle(spec):
-    """
-    This function uses a simple-minded approach to find the target day. If it
-    sees 'next', it counts foward to the target day. If it sees 'last', it
-    counts backward, without trying to do any fancy arithmetic.
-    """
-    (direction, day) = spec.split()
-    if spec == 'next week':
-        wdidx = nldt.weekday_index('mon')
-        start = nldt.tomorrow()
-        while int(start('%u'))-1 != wdidx:
-            start = start.tomorrow()
-    elif direction == 'next':
-        wdidx = nldt.weekday_index(day)
-        start = nldt.tomorrow()
-        while int(start('%u'))-1 != wdidx:
-            start = start.tomorrow()
-    elif direction == 'last':
-        wdidx = nldt.weekday_index(day)
-        start = nldt.yesterday()
-        tm = start.localtime()
-        while int(start('%u'))-1 != wdidx:
-            start = start.yesterday()
-    elif day == 'week':
-        (day, direction) = (direction, day)
-        wdidx = nldt.weekday_index(day)
-        start = nldt.tomorrow()
-        while int(start('%u'))-1 != wdidx:
-            start = start.tomorrow()
-        start = start.tomorrow()
-        while int(start('%u'))-1 != wdidx:
-            start = start.tomorrow()
-    return start()
-
-
-# -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp",
-                         [('next monday'),
-                          ('next tuesday'),
-                          ('next wednesday'),
-                          ('next thurssday'),
-                          ('next friday'),
-                          ('next saturday'),
-                          ('next sunday'),
-                          ('last monday'),
-                          ('last tuesday'),
-                          ('last wednesday'),
-                          ('last thurssday'),
-                          ('last friday'),
-                          ('last saturday'),
-                          ('last sunday'),
-                          ('monday week'),
-                          ('tuesday week'),
-                          ('wednesday week'),
-                          ('thurssday week'),
-                          ('friday week'),
-                          ('saturday week'),
-                          ('sunday week'),
-                          ('next week'),
-                          ('last week'),
-                          ('end of the week'),
-                          ('end of last week'),
-                          ('beginning of next week'),
-                          ('first week in January'),
-                          ('week after next'),
-                          ('week before last'),
-                          ('a week ago'),
-                          ('three weeks from now'),
-                          ('two weeks ago'),
-                          ('a week earlier'),
-                          ('a week later'),
-                          ('fourth day of this week'),
-                          ('fifth day of last week'),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
-                          ])
-def test_natural_language(inp):
-    pytest.debug_func()
-    exp = nl_oracle(inp)
-    wobj = nldt.moment(inp)
-    assert wobj() == exp
-
-
-# -----------------------------------------------------------------------------
 def test_obj_tomorrow():
     """
     Method tomorrow() on a nldt object returns the date offset relative to the
@@ -259,7 +170,7 @@ def test_obj_tomorrow():
     """
     eoy = nldt.moment("2007-12-31")
     next = eoy.tomorrow()
-    assert next() == '2008-01-01 00:00:00'
+    assert next() == '2008-01-01'
 
 
 # -----------------------------------------------------------------------------
@@ -304,6 +215,118 @@ def test_yesterday():
     yesterday = nldt.yesterday()
     now = time.time() - 24*3600
     assert close_times(now, yesterday.epoch())
+
+
+# -----------------------------------------------------------------------------
+def nl_oracle(spec):
+    """
+    This function uses a simple-minded approach to find the target day. If it
+    sees 'next', it counts foward to the target day. If it sees 'last', it
+    counts backward, without trying to do any fancy arithmetic.
+    """
+    if spec in ['today', 'tomorrow', 'yesterday']:
+        start = nldt.moment(spec)
+        return start()
+    elif spec == 'next year':
+        year = int(time.strftime("%Y")) + 1
+        return '{}-01-01'.format(year)
+    elif spec == 'last year':
+        year = int(time.strftime("%Y")) - 1
+        return '{}-01-01'.format(year)
+    elif spec == 'next week':
+        wdidx = nldt.weekday_index('mon')
+        start = nldt.tomorrow()
+        while int(start('%u'))-1 != wdidx:
+            start = start.tomorrow()
+    elif spec == 'last week':
+        wdidx = nldt.weekday_index('mon')
+        start = nldt.yesterday()
+        while int(start('%u'))-1 != wdidx:
+            start = start.yesterday()
+
+    (direction, day) = spec.split()
+    if direction == 'next':
+        wdidx = nldt.weekday_index(day)
+        start = nldt.tomorrow()
+        while int(start('%u'))-1 != wdidx:
+            start = start.tomorrow()
+    elif direction == 'last':
+        wdidx = nldt.weekday_index(day)
+        start = nldt.yesterday()
+        tm = start.localtime()
+        while int(start('%u'))-1 != wdidx:
+            start = start.yesterday()
+    elif day == 'week':
+        (day, direction) = (direction, day)
+        wdidx = nldt.weekday_index(day)
+        start = nldt.tomorrow()
+        while int(start('%u'))-1 != wdidx:
+            start = start.tomorrow()
+        start = start.tomorrow()
+        while int(start('%u'))-1 != wdidx:
+            start = start.tomorrow()
+    return start()
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp",
+                         [
+                          ('last week'),
+                          ('next year'),
+                          ('next monday'),
+                          ('next tuesday'),
+                          ('next wednesday'),
+                          ('next thurssday'),
+                          ('next friday'),
+                          ('next saturday'),
+                          ('next sunday'),
+                          ('next week'),
+                          ('next month'),
+                          ('last monday'),
+                          ('last tuesday'),
+                          ('last wednesday'),
+                          ('last thurssday'),
+                          ('last friday'),
+                          ('last saturday'),
+                          ('last sunday'),
+                          ('last month'),
+                          ('last year'),
+                          ('today'),
+                          ('tomorrow'),
+                          ('yesterday'),
+                          ('monday week'),
+                          ('tuesday week'),
+                          ('wednesday week'),
+                          ('thurssday week'),
+                          ('friday week'),
+                          ('saturday week'),
+                          ('sunday week'),
+                          ('end of the week'),
+                          ('end of last week'),
+                          ('beginning of next week'),
+                          ('first week in January'),
+                          ('week after next'),
+                          ('week before last'),
+                          ('a week ago'),
+                          ('three weeks from now'),
+                          ('two weeks ago'),
+                          ('a week earlier'),
+                          ('a week later'),
+                          ('fourth day of this week'),
+                          ('fifth day of last week'),
+                          (''),
+                          (''),
+                          (''),
+                          (''),
+                          (''),
+                          (''),
+                          (''),
+                          ])
+def test_natural_language(inp):
+    pytest.debug_func()
+    exp = nl_oracle(inp)
+    wobj = nldt.moment(inp)
+    assert wobj() == exp
 
 
 # -----------------------------------------------------------------------------

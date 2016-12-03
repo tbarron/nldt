@@ -219,7 +219,8 @@ class moment(object):
         thisyear = time.strftime("%Y")
         lastyear = int(thisyear) - 1
         lsyr_s = "{}-01-01".format(lastyear)
-        rval = time.strptime(lsyr_s, "%Y-%m-%d")
+        tm = time.strptime(lsyr_s, "%Y-%m-%d")
+        rval = time.mktime(tm)
         return rval
 
     # -------------------------------------------------------------------------
@@ -241,7 +242,8 @@ class moment(object):
         thisyear = time.strftime("%Y")
         nextyear = int(thisyear) + 1
         nxyr_s = "{}-01-01".format(nextyear)
-        rval = time.strptime(nxyr_s, "%Y-%m-%d")
+        tm = time.strptime(nxyr_s, "%Y-%m-%d")
+        rval = time.mktime(tm)
         return rval
 
     # -------------------------------------------------------------------------
