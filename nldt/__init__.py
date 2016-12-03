@@ -28,28 +28,6 @@ def timezone():
 
 
 # -----------------------------------------------------------------------------
-def tomorrow():
-    """
-    Public
-
-    Return a when object representing a time 24 hours from now
-    """
-    rval = moment(time.time() + 24*3600)
-    return rval
-
-
-# -----------------------------------------------------------------------------
-def yesterday():
-    """
-    Public
-
-    Return a when object representing a time 24 hours in the past
-    """
-    rval = moment(time.time() - 24*3600)
-    return rval
-
-
-# -----------------------------------------------------------------------------
 WEEKDAYS = {'mon': 0, 0: 'mon',
             'tue': 1, 1: 'tue',
             'wed': 2, 2: 'wed',
