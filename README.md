@@ -1,24 +1,24 @@
 This module provides a couple of classes that allow for easy access to
-date/time functionality. The when class represents a point in time. The
+date/time functionality. The moment class represents a point in time. The
 duration class represents a length of time.
 
 The module also includes a command line script for accessing the
 functionality provided by the library.
 
-Internally, each is stored as a floating point number of seconds. Points in
-time (when instances) are stored as the number of seconds since midnight at
-the beginning of January 1, 1970. Durations are stored as the number of
-seconds in the time interval.
+Internally, moments and durations are stored as a floating point number of
+seconds. Points in time (moment instances) are stored as the number of
+seconds since midnight at the beginning of January 1, 1970. Durations are
+stored as the number of seconds in the time interval.
 
 Query the configured timezone
 
-    >>> import when
-    >>> when.timezone()
+    >>> import nldt
+    >>> nldt.timezone()
     'EST'
-    
-Check whether Daylight Savings Time is in force
 
-    >>> when.dst()
+Check whether Daylight Savings Time is in force now
+
+    >>> nldt.dst()
     False
     
 Get the curent time
@@ -29,6 +29,7 @@ Get the curent time
     
 The default display format is ISO
 
+    >>> now = nldt.moment()
     >>> now()
     2016-11-30 00:14:50
     
@@ -57,7 +58,7 @@ However, it will also accept a format specification to guide its parsing
 
 Offsets can also be specified as arguments...
 
-    >>> then = when.when("tomorrow")
+    >>> then = nldt.moment("tomorrow")
     >>> then("%Y-%m-%d")
     '2016-12-01'
     
