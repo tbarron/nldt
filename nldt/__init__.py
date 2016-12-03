@@ -156,6 +156,7 @@ class moment(object):
             self.moment = time.time()
         elif len(args) < 2:
             if type(args[0]) == str:
+                self.moment = None
                 self.moment = self.parse_return(args[0])
             elif isinstance(args[0], numbers.Number):
                 self.moment = float(args[0])
