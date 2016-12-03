@@ -416,6 +416,13 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def timezone(self):
+        """
+        """
+        lt = time.localtime(self.moment)
+        return time.tzname[lt.tm_isdst]
+
+    # -------------------------------------------------------------------------
     def tomorrow(self):
         """
         Return a moment object containing a 24 hour offset from the stored
