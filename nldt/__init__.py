@@ -201,6 +201,49 @@ class moment(object):
         self.moment = self.parse_return(spec)
 
     # -------------------------------------------------------------------------
+    def end_of_day(self, wday_name=None):
+        """
+        Compute the end of the indicated day. If not today, we assume 'next'.
+        """
+        if wday_name:
+            now = time.localtime()
+            wday_num = WEEKDAYS[wday_name]
+            diff = (7 + wday_num - now.tm_wday - 1) % 7 + 1
+        else:
+            diff = 0
+        point_in_day = time.time() + diff*24*3600
+        ref = time.localtime(point_in_day)
+        ref.tm_hour = 23
+        ref.tm_min = 59
+        ref.tm_sec = 59
+        rval = time.mktime(ref)
+        return rval
+
+    # -------------------------------------------------------------------------
+    def end_of_week(self):
+        """
+        Compute the end of the week.
+        """
+        rval = self.end_of_day('sun')
+        return rval
+
+    # -------------------------------------------------------------------------
+    def end_of_month(self):
+        """
+        Compute the end of the month.
+        """
+        rval = None
+        return rval
+
+    # -------------------------------------------------------------------------
+    def end_of_year(self):
+        """
+        Compute the end of the year.
+        """
+        rval = None
+        return rval
+
+    # -------------------------------------------------------------------------
     def last_weekday(self, wday_name):
         """
         Compute the epoch time of the indicated future weekday
@@ -284,6 +327,16 @@ class moment(object):
             rval = time.time() + 24*3600
         elif spec == 'yesterday':
             rval = time.time() - 24*3600
+        elif 'end of' in spec:
+            ml = re.findall(weekday_rgx, spec)
+            if ml:
+                rval = self.end_of_day(ml[0])
+            elif 'week' in spec:
+                rval = self.end_of_week()
+            elif 'month' in spec:
+                rval = self.end_of_month()
+            elif 'year' in spec:
+                rval = self.end_of_year()
         elif 'next' in spec:
             ml = re.findall(weekday_rgx, spec)
             if ml:
