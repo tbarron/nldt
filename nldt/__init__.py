@@ -428,17 +428,19 @@ class moment(object):
     # -------------------------------------------------------------------------
     def tomorrow(self):
         """
-        Return a moment object containing a 24 hour offset from the stored
-        point in time
+        Return a moment object containing the moment beginning the day that
+        follows the one containing the stored moment
         """
-        rval = moment(compute_tomorrow(self.moment))
+        tmr = self.moment + DAY
+        rval = moment(tmr - (tmr % DAY) + time.timezone)
         return rval
 
     # -------------------------------------------------------------------------
     def yesterday(self):
         """
-        Return a moment object containing a 24 hour offset from the stored
-        point in time
+        Return a moment object containing the moment beginning the day that
+        precedes the one containing the stored moment
         """
-        rval = moment(self.moment - 24*3600)
+        yest = self.moment - DAY
+        rval = moment(yest - (yest % DAY) + time.timezone)
         return rval
