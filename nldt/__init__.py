@@ -363,10 +363,10 @@ class moment(object):
             return self.nldict[spec](self.moment)
 
         weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
-        if spec == 'tomorrow':
-            rval = time.time() + 24*3600
-        elif spec == 'yesterday':
-            rval = time.time() - 24*3600
+        if spec == 'yesterday':
+            ref = self.moment or time.time()
+            yest = ref - 24*3600
+            rval = yest - yest % (24*3600) + time.timezone
         elif 'end of' in spec:
             ml = re.findall(weekday_rgx, spec)
             if ml:
