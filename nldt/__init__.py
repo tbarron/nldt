@@ -213,10 +213,10 @@ class moment(object):
             diff = 0
         point_in_day = time.time() + diff*24*3600
         ref = time.localtime(point_in_day)
-        ref.tm_hour = 23
-        ref.tm_min = 59
-        ref.tm_sec = 59
-        rval = time.mktime(ref)
+        fmt = "%Y-%m-%d %H:%M:%S"
+        ref_s = time.strftime("%Y-%m-%d 23:59:59", ref)
+        anchor = time.strptime(ref_s, fmt)
+        rval = time.mktime(anchor)
         return rval
 
     # -------------------------------------------------------------------------
