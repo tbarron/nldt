@@ -96,11 +96,11 @@ constructor)
     >>> then()
     '2016-12-09 00:15:45'
 
-    >>> now.parse('next month')                       !@!
-    >>> now.parse('next year')                       !@!
-    >>> now.parse('last week')                       !@!
-    >>> now.parse('last month')                       !@!
-    >>> now.parse('last year')                       !@!
+    >>> now.parse('next month')
+    >>> now.parse('next year')
+    >>> now.parse('last week')
+    >>> now.parse('last month')
+    >>> now.parse('last year')
     >>> now.parse('a week ago wednesday')                       !@!
     >>> now.parse('1 month 2 days 3 weeks 4 minutes from sunday')                       !@!
     >>> now.parse('42 hrs 42 seconds ago')                       !@!
@@ -158,3 +158,15 @@ A duration added to a when object produces another when object
     >>> later = then + delta         !@!
     >>> later()
     '2016-12-21 00:31:19'
+
+In the strftime specification, '%u' generates the 1-based weekday number
+where Monday is the first day of the week.
+
+In the strftime specification, '%w' generates the 0-based weekday number
+where Sunday is the first day of the week.
+
+The strftime(3) man page says that in the tm structure, tm_wday is the day
+of the week with Sunday == 0.
+
+The python time.localtime() function returns a tm structure with tm_wday
+being 0 for Monday through 6 for Sunday.
