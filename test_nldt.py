@@ -9,8 +9,29 @@ def test_repr():
     """
     The __repr__ method should provide enough info to rebuild the object
     """
+    pytest.debug_func()
     c = nldt.moment()
     assert eval(repr(c)) == c
+
+# -----------------------------------------------------------------------------
+def test_obj_timezone_dstoff():
+    """
+    Querying the timezone on an object whose moment is set outside DST will get
+    a timezone name reflecting standard time
+    """
+    obj = nldt.moment('2016.1201')
+    assert obj.timezone() == time.tzname[0]
+
+
+# -----------------------------------------------------------------------------
+def test_obj_timezone_dston():
+    """
+    Querying the timezone on an object whose moment is set during DST will get
+    a timezone name reflecting DST
+    """
+    obj = nldt.moment('2016.0701')
+    assert obj.timezone() == time.tzname[1]
+
 
 # -----------------------------------------------------------------------------
 def test_ambig():
@@ -31,31 +52,37 @@ def test_ambig():
 # -----------------------------------------------------------------------------
 def test_arg_tomorrow():
     """
-    Offset as an argument
+    Offset as an argument. moment('tomorrow') generates the beginning of
+    tomorrow.
     """
-    meth = nldt.tomorrow()
+    pytest.debug_func()
+    assert not hasattr(nldt, 'tomorrow')
     argl = nldt.moment('tomorrow')
-    assert argl() == meth()
+    assert ' 00:00:00' in argl('%D %T')
     obj = nldt.moment()
     obj.parse('tomorrow')
-    assert obj() == meth()
+    assert obj() == argl()
 
 
 # -----------------------------------------------------------------------------
 def test_arg_yesterday():
     """
-    Offset as an argument
+    Offset as an argument. moment('yesterday') generates the beginning of
+    yesterday.
     """
+    pytest.debug_func()
+    assert not hasattr(nldt, 'yesterday')
     then = nldt.moment("yesterday")
-    assert then() == nldt.yesterday()()
+    assert ' 00:00:00' in then('%D %T')
 
 
 # -----------------------------------------------------------------------------
 def test_display():
     """
-    Simply calling a nldt object should make it report itself in ISO format but
-    without a time component
+    Simply calling an nldt object should make it report itself in ISO format
+    but without a time component
     """
+    pytest.debug_func()
     now = time.time()
     exp = time.strftime("%Y-%m-%d", time.localtime(now))
     wobj = nldt.moment(now)
@@ -65,9 +92,10 @@ def test_display():
 # -----------------------------------------------------------------------------
 def test_display_formatted():
     """
-    Calling a nldt object with a format should make it report itself in that
+    Calling an nldt object with a format should make it report itself in that
     format
     """
+    pytest.debug_func()
     fmt = "%H:%M %p on %B %d, %Y"
     now = time.time()
     exp = time.strftime(fmt, time.localtime(now))
@@ -78,9 +106,10 @@ def test_display_formatted():
 # -----------------------------------------------------------------------------
 def test_dst_now():
     """
-    The dst function should return True or False indicating whether Daylight
-    Savings Time is in force or not.
+    The module dst function should return True or False indicating whether
+    Daylight Savings Time is in force or not.
     """
+    pytest.debug_func()
     loc = time.localtime()
     if loc.tm_isdst:
         assert nldt.dst()
@@ -91,8 +120,9 @@ def test_dst_now():
 # -----------------------------------------------------------------------------
 def test_dst_off():
     """
-    The dst function should always return False for 2010-12-31
+    The dst method on a moment object should always return False for 2010-12-31
     """
+    pytest.debug_func()
     then = nldt.moment("2010-12-31", "%Y-%m-%d")
     assert not then.dst()
 
@@ -100,8 +130,9 @@ def test_dst_off():
 # -----------------------------------------------------------------------------
 def test_dst_on():
     """
-    The dst function should always return True for 2012-07-01
+    The dst method on a moment object should always return True for 2012-07-01
     """
+    pytest.debug_func()
     then = nldt.moment("2012-07-01", "%Y-%m-%d")
     assert then.dst()
 
@@ -111,13 +142,14 @@ def test_epoch():
     """
     Return the epoch form of times past, present, and future
     """
+    pytest.debug_func()
     now = time.time()
     yesterday = nldt.moment(now - (24*3600))
     tomorrow = nldt.moment(now + (24*3600))
     wobj = nldt.moment(now)
-    assert wobj.epoch() == now
-    assert yesterday.epoch() == now - (24*3600)
-    assert tomorrow.epoch() == now + (24*3600)
+    assert wobj.epoch() == int(now)
+    assert yesterday.epoch() == int(now - (24*3600))
+    assert tomorrow.epoch() == int(now + (24*3600))
 
 
 # -----------------------------------------------------------------------------
@@ -176,6 +208,7 @@ def test_obj_tomorrow():
     Method tomorrow() on a nldt object returns the date offset relative to the
     stored time.
     """
+    pytest.debug_func()
     eoy = nldt.moment("2007-12-31")
     next = eoy.tomorrow()
     assert next() == '2008-01-01'
@@ -187,6 +220,7 @@ def test_obj_yesterday():
     Method yesterday() on a nldt object returns the date offset relative to the
     stored time.
     """
+    pytest.debug_func()
     eoy = nldt.moment("2007-12-01")
     last = eoy.yesterday()
     assert last() == '2007-11-30'
@@ -197,32 +231,11 @@ def test_timezone():
     """
     Timezone should return the current timezone setting
     """
+    pytest.debug_func()
     if nldt.dst():
         assert nldt.timezone() == time.tzname[1]
     else:
         assert nldt.timezone() == time.tzname[0]
-
-
-# -----------------------------------------------------------------------------
-def test_tomorrow():
-    """
-    Method tomorrow() on a nldt object returns the date offset relative to the
-    stored time.
-    """
-    tomorrow = nldt.tomorrow()
-    now = time.time() + 24*3600
-    assert abs(now - tomorrow.epoch()) < 1.0
-
-
-# -----------------------------------------------------------------------------
-def test_yesterday():
-    """
-    Method tomorrow() on a nldt object returns the date offset relative to the
-    stored time.
-    """
-    yesterday = nldt.yesterday()
-    now = time.time() - 24*3600
-    assert close_times(now, yesterday.epoch())
 
 
 # -----------------------------------------------------------------------------
@@ -243,13 +256,14 @@ def nl_oracle(spec):
         return '{}-01-01'.format(year)
     elif spec == 'next week':
         wdidx = nldt.weekday_index('mon')
-        start = nldt.tomorrow()
+        start = nldt.moment('tomorrow')
         while int(start('%u'))-1 != wdidx:
             start = start.tomorrow()
         return start()
     elif spec == 'last week':
         wdidx = nldt.weekday_index('mon')
-        start = nldt.yesterday()
+        start = nldt.moment('yesterday')
+        start = nldt.moment(start.epoch() - 6*24*3600)
         while int(start('%u'))-1 != wdidx:
             start = start.yesterday()
         return start()
@@ -259,23 +273,29 @@ def nl_oracle(spec):
         while int(start('%u'))-1 != wdidx:
             start = start.tomorrow()
         return start()
+    elif spec == 'end of last week':
+        wdidx = 6
+        start = nldt.moment(time.time()-7*24*3600)
+        while int(start('%u'))-1 != wdidx:
+            start = start.tomorrow()
+        return start()
 
     (direction, day) = spec.split()
     if direction == 'next':
         wdidx = nldt.weekday_index(day)
-        start = nldt.tomorrow()
+        start = nldt.moment('tomorrow')
         while int(start('%u'))-1 != wdidx:
             start = start.tomorrow()
     elif direction == 'last':
         wdidx = nldt.weekday_index(day)
-        start = nldt.yesterday()
+        start = nldt.moment('yesterday')
         tm = start.localtime()
         while int(start('%u'))-1 != wdidx:
             start = start.yesterday()
     elif day == 'week':
         (day, direction) = (direction, day)
         wdidx = nldt.weekday_index(day)
-        start = nldt.tomorrow()
+        start = nldt.moment('tomorrow')
         while int(start('%u'))-1 != wdidx:
             start = start.tomorrow()
         start = start.tomorrow()
@@ -288,6 +308,7 @@ def nl_oracle(spec):
 @pytest.mark.parametrize("inp",
                          [
                           ('last week'),
+                          ('end of last week'),
                           ('next year'),
                           ('next monday'),
                           ('next tuesday'),
@@ -318,7 +339,6 @@ def nl_oracle(spec):
                           ('saturday week'),
                           ('sunday week'),
                           ('end of the week'),
-                          ('end of last week'),
                           ('beginning of next week'),
                           ('first week in January'),
                           ('week after next'),
