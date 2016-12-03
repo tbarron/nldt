@@ -428,7 +428,7 @@ class moment(object):
         Return a moment object containing a 24 hour offset from the stored
         point in time
         """
-        rval = moment(self.moment + 24*3600)
+        rval = moment(compute_tomorrow(self.moment))
         return rval
 
     # -------------------------------------------------------------------------
