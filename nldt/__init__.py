@@ -4,6 +4,8 @@ import re
 import time
 
 
+DAY = 24*3600
+
 # -----------------------------------------------------------------------------
 def dst():
     """
@@ -56,8 +58,8 @@ def compute_tomorrow(moment=None):
     Compute tomorrow relative to moment (or now if moment not provided)
     """
     ref = moment or time.time()
-    ref += 24*3600
-    rval = ref - (ref % (24*3600)) + time.timezone
+    ref += DAY
+    rval = ref - (ref % DAY) + time.timezone
     return rval
 
 
@@ -67,10 +69,10 @@ def end_of_last_week(moment=None):
     Compute the end of last week relative to moment
     """
     ref = moment or time.time()
-    ref -= 7*24*3600
+    ref -= 7 * DAY
     reflt = time.localtime(ref)
     diff = 6 - reflt.tm_wday
-    eow = ref + diff*24*3600
+    eow = ref + diff * DAY
     eowlt = time.localtime(eow)
     eow_s = time.strftime("%Y-%m-%d 23:59:59", eowlt)
     rval = time.mktime(time.strptime(eow_s, "%Y-%m-%d %H:%M:%S"))
@@ -247,7 +249,7 @@ class moment(object):
             diff = (7 + wday_num - now.tm_wday - 1) % 7 + 1
         else:
             diff = 0
-        point_in_day = point + diff*24*3600
+        point_in_day = point + diff * DAY
         ref = time.localtime(point_in_day)
         fmt = "%Y-%m-%d %H:%M:%S"
         ref_s = time.strftime("%Y-%m-%d 23:59:59", ref)
@@ -288,7 +290,7 @@ class moment(object):
         ref = self.moment or time.time()
         now = time.localtime(ref)
         diff = (7 + now.tm_wday - wday_num - 1) % 7 + 1
-        rval = ref - diff*24*3600
+        rval = ref - diff * DAY
         return rval
 
     # -------------------------------------------------------------------------
@@ -311,7 +313,7 @@ class moment(object):
         wday_num = WEEKDAYS[wday_name]
         now = time.localtime()
         diff = (7 + wday_num - now.tm_wday - 1) % 7 + 1
-        rval = time.time() + diff*24*3600
+        rval = ref + diff * DAY
         return rval
 
     # -------------------------------------------------------------------------
@@ -365,15 +367,15 @@ class moment(object):
         weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
         if spec == 'yesterday':
             ref = self.moment or time.time()
-            yest = ref - 24*3600
-            rval = yest - yest % (24*3600) + time.timezone
+            yest = ref - DAY
+            rval = yest - yest % (DAY) + time.timezone
         elif 'end of' in spec:
             ml = re.findall(weekday_rgx, spec)
             if ml:
                 rval = self.end_of_day(ml[0])
             elif 'last week' in spec:
                 now = self.moment or time.time()
-                tmp = moment(now - 7*24*3600)
+                tmp = moment(now - 7 * DAY)
                 rval = tmp.end_of_week()
             elif 'week' in spec:
                 rval = self.end_of_week()
@@ -399,7 +401,7 @@ class moment(object):
             else:
                 if 'week' in spec:
                     ref = self.moment or time.time()
-                    ref -= 7*24*3600
+                    ref -= 7 * DAY
                     tmp = moment(ref)
                     rval = tmp.last_weekday('mon')
                 elif 'month' in spec:
@@ -410,7 +412,7 @@ class moment(object):
             ml = re.findall(weekday_rgx, spec)
             if ml:
                 tmp = self.next_weekday(ml[0])
-                rval = tmp + 7*24*3600
+                rval = tmp + 7 * DAY
             else:
                 rval = None
         return rval
