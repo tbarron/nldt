@@ -271,3 +271,17 @@ being 0 for Monday through 6 for Sunday.
     now.last_month('<')
     now.last_month('>')
     now.last_month(
+
+## Contributor Notes ##
+
+ * Functions, methods, and variables whose names begin with alphabetic
+   letters and show up in the pydoc output are part of the public API. When
+   such routines return a moment or duration, by default they should do so
+   in a human-readable format.
+
+ * The prefered human-readable format is the ISO format: %Y-%m-%d
+   [%H:%M:%S]
+
+ * Internal functions, methods, and variables, whose names begin with a
+   single underscore, generally should expect and return integer epoch
+   times.
