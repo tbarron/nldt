@@ -192,11 +192,6 @@ class moment(object):
             >>> then()
             '2016-12-29'
         """
-        if 'fixedup' not in self.nldict:
-            for key in self.nldict:
-                if self.nldict[key] in dir(self):
-                    self.nldict[key] = getattr(self, self.nldict[key])
-            self.nldict['fixedup'] = True
         if len(args) < 1:
             self.moment = int(time.time())
         elif len(args) < 2:
@@ -505,7 +500,8 @@ class moment(object):
             return rval
 
         if spec in self.nldict:
-            return self.nldict[spec](self.moment)
+            func = getattr(self, self.nldict[spec])
+            return func()
 
         weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
         if spec == 'yesterday':
