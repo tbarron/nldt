@@ -192,11 +192,11 @@ class moment(object):
             >>> then()
             '2016-12-29'
         """
+        self.moment = None
         if len(args) < 1:
             self.moment = int(time.time())
         elif len(args) < 2:
             if type(args[0]) == str:
-                self.moment = None
                 self.moment = self.parse_return(args[0])
             elif isinstance(args[0], numbers.Number):
                 self.moment = int(args[0])
@@ -353,7 +353,18 @@ class moment(object):
         self.moment = self.parse_return(spec)
 
     # -------------------------------------------------------------------------
-    def end_of_day(self, wday_name=None):
+    def _day_ceiling(self, ref=None, update=False):
+        """
+        Compute and return the max epoch in the current day
+        """
+        tmp = ref or self.moment or time.time()
+        tmp = tmp - (tmp % DAY) + time.timezone + DAY - 1
+        if update:
+            self.moment = tmp
+        return tmp
+
+    # -------------------------------------------------------------------------
+    def _end_of_day(self, ref=None, wday_name=None, update=False):
         """
         Compute the end of the indicated day
 
@@ -369,36 +380,34 @@ class moment(object):
             >>> foo.end_of_day()
             1481345999
         """
-        point = self.moment or time.time()
+        point = ref or self.moment or time.time()
         if wday_name:
             now = time.localtime(point)
             wday_num = _WEEKDAYS[wday_name]
             diff = (7 + wday_num - now.tm_wday) % 7
         else:
             diff = 0
-        point_in_day = point + diff * DAY
-        ref = time.localtime(point_in_day)
-        fmt = "%Y-%m-%d %H:%M:%S"
-        ref_s = time.strftime("%Y-%m-%d 23:59:59", ref)
-        anchor = time.strptime(ref_s, fmt)
-        rval = time.mktime(anchor)
-        return int(rval)
+        point += diff * DAY
+        target = self._day_ceiling(point, update=update)
+        if update:
+            self.moment = target
+        return target
 
     # -------------------------------------------------------------------------
-    def end_of_week(self):
+    def _end_of_week(self, ref=None, update=False):
         """
         Compute the end of the week based on CSM
-        !@! needs example
         """
-        rval = self.end_of_day('sun')
+        ref = ref or self.moment or time.time()
+        rval = self._end_of_day(ref=ref, wday_name='sun', update=update)
         return rval
 
     # -------------------------------------------------------------------------
-    def end_of_month(self):
+    def _end_of_month(self, ref=None, update=False):
         """
         Compute the end of the month.
-        !@! needs example
         """
+        ref = ref or self.moment or time.time()
         rval = None
         return rval
 
@@ -622,13 +631,13 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def end_of_last_week(self, ref=None):
+    def end_of_last_week(self, update=False):
         """
         Return the moment that ends last week
-        !@! should be private
         """
-        ref = ref or self.moment or time.time()
+        ref = self.moment or time.time()
         ref -= WEEK
-        tmp = moment(ref)
-        rval = tmp.end_of_day('sun')
-        return rval
+        ref = self._end_of_day(wday_name='sun', ref=ref)
+        if update:
+            self.moment = ref
+        return ref
