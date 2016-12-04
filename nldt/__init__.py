@@ -89,6 +89,9 @@ def weekday_index(weekday):
 class moment(object):
     """
     This class describes objects representing a point in time
+
+    Documentation for the methods mentions the CSM, the currently stored
+    moment.
     """
     formats = ['%y-%m-%d',
                '%y-%m-%d %H',
@@ -332,9 +335,14 @@ class moment(object):
     # -------------------------------------------------------------------------
     def parse(self, spec):
         """
-        public: Set the object's value to the date/time indicated by *spec*
+        Set the object's value to the date/time indicated by *spec*
 
-        spec - A date/time specification
+        *spec* - A date/time specification in a string, possibly natural
+                 language
+
+        Calculations are relative to the CSM (see the example -- after parsing
+        '2013.0630', the calculation of 'next friday' is relative to
+        2013-06-30, not to the present moment)
 
         Example:
             >>> import nldt
