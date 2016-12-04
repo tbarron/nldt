@@ -224,7 +224,7 @@ class moment(object):
         if wday_name:
             now = time.localtime(point)
             wday_num = WEEKDAYS[wday_name]
-            diff = (7 + wday_num - now.tm_wday - 1) % 7 + 1
+            diff = (7 + wday_num - now.tm_wday) % 7
         else:
             diff = 0
         point_in_day = point + diff * DAY
