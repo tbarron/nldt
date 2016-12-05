@@ -449,7 +449,7 @@ class moment(object):
         wday_num = _WEEKDAYS[wday_name]
         now = time.localtime(ref)
         diff = (7 + now.tm_wday - wday_num - 1) % 7 + 1
-        rval = ref - diff * _DAY
+        ref -= diff * _DAY
         rval = self._day_floor(ref=ref, update=update)
         return rval
 
@@ -563,10 +563,7 @@ class moment(object):
                 rval = self._last_weekday(ml[0])
             else:
                 if 'week' in spec:
-                    ref = self.moment or time.time()
-                    ref -= 7 * _DAY
-                    tmp = moment(ref)
-                    rval = tmp._last_weekday('mon')
+                    rval = self._last_weekday('mon')
                 elif 'month' in spec:
                     rval = self._last_month()
                 elif 'year' in spec:
