@@ -256,26 +256,26 @@ def nl_oracle(spec):
         wdidx = nldt.weekday_index('mon')
         start = nldt.moment('tomorrow')
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('tomorrow')
+            start.parse('tomorrow')
         return start()
     elif spec == 'last week':
         wdidx = nldt.weekday_index('mon')
         start = nldt.moment('yesterday')
         start = nldt.moment(start.epoch() - 6*24*3600)
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('yesterday')
+            start.parse('yesterday')
         return start()
     elif spec == 'end of the week':
         wdidx = 6
         start = nldt.moment()
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('tomorrow')
+            start.parse('tomorrow')
         return start()
     elif spec == 'end of last week':
         wdidx = 6
         start = nldt.moment(time.time()-7*24*3600)
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('tomorrow')
+            start.parse('tomorrow')
         return start()
 
     (direction, day) = spec.split()
@@ -284,22 +284,22 @@ def nl_oracle(spec):
         wdidx = nldt.weekday_index(day)
         start = nldt.moment('tomorrow')
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('tomorrow')
+            start.parse('tomorrow')
     elif direction == 'last':
         wdidx = nldt.weekday_index(day)
         start = nldt.moment('yesterday')
         tm = start.localtime()
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('yesterday')
+            start.parse('yesterday')
     elif day == 'week':
         (day, direction) = (direction, day)
         wdidx = nldt.weekday_index(day)
         start = nldt.moment('tomorrow')
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('tomorrow')
+            start.parse('tomorrow')
         start = start.tomorrow()
         while int(start('%u'))-1 != wdidx:
-            start = start.parse('tomorrow')
+            start.parse('tomorrow')
     return start()
 
 
