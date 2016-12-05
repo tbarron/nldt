@@ -358,7 +358,7 @@ class moment(object):
         Compute and return the max epoch in the current day
         """
         tmp = ref or self.moment or time.time()
-        tmp = tmp - (tmp % _DAY) + time.timezone - 1
+        tmp = tmp + time.timezone - (tmp % _DAY) + _DAY - 1
         if update:
             self.moment = tmp
         return tmp
@@ -393,7 +393,7 @@ class moment(object):
         """
         point = ref or self.moment or time.time()
         if wday_name:
-            now = time.localtime(point)
+            now = time.gmtime(point)
             wday_num = _WEEKDAYS[wday_name]
             diff = (7 + wday_num - now.tm_wday) % 7
         else:
