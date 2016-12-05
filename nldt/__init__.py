@@ -10,8 +10,8 @@ import re
 import time
 
 
-DAY = 24*3600      # !@! should be private
-WEEK = 7 * DAY     # !@! should be private
+_DAY = 24*3600      # !@! should be private
+_WEEK = 7 * _DAY    # !@! should be private
 
 
 # -----------------------------------------------------------------------------
@@ -153,7 +153,7 @@ class moment(object):
                "%d %B, %Y %H",
                "%d %B, %Y",
                ]
-    nldict = {'end of last week': 'end_of_last_week',
+    nldict = {'end of last week': '_end_of_last_week',
               'tomorrow': '_tomorrow',
               }
 
@@ -197,7 +197,7 @@ class moment(object):
             self.moment = int(time.time())
         elif len(args) < 2:
             if type(args[0]) == str:
-                self.moment = self.parse_return(args[0])
+                self.moment = self._parse_return(args[0])
             elif isinstance(args[0], numbers.Number):
                 self.moment = int(args[0])
         else:
@@ -350,7 +350,7 @@ class moment(object):
             >>> foo()
             '2013-07-05'
         """
-        self.moment = self.parse_return(spec)
+        self.moment = self._parse_return(spec)
 
     # -------------------------------------------------------------------------
     def _day_ceiling(self, ref=None, update=False):
@@ -358,13 +358,24 @@ class moment(object):
         Compute and return the max epoch in the current day
         """
         tmp = ref or self.moment or time.time()
-        tmp = tmp - (tmp % DAY) + time.timezone + DAY - 1
+        tmp = tmp - (tmp % _DAY) + time.timezone - 1
         if update:
             self.moment = tmp
         return tmp
 
     # -------------------------------------------------------------------------
-    def _end_of_day(self, ref=None, wday_name=None, update=False):
+    def _day_floor(self, ref=None, update=False):
+        """
+        Compute and return the min epoch in the current day
+        """
+        tmp = ref or self.moment or time.time()
+        tmp = tmp - (tmp % _DAY) + time.timezone
+        if update:
+            self.moment = tmp
+        return tmp
+
+    # -------------------------------------------------------------------------
+    def _end_of_day(self, wday_name=None, ref=None, update=False):
         """
         Compute the end of the indicated day
 
@@ -387,7 +398,7 @@ class moment(object):
             diff = (7 + wday_num - now.tm_wday) % 7
         else:
             diff = 0
-        point += diff * DAY
+        point += diff * _DAY
         target = self._day_ceiling(point, update=update)
         if update:
             self.moment = target
@@ -399,7 +410,7 @@ class moment(object):
         Compute the end of the week based on CSM
         """
         ref = ref or self.moment or time.time()
-        rval = self._end_of_day(ref=ref, wday_name='sun', update=update)
+        rval = self._end_of_day('sun', ref=ref, update=update)
         return rval
 
     # -------------------------------------------------------------------------
@@ -408,74 +419,78 @@ class moment(object):
         Compute the end of the month.
         """
         ref = ref or self.moment or time.time()
-        rval = None
+        tm = time.localtime(ref)
+        maxday = _month_days(tm.tm_mon)
+        rval = time.mktime((tm.tm_year, tm.tm_mon, maxday,
+                            23, 59, 59,
+                            0, 0, -1))
+        if update:
+            self.moment = rval
         return rval
 
     # -------------------------------------------------------------------------
-    def end_of_year(self):
+    def _end_of_year(self, ref=None, update=False):
         """
         Compute the end of the year.
-        !@! needs example
         """
-        rval = None
+        ref = ref or self.moment or time.time()
+        tm = time.localtime(ref)
+        rval = time.mktime((tm.tm_year, 12, 31, 23, 59, 59, 0, 0, -1))
+        if update:
+            self.moment = rval
         return rval
 
     # -------------------------------------------------------------------------
-    def last_weekday(self, wday_name):
+    def _last_weekday(self, wday_name, ref=None, update=False):
         """
-        Compute the epoch time of the indicated future weekday
-        !@! needs example
+        Compute the epoch time of the indicated past weekday
         """
+        ref = ref or self.moment or time.time()
         wday_num = _WEEKDAYS[wday_name]
-        ref = self.moment or time.time()
         now = time.localtime(ref)
         diff = (7 + now.tm_wday - wday_num - 1) % 7 + 1
-        rval = ref - diff * DAY
+        rval = ref - diff * _DAY
+        rval = self._day_floor(ref=ref, update=update)
         return rval
 
     # -------------------------------------------------------------------------
-    def last_year(self):
+    def _last_year(self, ref=None, update=False):
         """
         Compute the epoch time of the indicated past year
-        !@! needs example
         """
-        thisyear = time.strftime("%Y")
-        lastyear = int(thisyear) - 1
-        lsyr_s = "{}-01-01".format(lastyear)
-        tm = time.strptime(lsyr_s, "%Y-%m-%d")
-        rval = time.mktime(tm)
+        ref = ref or self.moment or time.time()
+        tm = time.localtime(ref)
+        lastyear = int(tm.tm_year) - 1
+        rval = time.mktime((lastyear, 1, 1, 0, 0, 0, 0, 0, -1))
         return rval
 
     # -------------------------------------------------------------------------
-    def next_weekday(self, wday_name):
+    def _next_weekday(self, wday_name, ref=None, update=False):
         """
         Compute the epoch time of the indicated future weekday
-        !@! needs example
         """
-        ref = self.moment or time.time()
+        ref = ref or self.moment or time.time()
         wday_num = _WEEKDAYS[wday_name]
-        now = time.localtime()
-        diff = (7 + wday_num - now.tm_wday - 1) % 7 + 1
-        rval = ref + diff * DAY
+        tm = time.localtime(ref)
+        diff = (7 + wday_num - tm.tm_wday - 1) % 7 + 1
+        rval = self._day_floor(ref + diff * _DAY, update=update)
         return rval
 
     # -------------------------------------------------------------------------
-    def next_year(self):
+    def _next_year(self, ref=None, update=False):
         """
         Compute the epoch time of the indicated future year
-        !@! needs example
         """
-        thisyear = time.strftime("%Y")
-        nextyear = int(thisyear) + 1
-        nxyr_s = "{}-01-01".format(nextyear)
-        tm = time.strptime(nxyr_s, "%Y-%m-%d")
-        rval = time.mktime(tm)
+        tm = time.localtime(ref)
+        nextyear = tm.tm_year + 1
+        rval = time.mktime((nextyear, 1, 1, 0, 0, 0, 0, 0, -1))
         return rval
 
     # -------------------------------------------------------------------------
-    def guess_format(self, spec):
+    def _guess_format(self, spec):
         """
-        !@! needs example and description
+        Try each of the parse formats in the list until one works or the list
+        is exhausted
         """
         tm = None
         for fmt in self.formats:
@@ -491,7 +506,7 @@ class moment(object):
             return None
 
     # -------------------------------------------------------------------------
-    def parse_return(self, spec):
+    def _parse_return(self, spec):
         """
         Figure out what spec means -- the heavy lift of parsing
 
@@ -504,7 +519,7 @@ class moment(object):
 
         internal
         """
-        rval = self.guess_format(spec)
+        rval = self._guess_format(spec)
         if rval is not None:
             return rval
 
@@ -515,52 +530,52 @@ class moment(object):
         weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
         if spec == 'yesterday':
             ref = self.moment or time.time()
-            yest = ref - DAY
-            rval = yest - yest % (DAY) + time.timezone
+            yest = ref - _DAY
+            rval = yest - yest % (_DAY) + time.timezone
         elif 'end of' in spec:
             ml = re.findall(weekday_rgx, spec)
             if ml:
                 rval = self.end_of_day(ml[0])
             elif 'last week' in spec:
                 now = self.moment or time.time()
-                tmp = moment(now - 7 * DAY)
-                rval = tmp.end_of_week()
+                tmp = moment(now - 7 * _DAY)
+                rval = tmp._end_of_week()
             elif 'week' in spec:
-                rval = self.end_of_week()
+                rval = self._end_of_week()
             elif 'month' in spec:
-                rval = self.end_of_month()
+                rval = self._end_of_month()
             elif 'year' in spec:
-                rval = self.end_of_year()
+                rval = self._end_of_year()
         elif 'next' in spec:
             ml = re.findall(weekday_rgx, spec)
             if ml:
-                rval = self.next_weekday(ml[0])
+                rval = self._next_weekday(ml[0])
             else:
                 if 'week' in spec:
-                    rval = self.next_weekday('mon')
+                    rval = self._next_weekday('mon')
                 elif 'month' in spec:
-                    rval = self.next_month()
+                    rval = self._next_month()
                 elif 'year' in spec:
-                    rval = self.next_year()
+                    rval = self._next_year()
         elif 'last' in spec:
             ml = re.findall(weekday_rgx, spec)
             if ml:
-                rval = self.last_weekday(ml[0])
+                rval = self._last_weekday(ml[0])
             else:
                 if 'week' in spec:
                     ref = self.moment or time.time()
-                    ref -= 7 * DAY
+                    ref -= 7 * _DAY
                     tmp = moment(ref)
-                    rval = tmp.last_weekday('mon')
+                    rval = tmp._last_weekday('mon')
                 elif 'month' in spec:
-                    rval = self.last_month()
+                    rval = self._last_month()
                 elif 'year' in spec:
-                    rval = self.last_year()
+                    rval = self._last_year()
         elif spec.endswith('week'):
             ml = re.findall(weekday_rgx, spec)
             if ml:
-                tmp = self.next_weekday(ml[0])
-                rval = tmp + 7 * DAY
+                tmp = self._next_weekday(ml[0])
+                rval = tmp + 7 * _DAY
             else:
                 rval = None
         return rval
@@ -582,7 +597,7 @@ class moment(object):
         return time.tzname[lt.tm_isdst]
 
     # -------------------------------------------------------------------------
-    def _tomorrow(self, ref=None):
+    def _tomorrow(self, ref=None, update=False):
         """
         Compute and return epoch time of tomorrow based on ref, self.moment, or
         time.time()
@@ -594,28 +609,14 @@ class moment(object):
             >>> b()
             '2001-01-01'
         """
-        tmr = ref or self.moment or time.time()
-        tmr += DAY
-        rval = tmr - (tmr % DAY) + time.timezone
+        ref = ref or self.moment or time.time()
+        rval = self._day_floor(ref + _DAY)
+        if update:
+            self.moment = rval
         return rval
 
     # -------------------------------------------------------------------------
-    def tomorrow(self):
-        """
-        Return a moment object based on CSM's tomorrow
-
-        Example:
-            >>> import nldt
-            >>> a = ndlt.moment('2001-11-30')
-            >>> b = a.tomorrow()
-            >>> b()
-            '2001-12-01'
-        """
-        rval = moment(self._tomorrow())
-        return rval
-
-    # -------------------------------------------------------------------------
-    def yesterday(self):
+    def _yesterday(self, ref=None, update=False):
         """
         Return a moment object based on CSM's yesterday
 
@@ -626,17 +627,19 @@ class moment(object):
             >>> b()
             '2001-11-29'
         """
-        yest = self.moment - DAY
-        rval = moment(yest - (yest % DAY) + time.timezone)
+        ref = ref or self.moment or time.time()
+        rval = self._day_floor(ref - _DAY)
+        if update:
+            self.moment = rval
         return rval
 
     # -------------------------------------------------------------------------
-    def end_of_last_week(self, update=False):
+    def _end_of_last_week(self, ref= None, update=False):
         """
         Return the moment that ends last week
         """
-        ref = self.moment or time.time()
-        ref -= WEEK
+        ref = ref or self.moment or time.time()
+        ref -= _WEEK
         ref = self._end_of_day(wday_name='sun', ref=ref)
         if update:
             self.moment = ref
