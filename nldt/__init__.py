@@ -154,7 +154,9 @@ class moment(object):
                "%d %B, %Y",
                ]
     nldict = {'end of last week': '_end_of_last_week',
+              'start of next week': '_start_of_next_week',
               'tomorrow': '_tomorrow',
+              'yesterday': '_yesterday',
               }
 
     # -------------------------------------------------------------------------
@@ -328,6 +330,22 @@ class moment(object):
         return time.localtime(self.moment)
 
     # -------------------------------------------------------------------------
+    def timezone(self):
+        """
+        Return the timezone based on current CSM
+
+        Example:
+            >>> a = nldt.moment('2004-06-03')
+            >>> a.timezone()
+            'EDT'
+            >>> b = nldt.moment('2005-12-15')
+            >>> b.timezone()
+            'EST'
+        """
+        lt = time.localtime(self.moment)
+        return time.tzname[lt.tm_isdst]
+
+    # -------------------------------------------------------------------------
     def parse(self, spec):
         """
         Set the object's value to the date/time indicated by *spec*
@@ -353,26 +371,97 @@ class moment(object):
         self.moment = self._parse_return(spec)
 
     # -------------------------------------------------------------------------
-    def _day_ceiling(self, ref=None, update=False):
+    def _guess_format(self, spec):
         """
-        Compute and return the max epoch in the current day
+        Try each of the parse formats in the list until one works or the list
+        is exhausted
         """
-        tmp = ref or self.moment or time.time()
-        tmp = tmp + time.timezone - (tmp % _DAY) + _DAY - 1
-        if update:
-            self.moment = tmp
-        return tmp
+        tm = None
+        for fmt in self.formats:
+            try:
+                tm = time.strptime(spec, fmt)
+                break
+            except ValueError:
+                pass
+
+        if tm is not None:
+            return time.mktime(tm)
+        else:
+            return None
 
     # -------------------------------------------------------------------------
-    def _day_floor(self, ref=None, update=False):
+    def _parse_return(self, spec):
         """
-        Compute and return the min epoch in the current day
+        Figure out what spec means -- the heavy lift of parsing
+
+        spec - A date/time specification
+
+        Example:
+            foo = when.when()
+            foo.parse('2013.0630')
+            foo.parse('next friday at 5')
+
+        internal
         """
-        tmp = ref or self.moment or time.time()
-        tmp = tmp - (tmp % _DAY) + time.timezone
-        if update:
-            self.moment = tmp
-        return tmp
+        rval = self._guess_format(spec)
+        if rval is not None:
+            return rval
+
+        spec = spec.replace('beginning', 'start')
+
+        if spec in self.nldict:
+            func = getattr(self, self.nldict[spec])
+            return func()
+
+        weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
+        if spec == 'yesterday':
+            ref = self.moment or time.time()
+            yest = ref - _DAY
+            rval = yest - yest % (_DAY) + time.timezone
+        elif 'end of' in spec:
+            ml = re.findall(weekday_rgx, spec)
+            if ml:
+                rval = self.end_of_day(ml[0])
+            elif 'last week' in spec:
+                now = self.moment or time.time()
+                tmp = moment(now - 7 * _DAY)
+                rval = tmp._end_of_week()
+            elif 'week' in spec:
+                rval = self._end_of_week()
+            elif 'month' in spec:
+                rval = self._end_of_month()
+            elif 'year' in spec:
+                rval = self._end_of_year()
+        elif 'next' in spec:
+            ml = re.findall(weekday_rgx, spec)
+            if ml:
+                rval = self._next_weekday(ml[0])
+            else:
+                if 'week' in spec:
+                    rval = self._next_weekday('mon')
+                elif 'month' in spec:
+                    rval = self._next_month()
+                elif 'year' in spec:
+                    rval = self._next_year()
+        elif 'last' in spec:
+            ml = re.findall(weekday_rgx, spec)
+            if ml:
+                rval = self._last_weekday(ml[0])
+            else:
+                if 'week' in spec:
+                    rval = self._last_weekday('mon')
+                elif 'month' in spec:
+                    rval = self._last_month()
+                elif 'year' in spec:
+                    rval = self._last_year()
+        elif spec.endswith('week'):
+            ml = re.findall(weekday_rgx, spec)
+            if ml:
+                tmp = self._next_weekday(ml[0])
+                rval = tmp + 7 * _DAY
+            else:
+                rval = None
+        return rval
 
     # -------------------------------------------------------------------------
     def _end_of_day(self, wday_name=None, ref=None, update=False):
@@ -487,111 +576,28 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def _guess_format(self, spec):
+    def _end_of_last_week(self, ref= None, update=False):
         """
-        Try each of the parse formats in the list until one works or the list
-        is exhausted
+        Return the moment that ends last week
         """
-        tm = None
-        for fmt in self.formats:
-            try:
-                tm = time.strptime(spec, fmt)
-                break
-            except ValueError:
-                pass
-
-        if tm is not None:
-            return time.mktime(tm)
-        else:
-            return None
+        ref = ref or self.moment or time.time()
+        ref -= _WEEK
+        ref = self._end_of_day(wday_name='sun', ref=ref)
+        if update:
+            self.moment = ref
+        return ref
 
     # -------------------------------------------------------------------------
-    def _parse_return(self, spec):
+    def _start_of_next_week(self, ref= None, update=False):
         """
-        Figure out what spec means -- the heavy lift of parsing
-
-        spec - A date/time specification
-
-        Example:
-            foo = when.when()
-            foo.parse('2013.0630')
-            foo.parse('next friday at 5')
-
-        internal
+        Return the moment that begins next week
         """
-        rval = self._guess_format(spec)
-        if rval is not None:
-            return rval
-
-        if spec in self.nldict:
-            func = getattr(self, self.nldict[spec])
-            return func()
-
-        weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
-        if spec == 'yesterday':
-            ref = self.moment or time.time()
-            yest = ref - _DAY
-            rval = yest - yest % (_DAY) + time.timezone
-        elif 'end of' in spec:
-            ml = re.findall(weekday_rgx, spec)
-            if ml:
-                rval = self.end_of_day(ml[0])
-            elif 'last week' in spec:
-                now = self.moment or time.time()
-                tmp = moment(now - 7 * _DAY)
-                rval = tmp._end_of_week()
-            elif 'week' in spec:
-                rval = self._end_of_week()
-            elif 'month' in spec:
-                rval = self._end_of_month()
-            elif 'year' in spec:
-                rval = self._end_of_year()
-        elif 'next' in spec:
-            ml = re.findall(weekday_rgx, spec)
-            if ml:
-                rval = self._next_weekday(ml[0])
-            else:
-                if 'week' in spec:
-                    rval = self._next_weekday('mon')
-                elif 'month' in spec:
-                    rval = self._next_month()
-                elif 'year' in spec:
-                    rval = self._next_year()
-        elif 'last' in spec:
-            ml = re.findall(weekday_rgx, spec)
-            if ml:
-                rval = self._last_weekday(ml[0])
-            else:
-                if 'week' in spec:
-                    rval = self._last_weekday('mon')
-                elif 'month' in spec:
-                    rval = self._last_month()
-                elif 'year' in spec:
-                    rval = self._last_year()
-        elif spec.endswith('week'):
-            ml = re.findall(weekday_rgx, spec)
-            if ml:
-                tmp = self._next_weekday(ml[0])
-                rval = tmp + 7 * _DAY
-            else:
-                rval = None
+        ref = ref or self.moment or time.time()
+        rval = self._end_of_day('mon', ref)
+        rval = self._day_floor(rval)
+        if update:
+            self.moment = rval
         return rval
-
-    # -------------------------------------------------------------------------
-    def timezone(self):
-        """
-        Return the timezone based on current CSM
-
-        Example:
-            >>> a = nldt.moment('2004-06-03')
-            >>> a.timezone()
-            'EDT'
-            >>> b = nldt.moment('2005-12-15')
-            >>> b.timezone()
-            'EST'
-        """
-        lt = time.localtime(self.moment)
-        return time.tzname[lt.tm_isdst]
 
     # -------------------------------------------------------------------------
     def _tomorrow(self, ref=None, update=False):
@@ -631,13 +637,26 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def _end_of_last_week(self, ref= None, update=False):
+    def _day_ceiling(self, ref=None, update=False):
         """
-        Return the moment that ends last week
+        Compute and return the max epoch in the current day
         """
-        ref = ref or self.moment or time.time()
-        ref -= _WEEK
-        ref = self._end_of_day(wday_name='sun', ref=ref)
+        tmp = ref or self.moment or time.time()
+        tmp = tmp + time.timezone - (tmp % _DAY) + _DAY - 1
         if update:
-            self.moment = ref
-        return ref
+            self.moment = tmp
+        return tmp
+
+    # -------------------------------------------------------------------------
+    def _day_floor(self, ref=None, update=False):
+        """
+        Compute and return the min epoch in the current day
+        """
+        tmp = ref or self.moment or time.time()
+        tmp -= time.timezone
+        tmp = tmp - (tmp % _DAY)
+        tmp += time.timezone
+        if update:
+            self.moment = tmp
+        return tmp
+

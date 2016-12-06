@@ -277,6 +277,12 @@ def nl_oracle(spec):
         while int(start('%u'))-1 != wdidx:
             start.parse('tomorrow')
         return start()
+    elif spec == 'beginning of next week':
+        wdidx = 1
+        start = nldt.moment('tomorrow')
+        while int(start('%u')) != wdidx:
+            start.parse('tomorrow')
+        return start()
 
     (direction, day) = spec.split()
     if direction == 'next':
@@ -297,7 +303,7 @@ def nl_oracle(spec):
         start = nldt.moment('tomorrow')
         while int(start('%u'))-1 != wdidx:
             start.parse('tomorrow')
-        start = start.tomorrow()
+        start.parse('tomorrow')
         while int(start('%u'))-1 != wdidx:
             start.parse('tomorrow')
     return start()
