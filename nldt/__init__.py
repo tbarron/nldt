@@ -449,7 +449,8 @@ class moment(object):
                 rval = self._last_weekday(ml[0])
             else:
                 if 'week' in spec:
-                    rval = self._last_weekday('mon')
+                    tmp = moment(time.time() - 7*_DAY)
+                    rval = tmp._last_weekday('mon')
                 elif 'month' in spec:
                     rval = self._last_month()
                 elif 'year' in spec:
