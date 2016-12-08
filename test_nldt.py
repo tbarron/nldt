@@ -5,6 +5,67 @@ import nldt
 
 
 # -----------------------------------------------------------------------------
+def test_month_index():
+    """
+    nldt.month_index() takes a month name and returns its index. On bad input,
+    it will raise a KeyError.
+    """
+    assert nldt.month_index('jan') == 1
+    assert nldt.month_index('February') == 2
+    assert nldt.month_index('marc') == 3
+    assert nldt.month_index('apr') == 4
+    assert nldt.month_index('May') == 5
+    assert nldt.month_index('june') == 6
+    assert nldt.month_index('jul') == 7
+    assert nldt.month_index('August') == 8
+    assert nldt.month_index('sep') == 9
+    assert nldt.month_index('Octob') == 10
+    assert nldt.month_index('nov') == 11
+    assert nldt.month_index('December') == 12
+    with pytest.raises(KeyError) as err:
+        assert nldt.month_index('frobble')
+
+
+# -----------------------------------------------------------------------------
+def test_month_names():
+    """
+    nldt.month_names() returns the list of month names in order
+    """
+    result = nldt.month_names()
+    exp = ['january', 'february', 'march', 'april', 'may', 'june',
+           'july', 'august', 'september', 'october', 'november', 'december']
+    assert result == exp
+
+
+# -----------------------------------------------------------------------------
+def test_weekday_index():
+    """
+    nldt.weekday_index() takes a weekday name and returns its index. On bad
+    input, it will raise a KeyError.
+    """
+    assert nldt.weekday_index('Monday') == 0
+    assert nldt.weekday_index('tue') == 1
+    assert nldt.weekday_index('wednesday') == 2
+    assert nldt.weekday_index('thur') == 3
+    assert nldt.weekday_index('fri') == 4
+    assert nldt.weekday_index('Saturday') == 5
+    assert nldt.weekday_index('sunda') == 6
+    with pytest.raises(KeyError) as err:
+        assert nldt.weekday_index('foobar')
+
+
+# -----------------------------------------------------------------------------
+def test_weekday_names():
+    """
+    nldt.weekday_names() returns the list of weekday names in order
+    """
+    result = nldt.weekday_names()
+    exp = ['monday', 'tuesday', 'wednesday', 'thursday',
+           'friday', 'saturday', 'sunday']
+    assert result == exp
+
+
+# -----------------------------------------------------------------------------
 def test_repr():
     """
     The __repr__ method should provide enough info to rebuild the object
