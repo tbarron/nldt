@@ -504,9 +504,12 @@ class moment(object):
 
         spec = spec.replace('beginning', 'start')
 
-        if spec in self.nldict:
-            func = getattr(self, self.nldict[spec])
+        func = self._nl_match(spec)
+        if func:
             return func()
+        # if spec in self.nldict:
+        #     func = getattr(self, self.nldict[spec])
+        #     return func()
 
         weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
         if spec == 'yesterday':
