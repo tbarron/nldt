@@ -606,6 +606,22 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def _first_week_in_MONTH(self, ref=None, update=False):
+        """
+        Given MONTH
+        """
+        for mname in self.month_names():
+            if mname.lower()[0:3] in self.spec.lower():
+                month = self.month_index(mname)
+        tmp = moment()
+        year = tmp('%Y')
+        target = moment('{}-{}-07'.format(year, month))
+        while target('%a') != 'mon':
+            target.parse('yesterday')
+        rval = target.epoch()
+        return rval
+
+    # -------------------------------------------------------------------------
     def _last_weekday(self, wday_name, ref=None, update=False):
         """
         Compute the epoch time of the indicated past weekday
