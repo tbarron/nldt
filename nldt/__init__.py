@@ -48,13 +48,60 @@ def timezone():
 
 
 # -----------------------------------------------------------------------------
-_WEEKDAYS = {'mon': 0, 0: 'mon',
-             'tue': 1, 1: 'tue',
-             'wed': 2, 2: 'wed',
-             'thu': 3, 3: 'thu',
-             'fri': 4, 4: 'fri',
-             'sat': 5, 5: 'sat',
-             'sun': 6, 6: 'sun'}
+_WEEKDAYS = {'mon': 0, 0: 'monday',
+             'tue': 1, 1: 'tuesday',
+             'wed': 2, 2: 'wednesday',
+             'thu': 3, 3: 'thursday',
+             'fri': 4, 4: 'friday',
+             'sat': 5, 5: 'saturday',
+             'sun': 6, 6: 'sunday'}
+
+_MONTHS = {'jan': 1, 1: 'january',
+           'feb': 2, 2: 'february',
+           'mar': 3, 3: 'march',
+           'apr': 4, 4: 'april',
+           'may': 5, 5: 'may',
+           'jun': 6, 6: 'june',
+           'jul': 7, 7: 'july',
+           'aug': 8, 8: 'august',
+           'sep': 9, 9: 'september',
+           'oct': 10, 10: 'october',
+           'nov': 11, 11: 'november',
+           'dec': 12, 12: 'december',
+           }
+
+# -----------------------------------------------------------------------------
+def month_index(month):
+    """
+    Given month name, return index (January == 1; December == 12)
+
+    *month* - three+ letter month name string => int between 1 (jan) and 12
+              (dec)
+
+    Example:
+        >>> nldt.month_index('January')
+        1
+        >>> nldt.month_index('febr')
+        2
+    """
+    idx = month.lower()[0:3]
+    rval = _MONTHS[idx]
+    return rval
+
+
+# -----------------------------------------------------------------------------
+def month_names():
+    """
+    Return the list of month names in order
+
+    Example:
+        >>> nldt.month_names()
+        ['january', 'february', 'march', 'april', 'may', 'june',
+         'july', 'august', 'september', 'october', 'november', 'december']
+    """
+    ikeys = sorted(_ for _ in _MONTHS if isinstance(_, int))
+    rval = [_MONTHS[_] for _ in ikeys]
+    return rval
 
 
 # -----------------------------------------------------------------------------
@@ -82,6 +129,34 @@ def weekday_index(weekday):
     """
     idx = weekday.lower()[0:3]
     rval = _WEEKDAYS[idx]
+    return rval
+
+
+# -----------------------------------------------------------------------------
+def weekday_names():
+    """
+    Return the list of weekday names in order
+
+    *weekday* - int between 0 and 6 => three letter day name string
+                three letter day name string => int between 0 (mon) and 6 (sun)
+
+    Example:
+        >>> import nldt
+
+        # Compute weekday delta
+        >>> diff = nldt.weekday_index('thu') - nldt.weekday_index('mon')
+
+        # diff == number of days to jump from monday to thursday
+        >>> diff = nldt.weekday_index('mon') - nldt.weekday_index('thu')
+
+        # diff == number of days to jump from thursday to monday (negative)
+        # General:
+        >>> diff = nldt.weekday_index(end_day) - nldt.weekday_index(start_day)
+        # diff == days to jump from start to end, either forward or backward
+        # 7 + diff == days to jump from start to end in succeeding week
+    """
+    ikeys = sorted(_ for _ in _WEEKDAYS if isinstance(_, int))
+    rval = [_WEEKDAYS[_] for _ in ikeys]
     return rval
 
 
