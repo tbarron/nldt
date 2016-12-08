@@ -344,6 +344,14 @@ def nl_oracle(spec):
         while int(start('%u')) != wdidx:
             start.parse('tomorrow')
         return start()
+    elif spec == 'first week in January':
+        wdidx = 1
+        now = nldt.moment()
+        year = now('%Y')
+        start = nldt.moment('{}-01-07'.format(year))
+        while int(start('%u')) != wdidx:
+            start.parse('yesterday')
+        return start()
 
     (direction, day) = spec.split()
     if direction == 'next':
