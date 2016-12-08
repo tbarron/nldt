@@ -465,6 +465,26 @@ class moment(object):
             return None
 
     # -------------------------------------------------------------------------
+    def _nl_match(self, spec):
+        """
+        Look for matches for *spec* in the natural lanugage dictionary
+
+        Example:
+            >>> function = self._nl_match('first week in January')
+            >>> function
+            <bound method '_first_week_in'>
+        """
+        self.spec = spec
+        if spec in self.nldict:
+            rval = getattr(self, self.nldict[spec])
+            return rval
+        for key in self.nldict:
+            if key in spec:
+                rval = getattr(self, self.nldict[spec])
+                return rval
+        return None
+
+    # -------------------------------------------------------------------------
     def _parse_return(self, spec):
         """
         Figure out what spec means -- the heavy lift of parsing
