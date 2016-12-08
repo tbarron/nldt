@@ -230,6 +230,7 @@ class moment(object):
                ]
     nldict = {'end of last week': '_end_of_last_week',
               'start of next week': '_start_of_next_week',
+              'first week in': '_first_week_in_MONTH',
               'tomorrow': '_tomorrow',
               'yesterday': '_yesterday',
               }
