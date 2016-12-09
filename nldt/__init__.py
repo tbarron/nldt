@@ -481,7 +481,7 @@ class moment(object):
             return rval
         for key in self.nldict:
             if key in spec:
-                rval = getattr(self, self.nldict[spec])
+                rval = getattr(self, self.nldict[key])
                 return rval
         return None
 
@@ -582,7 +582,7 @@ class moment(object):
         """
         point = ref or self.moment or time.time()
         if wday_name:
-            now = time.gmtime(point)
+            now = time.localtime(point)
             wday_num = _WEEKDAYS[wday_name]
             diff = (7 + wday_num - now.tm_wday) % 7
         else:
@@ -641,7 +641,7 @@ class moment(object):
         tmp = moment()
         year = tmp('%Y')
         target = moment('{}-{}-07'.format(year, month))
-        while target('%a') != 'mon':
+        while target('%a').lower() != 'mon':
             target.parse('yesterday')
         rval = target.epoch()
         return rval
