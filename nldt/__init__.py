@@ -731,6 +731,18 @@ class moment(object):
         return ref
 
     # -------------------------------------------------------------------------
+    def _week_before_last(self, ref=None, update=False):
+        """
+        Compute and return epoch time of last week's predecessor
+        """
+        ref = ref or self.moment or time.time()
+        ref = self._last_week(ref)
+        ref = self._last_week(ref)
+        if update:
+            self.moment = ref
+        return ref
+
+    # -------------------------------------------------------------------------
     def _tomorrow(self, ref=None, update=False):
         """
         Compute and return epoch time of tomorrow based on ref, self.moment, or
