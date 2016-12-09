@@ -1,7 +1,16 @@
-import pdb
+import pexpect
 import pytest
 import time
 import nldt
+
+
+# -----------------------------------------------------------------------------
+def test_flake():
+    """
+    Scan code for good formatting
+    """
+    result = pexpect.run('flake8 test_nldt.py nldt')
+    assert result == ''
 
 
 # -----------------------------------------------------------------------------
@@ -14,6 +23,7 @@ def test_bug_001():
     a = nldt.moment('2016-06-07')
     b = nldt.moment(a._yesterday())
     assert b() == '2016-06-06'
+
 
 # -----------------------------------------------------------------------------
 def test_month_index():
