@@ -480,7 +480,8 @@ class moment(object):
         return None
 
     # -------------------------------------------------------------------------
-    nldict = {'end of last week': '_end_of_last_week',
+    nldict = {'a week ago': '_a_week_ago',
+              'end of last week': '_end_of_last_week',
               'last week': '_last_week',
               'first week in': '_first_week_in_MONTH',
               'start of next week': '_start_of_next_week',
@@ -564,6 +565,17 @@ class moment(object):
             else:
                 rval = None
         return rval
+
+    # -------------------------------------------------------------------------
+    def _a_week_ago(self, ref=None, update=False):
+        """
+        Compute the epoch time of a one week ago
+        """
+        ref = ref or self.moment or time.time()
+        ref -= 7 * _DAY
+        if update:
+            self.moment = ref
+        return ref
 
     # -------------------------------------------------------------------------
     def _end_of_day(self, wday_name=None, ref=None, update=False):
