@@ -233,6 +233,7 @@ class moment(object):
               'first week in': '_first_week_in_MONTH',
               'tomorrow': '_tomorrow',
               'yesterday': '_yesterday',
+              'week after next': '_week_after_next',
               }
 
     # -------------------------------------------------------------------------
@@ -715,6 +716,18 @@ class moment(object):
         if update:
             self.moment = rval
         return rval
+
+    # -------------------------------------------------------------------------
+    def _week_after_next(self, ref=None, update=False):
+        """
+        Compute and return epoch time of a week from the next Monday
+        """
+        ref = ref or self.moment or time.time()
+        ref = self._end_of_day('sun', ref=ref)
+        ref += 7 * _DAY + 1
+        if update:
+            self.moment = ref
+        return ref
 
     # -------------------------------------------------------------------------
     def _tomorrow(self, ref=None, update=False):
