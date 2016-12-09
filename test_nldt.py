@@ -371,6 +371,14 @@ def nl_oracle(spec):
         lswk = nldt.moment('last week')
         lswk.parse('last week')
         return lswk()
+    elif spec == 'a week ago':
+        now = nldt.moment()
+        then = nldt.moment(now.epoch() - 7 * 24 * 3600)
+        return then()
+    elif spec == 'three weeks from now':
+        now = nldt.moment()
+        then = nldt.moment(now.epoch() + 21 * 24 * 3600)
+        return then()
     elif 'first week in' in spec:
         month = None
         for mname in nldt.month_names():
