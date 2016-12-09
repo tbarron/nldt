@@ -649,6 +649,22 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def _last_week(self, ref=None, update=False):
+        """
+        Compute the epoch time of the beginning of last week
+        """
+        ref = ref or self.moment or time.time()
+        rtm = time.localtime(ref)
+        if 0 < rtm.tm_wday:
+            ref -= rtm.tm_wday * _DAY
+        ref = self._day_floor(ref)
+        ref -= 7 * _DAY
+        if update:
+            self.moment = ref
+        return ref
+
+
+    # -------------------------------------------------------------------------
     def _last_weekday(self, wday_name, ref=None, update=False):
         """
         Compute the epoch time of the indicated past weekday
