@@ -228,13 +228,6 @@ class moment(object):
                "%d %B, %Y %H",
                "%d %B, %Y",
                ]
-    nldict = {'end of last week': '_end_of_last_week',
-              'start of next week': '_start_of_next_week',
-              'first week in': '_first_week_in_MONTH',
-              'tomorrow': '_tomorrow',
-              'yesterday': '_yesterday',
-              'week after next': '_week_after_next',
-              }
 
     # -------------------------------------------------------------------------
     def __init__(self, *args):
@@ -487,6 +480,17 @@ class moment(object):
         return None
 
     # -------------------------------------------------------------------------
+    nldict = {'end of last week': '_end_of_last_week',
+              'last week': '_last_week',
+              'first week in': '_first_week_in_MONTH',
+              'start of next week': '_start_of_next_week',
+              'tomorrow': '_tomorrow',
+              'week after next': '_week_after_next',
+              'week before last': '_week_before_last',
+              'yesterday': '_yesterday',
+              }
+
+    # -------------------------------------------------------------------------
     def _parse_return(self, spec):
         """
         Figure out what spec means -- the heavy lift of parsing
@@ -509,9 +513,6 @@ class moment(object):
         func = self._nl_match(spec)
         if func:
             return func()
-        # if spec in self.nldict:
-        #     func = getattr(self, self.nldict[spec])
-        #     return func()
 
         weekday_rgx = '(mon|tue|wed|thu|fri|sat|sun)'
         if spec == 'yesterday':
