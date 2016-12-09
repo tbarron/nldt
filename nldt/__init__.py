@@ -757,22 +757,33 @@ class moment(object):
         """
         Compute and return the max epoch in the current day
         """
-        tmp = ref or self.moment or time.time()
-        tmp = tmp + time.timezone - (tmp % _DAY) + _DAY - 1
+        ref = ref or self.moment or time.time()
+
+        rtm = time.localtime(ref)
+        delta = 24 * 3600
+        delta -= rtm.tm_hour * 3600
+        delta -= rtm.tm_min * 60
+        delta -= rtm.tm_sec
+        ref += delta - 1
+
+        # tmp = tmp + time.timezone - (tmp % _DAY) + _DAY - 1
         if update:
-            self.moment = tmp
-        return tmp
+            self.moment = ref
+        return ref
 
     # -------------------------------------------------------------------------
     def _day_floor(self, ref=None, update=False):
         """
         Compute and return the min epoch in the current day
         """
-        tmp = ref or self.moment or time.time()
-        tmp -= time.timezone
-        tmp = tmp - (tmp % _DAY)
-        tmp += time.timezone
-        if update:
-            self.moment = tmp
-        return tmp
+        ref = ref or self.moment or time.time()
+        ref_tm = time.localtime(ref)
 
+        flr = ref
+        flr -= ref_tm.tm_hour * 3600
+        flr -= ref_tm.tm_min * 60
+        flr -= ref_tm.tm_sec
+
+        if update:
+            self.moment = flr
+        return flr
