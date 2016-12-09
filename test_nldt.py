@@ -367,6 +367,10 @@ def nl_oracle(spec):
         nxwk = nldt.moment('next week')
         nxwk.parse('next week')
         return nxwk()
+    elif spec == 'week before last':
+        lswk = nldt.moment('last week')
+        lswk.parse('last week')
+        return lswk()
     elif 'first week in' in spec:
         month = None
         for mname in nldt.month_names():
