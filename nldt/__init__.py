@@ -634,9 +634,10 @@ class moment(object):
         """
         Given MONTH
         """
-        for mname in self.month_names():
+        for mname in month_names():
             if mname.lower()[0:3] in self.spec.lower():
-                month = self.month_index(mname)
+                month = month_index(mname)
+                break
         tmp = moment()
         year = tmp('%Y')
         target = moment('{}-{}-07'.format(year, month))
