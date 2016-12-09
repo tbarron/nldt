@@ -5,6 +5,17 @@ import nldt
 
 
 # -----------------------------------------------------------------------------
+def test_bug_001():
+    """
+    nldt.moment('2016-06-07')._yesterday() is yielding '2016-06-05' when it
+    should be '2016-06-06'
+    """
+    pytest.debug_func()
+    a = nldt.moment('2016-06-07')
+    b = nldt.moment(a._yesterday())
+    assert b() == '2016-06-06'
+
+# -----------------------------------------------------------------------------
 def test_month_index():
     """
     nldt.month_index() takes a month name and returns its index. On bad input,
@@ -109,7 +120,7 @@ def test_ambig():
     euro = nldt.moment('01-02-03', '%d-%m-%y')
     assert euro() == '2003-02-01'
 
-    
+
 # -----------------------------------------------------------------------------
 def test_arg_tomorrow():
     """
@@ -262,7 +273,7 @@ def test_intuit(inp, fmt, exp):
     later = nldt.moment(inp)
     assert later(fmt) == exp
 
-    
+
 # -----------------------------------------------------------------------------
 def test_obj_tomorrow():
     """
