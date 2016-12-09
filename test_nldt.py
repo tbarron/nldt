@@ -352,6 +352,28 @@ def nl_oracle(spec):
         while int(start('%u')) != wdidx:
             start.parse('yesterday')
         return start()
+    elif spec == 'week after next':
+        nxwk = nldt.moment('next week')
+        nxwk.parse('next week')
+        return nxwk()
+    elif 'first week in' in spec:
+        month = None
+        for mname in nldt.month_names():
+            mshort = mname.lower()[0:3]
+            if mshort in spec.lower():
+                month = nldt.month_index(mshort)
+                break
+        if month:
+            now = nldt.moment()
+            year = now('%Y')
+            start = nldt.moment('{}-{}-07'.format(year, month))
+            while start('%a') != 'Mon':
+                start.parse('yesterday')
+            return start()
+        else:
+            now = nldt.moment()
+            return now()
+
 
     (direction, day) = spec.split()
     if direction == 'next':
@@ -415,6 +437,7 @@ def nl_oracle(spec):
                           ('end of the week'),
                           ('beginning of next week'),
                           ('first week in January'),
+                          ('first week in June'),
                           ('week after next'),
                           ('week before last'),
                           ('a week ago'),
@@ -457,4 +480,3 @@ def close_times(tm1, tm2):
 #         diff = 5 - tm.tm_wday
 #         target = time.time() + diff*24*3600
 #         return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(target))
-
