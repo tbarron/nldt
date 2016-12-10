@@ -43,7 +43,7 @@ def test_month_index():
     assert nldt.month_index('Octob') == 10
     assert nldt.month_index('nov') == 11
     assert nldt.month_index('December') == 12
-    with pytest.raises(KeyError) as err:
+    with pytest.raises(KeyError):
         assert nldt.month_index('frobble')
 
 
@@ -71,7 +71,7 @@ def test_weekday_index():
     assert nldt.weekday_index('fri') == 4
     assert nldt.weekday_index('Saturday') == 5
     assert nldt.weekday_index('sunda') == 6
-    with pytest.raises(KeyError) as err:
+    with pytest.raises(KeyError):
         assert nldt.weekday_index('foobar')
 
 
@@ -94,6 +94,7 @@ def test_repr():
     pytest.debug_func()
     c = nldt.moment()
     assert eval(repr(c)) == c
+
 
 # -----------------------------------------------------------------------------
 def test_obj_timezone_dstoff():
@@ -242,13 +243,13 @@ def test_with_format():
     pytest.debug_func()
     wobj = nldt.moment('Dec 29, 2016', '%b %d, %Y')
     assert wobj() == '2016-12-29'
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValueError):
         wobj = nldt.moment('Dec 29 2016', '%b %m, %Y')
 
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, fmt, exp",
-      [('Dec 29 2016', None, '2016-12-29'),
+      [('Dec 29 2016', None, '2016-12-29'),   # noqa
        ('Dec 17, 1975 03:17', '%Y-%m-%d %H:%M', '1975-12-17 03:17'),
        ('2000.0704 12:35:19', '%Y-%m-%d %H:%M:%S', '2000-07-04 12:35:19'),
        ('2000.0704 12:35', '%Y-%m-%d %H:%M', '2000-07-04 12:35'),
@@ -407,7 +408,6 @@ def nl_oracle(spec):
             now = nldt.moment()
             return now()
 
-
     (direction, day) = spec.split()
     if direction == 'next':
         # pdb.set_trace()
@@ -418,7 +418,6 @@ def nl_oracle(spec):
     elif direction == 'last':
         wdidx = nldt.weekday_index(day)
         start = nldt.moment('yesterday')
-        tm = start.localtime()
         while int(start('%u'))-1 != wdidx:
             start.parse('yesterday')
     elif day == 'week':

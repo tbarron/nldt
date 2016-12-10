@@ -5,7 +5,6 @@ This module provides a simple interfaace to Python's time and date processing
 machinery.
 """
 import numbers
-import pdb
 import re
 import time
 
@@ -69,6 +68,34 @@ _MONTHS = {'jan': 1, 1: 'january',
            'nov': 11, 11: 'november',
            'dec': 12, 12: 'december',
            }
+
+_MONTH_LEN = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+
+# -----------------------------------------------------------------------------
+def month_days(month):
+    """
+    Given month name, return the number of days in the month for the current
+    year
+
+    *month* - three+ letter month name string => int between 1 (jan) and 12
+              (dec)
+
+    Example:
+        >>> nldt.month_days('January')
+        31
+        >>> nldt.month_days('febr')
+        28
+        >>> nldt.month_days('september')
+        30
+        >>> nldt.month_days('dec')
+        31
+    """
+    idx = month.lower()[0:3]
+    mdx = _MONTHS[idx]
+    rval = _MONTH_LEN[mdx-1]
+    return rval
+
 
 # -----------------------------------------------------------------------------
 def month_index(month):
@@ -296,7 +323,6 @@ class moment(object):
         format = format or "%Y-%m-%d"
         rval = time.strftime(format, time.localtime(self.moment))
         return rval
-
 
     # -------------------------------------------------------------------------
     def __eq__(self, other):
@@ -623,7 +649,7 @@ class moment(object):
         """
         ref = ref or self.moment or time.time()
         tm = time.localtime(ref)
-        maxday = _month_days(tm.tm_mon)
+        maxday = month_days(tm.tm_mon)
         rval = time.mktime((tm.tm_year, tm.tm_mon, maxday,
                             23, 59, 59,
                             0, 0, -1))
@@ -675,7 +701,6 @@ class moment(object):
             self.moment = ref
         return ref
 
-
     # -------------------------------------------------------------------------
     def _last_weekday(self, wday_name, ref=None, update=False):
         """
@@ -723,7 +748,7 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def _end_of_last_week(self, ref= None, update=False):
+    def _end_of_last_week(self, ref=None, update=False):
         """
         Return the moment that ends last week
         """
@@ -735,7 +760,7 @@ class moment(object):
         return ref
 
     # -------------------------------------------------------------------------
-    def _start_of_next_week(self, ref= None, update=False):
+    def _start_of_next_week(self, ref=None, update=False):
         """
         Return the moment that begins next week
         """
