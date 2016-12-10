@@ -1,15 +1,40 @@
 
 
 
+# -----------------------------------------------------------------------------
+def subscan(textnum, numwords=None):
+    """
+    Read and translate the leading numeric expression
+
+        Example:
+        >>> subscan('seventy-five')
+        (75, None, None)
+        >>> subscan('seventy-six trombones led the big parade')
+        (76, 'trombones', 'led the big parade')
+        >>> subscan('ten o'clock on june third')
+        10, "o'clock", "on june third")
+        >>> subscan('three weeks before the fifth of may seven years ago')
+        (3, 'weeks', 'before the fifth of may seven years ago']
+        >>> scan('only three weeks before the fifth of may seven years ago')
+        (None, 'only', 'three weeks before the fifth of may seven years ago')
+    """
+    if numwords is None:
+        try:
+            numwords = subscan._numwords
+        except AttributeError:
+            subscan._numwords = set_numwords()
+            numwords = subscan._numwords
 
     ordinal_words = {'first':1, 'second':2, 'third':3, 'fifth':5, 'eighth':8, 'ninth':9,
                      'twelfth':12}
     ordinal_endings = [('ieth', 'y'), ('th', '')]
 
+
     textnum = textnum.replace('-', ' ')
 
     current = result = 0
-    for word in textnum.split():
+    word, rest = tokenize(textnum)
+    while word:
         if word in ordinal_words:
             scale, increment = (1, ordinal_words[word])
         else:
@@ -18,7 +43,8 @@
                     word = "%s%s" % (word[:-len(ending)], replacement)
 
             if word not in numwords:
-                raise Exception("Illegal word: " + word)
+                break
+                # raise Exception("Illegal word: " + word)
 
             scale, increment = numwords[word]
 
@@ -27,7 +53,10 @@
             result += current
             current = 0
 
-    return result + current
+        word, rest = tokenize(rest)
+
+    return result + current, word, rest
+
 # -----------------------------------------------------------------------------
 def set_numwords():
     """
