@@ -1,4 +1,38 @@
+# -----------------------------------------------------------------------------
+def scan(text):
+    """
+    Scan a string of text, extracting numbers and returning the result
 
+    Example:
+        >>> scan('seventy-five')
+        [75]
+        >>> scan('seventy-six trombones led the big parade')
+        [76, 'trombones led the big parade']
+        >>> scan('ten o'clock on june third')
+        [10, "o'clock on june", 3]
+        >>> scan('three weeks before the fifth of may seven years ago')
+        [3, 'weeks before the', 5, 'of may', 7, 'years ago']
+        >>> scan('only three weeks before the fifth of may seven years ago')
+        ['only', 3, 'weeks before the', 5, 'of may', 7, 'years ago']
+    """
+    def assemble_result(result, num, word):
+        if num:
+            result.append(num)
+        if word:
+            if len(result) < 1:
+                result.append(word)
+            elif isinstance(result[-1], str):
+                result[-1] = " ".join([result[-1], word])
+            else:
+                result.append(word)
+    result = []
+    num, word, text = subscan(text)
+    while text:
+        assemble_result(result, num, word)
+        num, word, text = subscan(text)
+
+    assemble_result(result, num, word)
+    return result
 
 
 # -----------------------------------------------------------------------------
