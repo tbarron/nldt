@@ -6,7 +6,8 @@ def text2int(textnum, numwords={}):
         "sixteen", "seventeen", "eighteen", "nineteen",
         ]
 
-        tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+        tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy",
+                "eighty", "ninety"]
 
         scales = ["hundred", "thousand", "million", "billion", "trillion"]
 
@@ -15,7 +16,8 @@ def text2int(textnum, numwords={}):
         for idx, word in enumerate(tens):       numwords[word] = (1, idx * 10)
         for idx, word in enumerate(scales): numwords[word] = (10 ** (idx * 3 or 2), 0)
 
-    ordinal_words = {'first':1, 'second':2, 'third':3, 'fifth':5, 'eighth':8, 'ninth':9, 'twelfth':12}
+    ordinal_words = {'first':1, 'second':2, 'third':3, 'fifth':5, 'eighth':8, 'ninth':9,
+                     'twelfth':12}
     ordinal_endings = [('ieth', 'y'), ('th', '')]
 
     textnum = textnum.replace('-', ' ')
