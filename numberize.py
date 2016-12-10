@@ -52,3 +52,31 @@ def set_numwords():
 
     return numwords
 
+# -----------------------------------------------------------------------------
+def tokenize(text):
+    """
+    Peel the first token off a string and return the tuple (token, remainder).
+    If *text* is empty, both token and reminder are None. If *text* contains
+    only one token, remainder is None.
+
+    Example:
+        >>> tokenize('   Twas brillig and the slithe toves')
+        ('Twas', 'brillig and the slithe toves')
+        >>> tokenize('humpty    ')
+        ('humpty', None)
+        >>> tokenize('    ')
+        (None, None)
+    """
+    if text is None:
+        (token, remainder) = (None, None)
+    elif isinstance(text, str):
+        try:
+            (token, remainder) = text.strip().split(None, 1)
+        except ValueError:
+            token = text.strip()
+            if not token:
+                token = None
+            remainder = None
+    else:
+        (token, remainder) = (text, None)
+    return token, remainder
