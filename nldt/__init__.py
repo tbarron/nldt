@@ -10,8 +10,8 @@ import re
 import time
 
 
-_DAY = 24*3600      # !@! should be private
-_WEEK = 7 * _DAY    # !@! should be private
+_DAY = 24*3600
+_WEEK = 7 * _DAY
 
 
 # -----------------------------------------------------------------------------
