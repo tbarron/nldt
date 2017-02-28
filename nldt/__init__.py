@@ -4,6 +4,7 @@ Natural Language Date and Time package
 This module provides a simple interfaace to Python's time and date processing
 machinery.
 """
+import numberize
 import numbers
 import re
 import time
@@ -513,6 +514,7 @@ class moment(object):
               'start of next week': '_start_of_next_week',
               'tomorrow': '_tomorrow',
               'week after next': '_week_after_next',
+              'week ago': '_week_ago',
               'week before last': '_week_before_last',
               'yesterday': '_yesterday',
               }
@@ -536,6 +538,7 @@ class moment(object):
             return rval
 
         spec = spec.replace('beginning', 'start')
+        spec = spec.replace('weeks', 'week')
 
         func = self._nl_match(spec)
         if func:
@@ -593,12 +596,17 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def _a_week_ago(self, ref=None, update=False):
+    def _week_ago(self, ref=None, update=False):
         """
         Compute the epoch time of a one week ago
         """
         ref = ref or self.moment or time.time()
-        ref -= 7 * _DAY
+        result = numberize.scan(self.spec)
+        if isinstance(result[0], numbers.Number):
+            mult = result[0]
+        else:
+            mult = 1
+        ref -= mult * 7 * _DAY
         if update:
             self.moment = ref
         return ref

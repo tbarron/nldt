@@ -386,6 +386,10 @@ def nl_oracle(spec):
         now = nldt.moment()
         then = nldt.moment(now.epoch() - 7 * 24 * 3600)
         return then()
+    elif spec == 'two weeks ago':
+        now = nldt.moment()
+        then = nldt.moment(now.epoch() - 14 * 24 * 3600)
+        return then()
     elif spec == 'three weeks from now':
         now = nldt.moment()
         then = nldt.moment(now.epoch() + 21 * 24 * 3600)
