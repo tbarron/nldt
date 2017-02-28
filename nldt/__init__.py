@@ -507,11 +507,11 @@ class moment(object):
         return None
 
     # -------------------------------------------------------------------------
-    nldict = {'a week ago': '_a_week_ago',
-              'end of last week': '_end_of_last_week',
+    nldict = {'end of last week': '_end_of_last_week',
               'last week': '_last_week',
               'first week in': '_first_week_in_MONTH',
               'start of next week': '_start_of_next_week',
+              'week from now': '_week_from_now',
               'tomorrow': '_tomorrow',
               'week after next': '_week_after_next',
               'week ago': '_week_ago',
@@ -799,6 +799,20 @@ class moment(object):
         ref = ref or self.moment or time.time()
         ref = self._last_week(ref)
         ref = self._last_week(ref)
+        if update:
+            self.moment = ref
+        return ref
+
+    # -------------------------------------------------------------------------
+    def _week_from_now(self, ref=None, update=False):
+        """
+        Compute a future date based on self.spec
+        """
+        ref = ref or self.moment or time.time()
+        result = numberize.scan(self.spec)
+        if not isinstance(result[0], numbers.Number):
+            return ref
+        ref += int(result[0] * _WEEK)
         if update:
             self.moment = ref
         return ref
