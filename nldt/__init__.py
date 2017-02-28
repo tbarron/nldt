@@ -516,6 +516,7 @@ class moment(object):
               'week after next': '_week_after_next',
               'week ago': '_week_ago',
               'week before last': '_week_before_last',
+              'week earlier': '_week_ago',
               'yesterday': '_yesterday',
               }
 
