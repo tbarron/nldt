@@ -1,5 +1,6 @@
 import numberize
 import numbers
+import pydoc
 import pexpect
 import pytest
 import re
@@ -14,6 +15,23 @@ def test_flake():
     """
     result = pexpect.run('flake8 test_nldt.py nldt')
     assert result == ''
+
+
+# -----------------------------------------------------------------------------
+def test_pydoc():
+    """
+    Verify that public items show up in pydoc output while private items do not
+    """
+    present = ['__init__', 'dst', 'timezone',
+               'month_days', 'month_index', 'month_names',
+               'weekday_index', 'weekday_names', 'moment']
+    absent = ['_DAY', '_WEEK', '_WEEKDAYS', '_MONTHS', '_MONTH_LEN']
+    docker = pydoc.TextDoc()
+    result = docker.document(nldt)
+    for item in present:
+        assert item in result
+    for item in absent:
+        assert item not in result
 
 
 # -----------------------------------------------------------------------------
