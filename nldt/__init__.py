@@ -1,8 +1,8 @@
 """
 Natural Language Date and Time package
 
-This module provides a simple interfaace to Python's time and date processing
-machinery.
+This module provides a simple natural language interfaace to Python's time and
+date processing machinery.
 """
 import numberize
 import numbers
@@ -171,17 +171,10 @@ def weekday_names():
     Example:
         >>> import nldt
 
-        # Compute weekday delta
-        >>> diff = nldt.weekday_index('thu') - nldt.weekday_index('mon')
-
-        # diff == number of days to jump from monday to thursday
-        >>> diff = nldt.weekday_index('mon') - nldt.weekday_index('thu')
-
-        # diff == number of days to jump from thursday to monday (negative)
-        # General:
-        >>> diff = nldt.weekday_index(end_day) - nldt.weekday_index(start_day)
-        # diff == days to jump from start to end, either forward or backward
-        # 7 + diff == days to jump from start to end in succeeding week
+        # Get the list
+        >>> nldt.weekday_names()
+        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
+        'sunday']
     """
     ikeys = sorted(_ for _ in _WEEKDAYS if isinstance(_, int))
     rval = [_WEEKDAYS[_] for _ in ikeys]
@@ -191,10 +184,9 @@ def weekday_names():
 # -----------------------------------------------------------------------------
 class moment(object):
     """
-    This class describes objects representing a point in time
+    Objects of this class represent a point in time.
 
-    Documentation for the methods mentions the CSM, the currently stored
-    moment.
+    csm: currently stored moment
     """
     formats = ['%y-%m-%d',
                '%y-%m-%d %H',
