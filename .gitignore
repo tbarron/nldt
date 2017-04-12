@@ -2,6 +2,7 @@
 DODO.txt
 __pycache__
 pytest.ini
+TAGS
 *.pyc
 .#*
 *~
