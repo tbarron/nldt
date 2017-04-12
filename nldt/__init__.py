@@ -509,6 +509,7 @@ class moment(object):
               'week ago': '_week_ago',
               'week before last': '_week_before_last',
               'week earlier': '_week_ago',
+              'week later': '_week_from_now',
               'yesterday': '_yesterday',
               }
 
@@ -803,9 +804,11 @@ class moment(object):
         """
         ref = ref or self.moment or time.time()
         result = numberize.scan(self.spec)
-        if not isinstance(result[0], numbers.Number):
-            return ref
-        ref += int(result[0] * _WEEK)
+        if isinstance(result[0], numbers.Number):
+            mult = result[0]
+        else:
+            mult = 1
+        ref += int(mult * _WEEK)
         if update:
             self.moment = ref
         return ref

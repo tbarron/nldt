@@ -452,6 +452,15 @@ def nl_oracle(spec):
         now = nldt.moment()
         then = nldt.moment(now.epoch() - mult * 7 * 24 * 3600)
         return then()
+    elif re.findall('weeks?', spec) and 'later' in spec:
+        result = numberize.scan(spec)
+        if isinstance(result[0], numbers.Number):
+            mult = result[0]
+        else:
+            mult = 1
+        now = nldt.moment()
+        then = nldt.moment(now.epoch() + mult * 7 * 24 * 3600)
+        return then()
 
     (direction, day) = spec.split()
     if direction == 'next':
