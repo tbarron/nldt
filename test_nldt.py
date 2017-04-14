@@ -352,6 +352,23 @@ def test_timezone():
 
 
 # -----------------------------------------------------------------------------
+def word_before(text, selector):
+    """
+    return the word preceding *selector* in *text*
+    """
+    words = text.split()
+    next = False
+    rval = None
+    for w in reversed(words):
+        if next:
+            rval = w
+            break
+        elif w == selector:
+            next = True
+    return rval
+
+
+# -----------------------------------------------------------------------------
 def nl_oracle(spec):
     """
     This function uses a simple-minded approach to find the target day. If it
@@ -361,6 +378,13 @@ def nl_oracle(spec):
     if spec in ['today', 'tomorrow', 'yesterday']:
         start = nldt.moment(spec)
         return start()
+    elif 'year' in spec:
+        if word_before(spec, 'year') == 'next':
+            year = int(time.strftime("%Y")) + 1
+            return '{}-01-01'.format(year)
+        elif word_before(spec, 'year') == 'last':
+            year = int(time.strftime("%Y")) - 1
+            return '{}-01-01'.format(year)
     elif spec == 'next year':
         year = int(time.strftime("%Y")) + 1
         return '{}-01-01'.format(year)
@@ -533,13 +557,6 @@ def nl_oracle(spec):
                           ('a week later'),
                           ('fourth day of this week'),
                           ('fifth day of last week'),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
-                          (''),
                           ])
 def test_natural_language(inp):
     pytest.debug_func()
