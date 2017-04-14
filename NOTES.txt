@@ -1,0 +1,45 @@
+I'm thinking about a language parsing strategy that I'd like to use both in
+the natural language oracle in the test file and also in the nldt class
+itself.
+
+The idea is to start out with the preposition in the phrase if one is
+present. Here are some examples of typical time spec phrases:
+
+    fourth of July
+    third week from yesterday
+    ninth day after tomorrow
+    seventh day before the third of the month
+
+The element after the preposition defines an anchor while the element
+before the preposition describes an offset from the anchor.
+
+So, in the case 'fourth of July', if we look at the element after 'of', we
+can resolve 'July' to the moment '7/1 00:00:00' of the current year. Then,
+looking at the element before 'of', 'fourth' resolves to the number 4 and
+adding four days to the anchor gives us '7/4 00:00:00'.
+
+Similar logic coupled with a directional strategy based on the preposition
+itself can help us in parsing and grokking such expressions.
+
+As exemplified in the last example, these expressions can be recursive. In
+'seventh day before the third of the month', the first level of parsing
+yields
+
+    ['seventh day', 'before', 'the third of the month']
+
+with 'the third of the month' being the anchor and 'seventh day' being the
+offset.
+
+However, the anchor itself is complex and we need to apply the algorithm
+again to resolve it to
+
+    ['the third', 'of', 'the month']
+
+The base anchor is 'the month', which resolves (currently) to '2017.0401
+00:00:00'. The offset, 'the third', applied to this anchor, produces
+'2017.0403 00:00:00'.
+
+Taking this result as the anchor to the top level expression, we now count
+backward (based on the top level preposition, 'before') from the new anchor
+to '2017.0327 00:00:00'.
+
