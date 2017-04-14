@@ -39,7 +39,7 @@ example, on 2016-07-01,
 Get the curent time
 
     >>> now = nldt.moment()
-    >>> now
+    >>> now()
     2016-11-30
 
 The default display format is ISO. To get the epoch time,
