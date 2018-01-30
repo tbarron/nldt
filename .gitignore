@@ -1,8 +1,10 @@
 .cache
+.env
 DODO.txt
 __pycache__
 pytest.ini
 TAGS
+venv
 *.pyc
 .#*
 *~
