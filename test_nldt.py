@@ -1,9 +1,9 @@
 import numberize
 import numbers
 import pydoc
-import pexpect
 import pytest
 import re
+import tbx
 import time
 import nldt
 
@@ -13,7 +13,7 @@ def test_flake():
     """
     Scan code for good formatting
     """
-    result = pexpect.run('flake8 test_nldt.py nldt')
+    result = tbx.run('flake8 test_nldt.py nldt')
     assert result == ''
 
 
