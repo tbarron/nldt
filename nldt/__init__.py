@@ -462,9 +462,7 @@ class moment(object):
             >>> print(c)
             2016-12-04 07:31:08
         """
-        return time.strftime('%Y-%m-%d %H:%M:%S',
-                             time.localtime(self.moment))
-
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(self.moment))
 
     # -------------------------------------------------------------------------
     def epoch(self):
