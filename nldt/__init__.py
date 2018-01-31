@@ -961,3 +961,22 @@ class moment(object):
     #     """
     #     lt = time.localtime(self.moment)
     #     return time.tzname[lt.tm_isdst]
+    # -------------------------------------------------------------------------
+    # def dst(self, timzone=None):
+    #     """
+    #     Return True or False - whether DST is in force at the CSM
+    #
+    #     !@! The CSM should be a UTC. To know whether DST is in force, we need a
+    #     timezone. The local timezone will be used unless another is specified
+    #
+    #     Examples:
+    #         >>> import nldt
+    #         >>> q = nldt.moment('1962.0317')
+    #         >>> q.dst()
+    #         False
+    #         >>> q.parse('1962.0430')
+    #         >>> q.dst()
+    #         True
+    #     """
+    #     tm = time.localtime(self.moment)
+    #     return tm.tm_isdst == 1
