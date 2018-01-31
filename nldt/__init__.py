@@ -182,6 +182,47 @@ def weekday_names():
 
 
 # -----------------------------------------------------------------------------
+class prepositions(object):
+    """
+    Provide information and tools for finding and interpreting prepositions in
+    natural language time expressions
+    """
+    # -------------------------------------------------------------------------
+    def __init__(self):
+        """
+        Set up the prepositions object. In the self.preps dict, the keys are
+        the recognized prepositions and the values indicate the temporal
+        direction of the key -- +1 for forward in time, -1 for backward.
+        """
+        self.preps = {'of': 1, 'in': 1, 'from': 1, 'after': 1, 'before': -1}
+
+    # -------------------------------------------------------------------------
+    def split(self, text):
+        """
+        Construct (and cache) a regex based on the prepositions and use it to
+        split *text*, returning the list of pieces.
+        """
+        if not hasattr(self, 'regex'):
+            self.regex = "\\s(" + "|".join(self.preps.keys()) + ")\\s"
+        rval = re.split(self.regex, text)
+        return rval[1], rval
+
+    # -------------------------------------------------------------------------
+    def are_in(self, text):
+        """
+        Returns True if *text* contains any prepositions
+        """
+        return any([x in self.preps for x in text.split()])
+
+    # -------------------------------------------------------------------------
+    def direction(self, prep):
+        """
+        Return the direction for preposition *prep*
+        """
+        return self.preps[prep]
+
+
+# -----------------------------------------------------------------------------
 class moment(object):
     """
     Objects of this class represent a point in time.
