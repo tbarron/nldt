@@ -296,7 +296,7 @@ class moment(object):
             self.moment = int(time.mktime(time.strptime(args[0], args[1])))
 
     # -------------------------------------------------------------------------
-    def __call__(self, format=None):
+    def __call__(self, format=None, tz=None):
         """
         Return a string representing the date of the CSM
 
@@ -314,7 +314,12 @@ class moment(object):
             '2016.1204 07:16:20'
         """
         format = format or "%Y-%m-%d"
-        rval = time.strftime(format, time.localtime(self.moment))
+        tz = tz or 'UTC'
+        if tz == 'local':
+            tm = time.localtime(self.moment)
+        elif tz == 'UTC':
+            tm = time.gmtime(self.moment)
+        rval = time.strftime(format, tm)
         return rval
 
     # -------------------------------------------------------------------------

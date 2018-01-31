@@ -42,3 +42,14 @@ def test_notimezone():
     assert "object has no attribute 'timezone'" in str(err)
 
 
+# -----------------------------------------------------------------------------
+def test_local():
+    """
+    Moments don't have timezones -- they are strictly UTC. However, when they
+    can project themselves into the locally configured timezone.
+    """
+    pytest.debug_func()
+    c = nldt.moment()
+    fmt = "%Y.%m%d %H:%M:%S"
+    assert c(fmt, tz='local') == time.strftime(fmt)
+
