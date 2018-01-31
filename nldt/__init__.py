@@ -419,22 +419,6 @@ class moment(object):
         return time.localtime(self.moment)
 
     # -------------------------------------------------------------------------
-    def timezone(self):
-        """
-        Return the timezone based on current CSM
-
-        Example:
-            >>> a = nldt.moment('2004-06-03')
-            >>> a.timezone()
-            'EDT'
-            >>> b = nldt.moment('2005-12-15')
-            >>> b.timezone()
-            'EST'
-        """
-        lt = time.localtime(self.moment)
-        return time.tzname[lt.tm_isdst]
-
-    # -------------------------------------------------------------------------
     def parse(self, spec):
         """
         Set the object's value to the date/time indicated by *spec*
@@ -885,3 +869,20 @@ class moment(object):
         if update:
             self.moment = flr
         return flr
+
+
+    # -------------------------------------------------------------------------
+    # def timezone(self):
+    #     """
+    #     Return the timezone based on current CSM
+    #
+    #     Example:
+    #         >>> a = nldt.moment('2004-06-03')
+    #         >>> a.timezone()
+    #         'EDT'
+    #         >>> b = nldt.moment('2005-12-15')
+    #         >>> b.timezone()
+    #         'EST'
+    #     """
+    #     lt = time.localtime(self.moment)
+    #     return time.tzname[lt.tm_isdst]
