@@ -1,64 +1,144 @@
-This module provides a couple of classes that allow for easy access to
-date/time functionality. The moment class represents a point in time. The
-duration class represents a length of time.
+## Classes ##
 
-The module also includes a command line script (or will eventually) for
-accessing the functionality provided by the library from the command line.
+This module provides several classes intended to make date and time
+functionality easy to access and use.
+
+ * moment: Represents a point in time. Always stores its time reference in
+   UTC. Can report its stored time in the format and/or timezone requested.
+
+ * duration: Represents a length of time. Stored as a number of seconds.
+   Can be used to represent the offset between UTC and a given timezone.
+
+ * The sum or difference of two durations is another duration. The sum of a
+   moment and a duration is another moment. The difference of a moment and
+   duration is another moment. The difference of two moments is a duration.
+   It makes no sense to sum two moments.
+
+    * <duration> + <duration> -> <duration>
+    * <duration> - <duration> -> <duration>
+    * <moment> + <duration> -> <moment>
+    * <moment> - <duration> -> <moment>
+    * <moment> - <moment> -> <duration>
+    * <moment> + <moment> -> UNDEFINED
+
+ * nldt: A natural language parser that can convert natural language
+   expressions like "first week in January" or "last week" or "next year"
+   into moments or durations.
+
+The module will also includes a command line script for command line access
+to the functionality provided by the library.
 
 Internally, moments and durations are stored as a floating point number of
 seconds. Points in time (moment instances) are stored as the number of
-seconds since midnight at the beginning of January 1, 1970. Durations are
-stored as the number of seconds in the time interval.
+seconds since midnight at the beginning of January 1, 1970 (defined in
+UTC). Durations are stored as the number of seconds in the time interval.
 
 ## Quick Start ##
 
-Query the configured timezone
+    import nldt
+    from nldt import moment, duration
 
-    >>> import nldt
+Query the timezone configured for the current location
+
     >>> nldt.timezone()
     'EST'
 
-Check whether Daylight Savings Time is in force now
+Check whether Daylight Savings Time is in force now in the currently
+configured timezone
 
     >>> nldt.dst()
     False
 
-Check whether Daylight Savings Time is in force on a given date
+Check whether Daylight Savings Time is in force on a given date in a given
+timezone. If timezone is not specified, the one configured for the current
+location will be used. Both dst() and timezone() can take a moment object
+(representing a UTC time) as an argument and will return their result in
+terms of that moment in time.
 
-    >>> nldt.moment('2016-07-01').dst()
+    >>> nldt.dst(moment('2016-07-01'), tz='US/Eastern')
     True
-    >>> nldt.moment('2016-12-01').dst()
+    >>> nldt.dst(moment('2016-12-01'), tz='US/Central')
     False
 
-Note that the timezone value will vary with whether DST is in force. For
-example, on 2016-07-01,
+Note that the short timezone name will vary with whether DST is in force.
+For example, on 2016-07-01,
 
-    >>> nldt.timezone()
+    >>> nldt.timezone(moment('2016-07-01'))
     'EDT'
+    >>> nldt.timezone(moment('2016-12-31'))
+    'EST'
 
-Get the curent time
+Get the curent UTC date and time. The __call__ method on a moment object
+(i.e., '<obj>()') returns the date stored by the object. By default, the
+date is returned in ISO-8601 format (YYYY-mm-dd).
 
-    >>> now = nldt.moment()
+    >>> now = moment()
     >>> now()
     2016-11-30
 
-The default display format is ISO. To get the epoch time,
+To get the epoch time,
 
     >>> now.epoch()
     1480482000
 
-The default display format is the ISO date
+To get the date and time in some other format, simply pass the desired
+format as an argument:
 
-    >>> now = nldt.moment()
-    >>> now()
-    2016-11-30
+    >>> now('%Y-%m-%d %H:%M:%S')
+    2016-11-30 08:22:38
 
-But all the strftime format specifiers are available
+To get a local date and time, a timezone must be provided
+
+    >>> now('%Y-%m-%d %H:%M:%S', tz='us/central')
+    2016-11-30 02:22:28
+
+The special timezone, 'local', can be used to get the time at the currently
+configured location
+
+    >>> now('%Y-%m-%d %H:%M:%S %Z', tz='local')
+    2016-11-30 03:22:28 EST
+
+All the strftime format specifiers are available (see 'pydoc
+time.strftime')
 
     >>> now("%b %d, %Y")
     'Nov 30, 2016'
 
+The sum or difference of a moment and a duration is another moment.
+
+    >>> now()
+    '2016-07-01'
+    >>> then = now + duration(day=1)
+    >>> then()
+    '2016-07-02'
+
+The duration may also be specified as an integer number of seconds
+
+    >>> later = now - 24 * 3600
+    >>> later()
+    '2016-06-30'
+
+The difference of two moments is a duration, which is reported by default
+in terms of seconds
+
+    >>> d = then - later
+    >>> d
+    duration(172800)
+    >>> d()
+    172800
+
+Durations can report themselves in terms of other units
+
+    >>> d('day')
+    2.0
+    >>> d('hour')
+    48.0
+
+
 ## Reference ##
+
+This section will list and describe all the classes and all public methods
+for each class.
 
 An object representing the current moment:
 
