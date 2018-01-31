@@ -465,22 +465,6 @@ class moment(object):
         return time.strftime('%Y-%m-%d %H:%M:%S',
                              time.localtime(self.moment))
 
-    # -------------------------------------------------------------------------
-    def dst(self):
-        """
-        Return True or False - whether DST is in force at the CSM
-
-        Examples:
-            >>> import nldt
-            >>> q = nldt.moment('1962.0317')
-            >>> q.dst()
-            False
-            >>> q.parse('1962.0430')
-            >>> q.dst()
-            True
-        """
-        tm = time.localtime(self.moment)
-        return tm.tm_isdst == 1
 
     # -------------------------------------------------------------------------
     def epoch(self):
