@@ -195,7 +195,7 @@ def test_display_formatted():
     pytest.debug_func()
     fmt = "%H:%M %p on %B %d, %Y"
     now = time.time()
-    exp = time.strftime(fmt, time.localtime(now))
+    exp = time.strftime(fmt, time.gmtime(now))
     wobj = nldt.moment(now)
     assert wobj(fmt) == exp
 
