@@ -26,8 +26,6 @@ def test_pydoc():
                'localtime',
                'moment',
                'month_days', 'month_index', 'month_names',
-               'nldict', 'parse',
-               'timezone',
                'weekday_index', 'weekday_names']
 
     absent = ['_DAY', '_end_of_day', '_end_of_month', '_end_of_week',
