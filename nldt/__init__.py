@@ -19,7 +19,7 @@ _WEEK = 7 * _DAY
 
 
 # -----------------------------------------------------------------------------
-def dst():
+def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
 
@@ -28,8 +28,19 @@ def dst():
         >>> nldt.dst()
         False
     """
-    now = time.localtime()
-    return now.tm_isdst == 1
+    when = when or moment("2010-01-01")
+    if isinstance(when, numbers.Number) or isinstance(when, str):
+        when = moment(when)
+    if not isinstance(when, moment):
+        raise TypeError("dst() when arg must be str, number, or moment")
+
+    tz = tz or 'local'
+    if tz == 'local':
+        tm = time.localtime(when.moment)
+    else:
+        tm = time.gmtime(when.moment + utc_offset(when, tz))
+
+    return tm.tm_isdst == 1
 
 
 # -----------------------------------------------------------------------------
