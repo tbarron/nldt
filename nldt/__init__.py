@@ -8,6 +8,7 @@ from datetime import datetime
 # import numberize
 import numbers
 # import pdb
+from tzlocal import get_localzone
 import pytz
 import re
 import time
@@ -67,15 +68,25 @@ def timezone():
 
 
 # -----------------------------------------------------------------------------
-def utc_offset(when=None):
+def utc_offset(epoch=None, tz=None):
     """
+    Returns the number of seconds to add to UTC to get local time. If epoch is
+    not provided, the current time is used. If tz is not provided, the local
+    timezone is used. Account is taken of daylight savings time for the
+    indicated timezone and epoch.
     """
-    when = when or "2010-01-01"
-    tm = time.localtime(time.mktime(time.strptime(when, "%Y-%m-%d")))
-    rval = time.timezone
-    if tm.tm_isdst:
-        rval = time.altzone
-    return rval
+    epoch = epoch or time.time()
+    if not isinstance(epoch, numbers.Number):
+        raise TypeError("utc_offset requires an epoch time or None")
+
+    tz = tz or 'local'
+    if tz == 'local':
+        zone = get_localzone()
+    else:
+        zone = pytz.timezone(tz)
+
+    offset = zone.utcoffset(datetime.fromtimestamp(epoch))
+    return offset.total_seconds()
 
 
 # -----------------------------------------------------------------------------
