@@ -6,7 +6,7 @@ import re
 import tbx
 import time
 import nldt
-
+from nldt import moment as M
 
 # -----------------------------------------------------------------------------
 def test_month_init():
