@@ -339,252 +339,6 @@ class time_units(object):
         """
         return self.units.keys()
 
-
-# -----------------------------------------------------------------------------
-class moment(object):
-    """
-    Objects of this class represent a point in time. The moment is stored in
-    UTC.
-    """
-    formats = ['%y-%m-%d',
-               '%y-%m-%d %H',
-               '%y-%m-%d %H:%M',
-               '%y-%m-%d %H:%M:%S',
-
-               '%Y-%m-%d',
-               '%Y-%m-%d %H',
-               '%Y-%m-%d %H:%M',
-               '%Y-%m-%d %H:%M:%S',
-
-               "%Y.%m%d",
-               "%Y.%m%d %H",
-               "%Y.%m%d %H:%M",
-               "%Y.%m%d %H:%M:%S",
-
-               "%Y-%m-%d",
-               "%Y-%m-%d %H",
-               "%Y-%m-%d %H:%M",
-               "%Y-%m-%d %H:%M:%S",
-
-               "%b %d %Y",
-               "%b %d %Y %H",
-               "%b %d %Y %H:%M",
-               "%b %d %Y %H:%M:%S",
-
-               "%b %d, %Y",
-               "%b %d, %Y %H",
-               "%b %d, %Y %H:%M",
-               "%b %d, %Y %H:%M:%S",
-
-               "%d %b %Y %H:%M:%S",
-               "%d %b %Y %H:%M",
-               "%d %b %Y %H",
-               "%d %b %Y",
-
-               "%d %b, %Y %H:%M:%S",
-               "%d %b, %Y %H:%M",
-               "%d %b, %Y %H",
-               "%d %b, %Y",
-
-               "%B %d %Y %H:%M:%S",
-               "%B %d %Y %H:%M",
-               "%B %d %Y %H",
-               "%B %d %Y",
-
-               "%B %d, %Y %H:%M:%S",
-               "%B %d, %Y %H:%M",
-               "%B %d, %Y %H",
-               "%B %d, %Y",
-
-               "%d %B %Y %H:%M:%S",
-               "%d %B %Y %H:%M",
-               "%d %B %Y %H",
-               "%d %B %Y",
-
-               "%d %B, %Y %H:%M:%S",
-               "%d %B, %Y %H:%M",
-               "%d %B, %Y %H",
-               "%d %B, %Y",
-               ]
-
-    # -------------------------------------------------------------------------
-    def __init__(self, *args):
-        """
-        Construct a moment object
-
-        *args*:
-            empty: object represents current time at instantiation
-            one element: may be a date/time spec matching one of the formats in
-                self.formats or a natural language expression describing the
-                time of interest (see Examples).
-            two elements: args[0] is a date/time spec, args[1] is a format
-                describing args[0]
-
-        Examples:
-            >>> import nldt
-            # current time
-            >>> now = nldt.moment()
-            >>> now()
-            '2016-12-04'
-            # listed format
-            >>> new_year_day = nldt.moment('2001-01-01')
-            >>> new_year_day()
-            '2001-01-01'
-            # natural language
-            >>> yesterday = nldt.moment('yesterday')
-            >>> yesterday()
-            '2016-12-03'
-            >>> nw = nldt.moment('next week')
-            >>> nw()
-            '2016-12-05'
-            # specified format
-            >>> then = nldt.moment('Dec 29 2016', '%b %m %Y')
-            >>> then()
-            '2016-12-29'
-        """
-        self.moment = None
-        if len(args) < 1:
-            self.moment = int(time.time())
-        elif len(args) < 2:
-            if type(args[0]) == str:
-                self.moment = self._guess_format(args[0])
-            elif isinstance(args[0], numbers.Number):
-                self.moment = int(args[0])
-        else:
-            tm = time.strptime(args[0], args[1])
-            self.moment = int(time.mktime(tm) - utc_offset())
-
-    # -------------------------------------------------------------------------
-    def __call__(self, format=None, tz=None):
-        """
-        Return a string representing the date of the CSM
-
-        *format*: Optional string indicating the desired output format.
-
-        Examples:
-            >>> import nldt
-            >>> a = nldt.moment()
-            # No arguments, default format (ISO)
-            >>> a()
-            '2016-12-04'
-
-            # *format* specified
-            >>> a('%Y.%m%d %H:%M:%S')
-            '2016.1204 07:16:20'
-        """
-        format = format or "%Y-%m-%d"
-        tz = tz or 'UTC'
-        if tz == 'local':
-            tm = time.localtime(self.moment)
-        elif tz == 'UTC':
-            tm = time.gmtime(self.moment)
-        else:
-            zone = pytz.timezone(tz)
-            dt = datetime.fromtimestamp(self.moment)
-            offset = zone.utcoffset(dt).total_seconds()
-            tm = time.gmtime(self.moment + offset)
-            format = format.replace('%Z', zone.tzname(dt))
-            format = format.replace('%z', hhmm(offset))
-        rval = time.strftime(format, tm)
-        return rval
-
-    # -------------------------------------------------------------------------
-    def __eq__(self, other):
-        """
-        Return True or False - whether two moment objects are equal
-        implicit)
-
-        *other*: a second moment object to be compared to self
-
-        Examples:
-            >>> import nldt
-
-            # instantiated seconds apart, a and b will not be equal
-            >>> a = nldt.moment()
-            >>> b = nldt.moment()
-            >>> a == b
-            False
-
-            # however, once they are both advanced to the beginning of
-            # tomorrow, so the both record the beginning of the day at
-            # midnight, they will be equal
-            >>> a.parse('tomorrow')
-            >>> b.parse('tomorrow')
-            >>> a == b
-            True
-        """
-        return self.moment == other.moment
-
-    # -------------------------------------------------------------------------
-    def __repr__(self):
-        """
-        Return a string that will regenerate this object if passed to eval()
-
-        Examples:
-            >>> import nldt
-            >>> c = nldt.moment()
-            >>> assert eval(repr(c)) == c
-            True
-            >>> print repr(c)
-            nldt.moment(1481000400)
-        """
-        rval = "nldt.moment({:d})".format(int(self.moment))
-        return rval
-
-    # -------------------------------------------------------------------------
-    def __str__(self):
-        """
-        Return a human-readable representation of this object
-
-        Examples:
-            >>> import nldt
-            >>> c = nldt.moment()
-            >>> print(c)
-            2016-12-04 07:31:08
-        """
-        return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(self.moment))
-
-    # -------------------------------------------------------------------------
-    def epoch(self):
-        """
-        Return the CSM as an int epoch time
-
-        Examples:
-            >>> import nldt
-            >>> q = nldt.moment()
-            >>> q.epoch()
-            1480855032
-        """
-        return int(self.moment)
-
-    # -------------------------------------------------------------------------
-    def gmtime(self):
-        """
-        Return the UTC tm structure for the CSM
-
-        examples:
-            >>> import nldt
-            >>> q = nldt.moment()
-            >>> q.gmtime()
-            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
-            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
-        """
-        return time.gmtime(self.moment)
-
-    # -------------------------------------------------------------------------
-    def localtime(self):
-        """
-        Return the tm structure for the CSM
-
-        examples:
-            >>> import nldt
-            >>> q = nldt.moment()
-            >>> q.localtime()
-            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
-            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
-        """
-        return time.localtime(self.moment)
-
     # -------------------------------------------------------------------------
     # def parse(self, spec):
     #     """
@@ -609,26 +363,6 @@ class moment(object):
     #         '2013-07-05'
     #     """
     #     self.moment = self._parse_return(spec)
-
-    # -------------------------------------------------------------------------
-    def _guess_format(self, spec):
-        """
-        Try each of the parse formats in the list until one works or the list
-        is exhausted
-        """
-        tm = None
-        for fmt in self.formats:
-            try:
-                tm = time.strptime(spec, fmt)
-                break
-            except ValueError:
-                pass
-
-        if tm is not None:
-            when = time.strftime("%Y-%m-%d", tm)
-            return int(time.mktime(tm) - utc_offset(when))
-        else:
-            return None
 
     # -------------------------------------------------------------------------
     # def _nl_match(self, spec):
@@ -1155,3 +889,276 @@ class moment(object):
     #     """
     #     tm = time.localtime(self.moment)
     #     return tm.tm_isdst == 1
+
+
+# -----------------------------------------------------------------------------
+class moment(object):
+    """
+    Objects of this class represent a point in time. The moment is stored in
+    UTC.
+    """
+    formats = ['%y-%m-%d',
+               '%y-%m-%d %H',
+               '%y-%m-%d %H:%M',
+               '%y-%m-%d %H:%M:%S',
+
+               '%Y-%m-%d',
+               '%Y-%m-%d %H',
+               '%Y-%m-%d %H:%M',
+               '%Y-%m-%d %H:%M:%S',
+
+               "%Y.%m%d",
+               "%Y.%m%d %H",
+               "%Y.%m%d %H:%M",
+               "%Y.%m%d %H:%M:%S",
+
+               "%Y-%m-%d",
+               "%Y-%m-%d %H",
+               "%Y-%m-%d %H:%M",
+               "%Y-%m-%d %H:%M:%S",
+
+               "%b %d %Y",
+               "%b %d %Y %H",
+               "%b %d %Y %H:%M",
+               "%b %d %Y %H:%M:%S",
+
+               "%b %d, %Y",
+               "%b %d, %Y %H",
+               "%b %d, %Y %H:%M",
+               "%b %d, %Y %H:%M:%S",
+
+               "%d %b %Y %H:%M:%S",
+               "%d %b %Y %H:%M",
+               "%d %b %Y %H",
+               "%d %b %Y",
+
+               "%d %b, %Y %H:%M:%S",
+               "%d %b, %Y %H:%M",
+               "%d %b, %Y %H",
+               "%d %b, %Y",
+
+               "%B %d %Y %H:%M:%S",
+               "%B %d %Y %H:%M",
+               "%B %d %Y %H",
+               "%B %d %Y",
+
+               "%B %d, %Y %H:%M:%S",
+               "%B %d, %Y %H:%M",
+               "%B %d, %Y %H",
+               "%B %d, %Y",
+
+               "%d %B %Y %H:%M:%S",
+               "%d %B %Y %H:%M",
+               "%d %B %Y %H",
+               "%d %B %Y",
+
+               "%d %B, %Y %H:%M:%S",
+               "%d %B, %Y %H:%M",
+               "%d %B, %Y %H",
+               "%d %B, %Y",
+               ]
+
+    # -------------------------------------------------------------------------
+    def __init__(self, *args):
+        """
+        Construct a moment object
+
+        *args*:
+            empty: object represents current time at instantiation
+            one element: may be a date/time spec matching one of the formats in
+                self.formats or a natural language expression describing the
+                time of interest (see Examples).
+            two elements: args[0] is a date/time spec, args[1] is a format
+                describing args[0]
+
+        Examples:
+            >>> import nldt
+            # current time
+            >>> now = nldt.moment()
+            >>> now()
+            '2016-12-04'
+            # listed format
+            >>> new_year_day = nldt.moment('2001-01-01')
+            >>> new_year_day()
+            '2001-01-01'
+            # natural language
+            >>> yesterday = nldt.moment('yesterday')
+            >>> yesterday()
+            '2016-12-03'
+            >>> nw = nldt.moment('next week')
+            >>> nw()
+            '2016-12-05'
+            # specified format
+            >>> then = nldt.moment('Dec 29 2016', '%b %m %Y')
+            >>> then()
+            '2016-12-29'
+        """
+        self.moment = None
+        if len(args) < 1:
+            self.moment = int(time.time())
+        elif len(args) < 2:
+            if isinstance(args[0], numbers.Number):
+                self.moment = int(args[0])
+            elif isinstance(args[0], str):
+                self.moment = self._guess_format(args[0])
+            if self.moment is None:
+                msg = "\n".join(["Valid ways of calling nldt.moment():",
+                                 "    nldt.moment()",
+                                 "    nldt.moment(<epoch-seconds>)",
+                                 "    nldt.moment('YYYY-mm-dd')",
+                                 "    nldt.moment(<date-str>[, <format>])"])
+                raise(ValueError(msg))
+        else:
+            tm = time.strptime(args[0], args[1])
+            self.moment = int(time.mktime(tm) - utc_offset())
+
+    # -------------------------------------------------------------------------
+    def __call__(self, format=None, tz=None):
+        """
+        Return a string representing the date of the CSM
+
+        *format*: Optional string indicating the desired output format.
+
+        Examples:
+            >>> import nldt
+            >>> a = nldt.moment()
+            # No arguments, default format (ISO)
+            >>> a()
+            '2016-12-04'
+
+            # *format* specified
+            >>> a('%Y.%m%d %H:%M:%S')
+            '2016.1204 07:16:20'
+        """
+        format = format or "%Y-%m-%d"
+        tz = tz or 'UTC'
+        if tz == 'local':
+            tm = time.localtime(self.moment)
+        elif tz == 'UTC':
+            tm = time.gmtime(self.moment)
+        else:
+            zone = pytz.timezone(tz)
+            dt = datetime.fromtimestamp(self.moment)
+            offset = zone.utcoffset(dt).total_seconds()
+            tm = time.gmtime(self.moment + offset)
+            format = format.replace('%Z', zone.tzname(dt))
+            format = format.replace('%z', hhmm(offset))
+        rval = time.strftime(format, tm)
+        return rval
+
+    # -------------------------------------------------------------------------
+    def __eq__(self, other):
+        """
+        Return True or False - whether two moment objects are equal
+        implicit)
+
+        *other*: a second moment object to be compared to self
+
+        Examples:
+            >>> import nldt
+
+            # instantiated seconds apart, a and b will not be equal
+            >>> a = nldt.moment()
+            >>> b = nldt.moment()
+            >>> a == b
+            False
+
+            # however, once they are both advanced to the beginning of
+            # tomorrow, so the both record the beginning of the day at
+            # midnight, they will be equal
+            >>> a.parse('tomorrow')
+            >>> b.parse('tomorrow')
+            >>> a == b
+            True
+        """
+        return self.moment == other.moment
+
+    # -------------------------------------------------------------------------
+    def __repr__(self):
+        """
+        Return a string that will regenerate this object if passed to eval()
+
+        Examples:
+            >>> import nldt
+            >>> c = nldt.moment()
+            >>> assert eval(repr(c)) == c
+            True
+            >>> print repr(c)
+            nldt.moment(1481000400)
+        """
+        rval = "nldt.moment({:d})".format(int(self.moment))
+        return rval
+
+    # -------------------------------------------------------------------------
+    def __str__(self):
+        """
+        Return a human-readable representation of this object
+
+        Examples:
+            >>> import nldt
+            >>> c = nldt.moment()
+            >>> print(c)
+            2016-12-04 07:31:08
+        """
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(self.moment))
+
+    # -------------------------------------------------------------------------
+    def epoch(self):
+        """
+        Return the CSM as an int epoch time
+
+        Examples:
+            >>> import nldt
+            >>> q = nldt.moment()
+            >>> q.epoch()
+            1480855032
+        """
+        return int(self.moment)
+
+    # -------------------------------------------------------------------------
+    def gmtime(self):
+        """
+        Return the UTC tm structure for the CSM
+
+        examples:
+            >>> import nldt
+            >>> q = nldt.moment()
+            >>> q.gmtime()
+            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
+            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
+        """
+        return time.gmtime(self.moment)
+
+    # -------------------------------------------------------------------------
+    def localtime(self):
+        """
+        Return the tm structure for the CSM
+
+        examples:
+            >>> import nldt
+            >>> q = nldt.moment()
+            >>> q.localtime()
+            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
+            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
+        """
+        return time.localtime(self.moment)
+
+    # -------------------------------------------------------------------------
+    def _guess_format(self, spec):
+        """
+        Try each of the parse formats in the list until one works or the list
+        is exhausted
+        """
+        tm = None
+        for fmt in self.formats:
+            try:
+                tm = time.strptime(spec, fmt)
+                break
+            except ValueError:
+                pass
+
+        if tm is not None:
+            when = time.mktime(tm)
+            return int(when + utc_offset(when))
+        else:
+            return None
