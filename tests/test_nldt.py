@@ -208,10 +208,7 @@ def test_dst_now():
     """
     pytest.debug_func()
     loc = time.localtime()
-    if loc.tm_isdst:
-        assert nldt.dst()
-    else:
-        assert not nldt.dst()
+    assert nldt.dst() == (loc.tm_isdst == 1)
 
 
 # -----------------------------------------------------------------------------
