@@ -151,11 +151,12 @@ def test_arg_tomorrow():
     """
     pytest.debug_func()
     assert not hasattr(nldt, 'tomorrow')
-    argl = nldt.moment('tomorrow')
-    assert ' 00:00:00' in argl('%D %T')
+    with pytest.raises(ValueError) as err:
+        argl = nldt.moment('tomorrow')
+    errmsg = "ValueError: Valid ways of calling nldt.moment():"
+    assert errmsg in str(err)
     obj = nldt.moment()
-    obj.parse('tomorrow')
-    assert obj() == argl()
+    assert not hasattr(obj, 'parse')
 
 
 # -----------------------------------------------------------------------------
@@ -166,8 +167,10 @@ def test_arg_yesterday():
     """
     pytest.debug_func()
     assert not hasattr(nldt, 'yesterday')
-    then = nldt.moment("yesterday")
-    assert ' 00:00:00' in then('%D %T')
+    with pytest.raises(ValueError) as err:
+        then = nldt.moment("yesterday")
+    errmsg = "ValueError: Valid ways of calling nldt.moment():"
+    assert errmsg in str(err)
 
 
 # -----------------------------------------------------------------------------
