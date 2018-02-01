@@ -105,6 +105,29 @@ def test_weekday_names():
 
 
 # -----------------------------------------------------------------------------
+def test_utc_offset():
+    """
+    Check routine utc_offset() against some known timezones that don't change
+    with dst
+    """
+    assert nldt.utc_offset(tz='Singapore') == 8 * 3600
+
+    assert nldt.utc_offset(M("2001-01-01").moment,
+                           tz='Pacific/Apia') == -11 * 3600
+    assert nldt.utc_offset(M("2001-07-01").moment,
+                           tz='Pacific/Apia') == -11 * 3600
+
+    assert nldt.utc_offset(M('2001-01-01').moment) == -5 * 3600
+    assert nldt.utc_offset(M('2001-07-01').moment) == -4 * 3600
+
+    tm = time.localtime()
+    if tm.tm_isdst:
+        assert nldt.utc_offset() == -1 * time.altzone
+    else:
+        assert nldt.utc_offset() == -1 * time.timezone
+
+
+# -----------------------------------------------------------------------------
 def test_ambig():
     """
     For ambiguous dates like '01-02-03' (could be Jan 2, 2003 (US order), 1 Feb
