@@ -9,15 +9,15 @@ import nldt
 
 
 # -----------------------------------------------------------------------------
-def test_bug_001():
-    """
-    nldt.moment('2016-06-07')._yesterday() is yielding '2016-06-05' when it
-    should be '2016-06-06'
-    """
-    pytest.debug_func()
-    a = nldt.moment('2016-06-07')
-    b = nldt.moment(a._yesterday())
-    assert b() == '2016-06-06'
+# def test_bug_001():
+#     """
+#     nldt.moment('2016-06-07')._yesterday() is yielding '2016-06-05' when it
+#     should be '2016-06-06'
+#     """
+#     pytest.debug_func()
+#     a = nldt.moment('2016-06-07')
+#     b = nldt.moment(a._yesterday())
+#     assert b() == '2016-06-06'
 
 
 # -----------------------------------------------------------------------------
@@ -43,6 +43,18 @@ def test_notimezone():
 
 
 # -----------------------------------------------------------------------------
+def test_nodst():
+    """
+    Moments don't have timezones -- they are strictly UTC
+    """
+    pytest.debug_func()
+    c = nldt.moment()
+    with pytest.raises(AttributeError) as err:
+        c.dst()
+    assert "object has no attribute 'dst'" in str(err)
+
+
+# -----------------------------------------------------------------------------
 def test_local():
     """
     Moments don't have timezones -- they are strictly UTC. However, when they
@@ -53,3 +65,31 @@ def test_local():
     fmt = "%Y.%m%d %H:%M:%S"
     assert c(fmt, tz='local') == time.strftime(fmt)
 
+
+# -----------------------------------------------------------------------------
+def test_str():
+    """
+    str(moment()) should report the time as UTC
+    """
+    pytest.debug_func()
+    c = nldt.moment()
+    fmt = "%Y-%m-%d %H:%M:%S"
+    exp = time.strftime(fmt, time.gmtime(c.epoch()))
+    assert str(c) == exp
+
+
+# -----------------------------------------------------------------------------
+def test_with_tz():
+    """
+    <moment>(tz='foo') to report itself as the local time in zone 'foo'. Want
+    timezones to be case insensitive.
+    """
+    pytest.debug_func()
+    c = nldt.moment('2016-12-31 23:59:59')
+    # assert c(tz='est') == '2016-12-31 18:59:59'
+    fmt = "%Y-%m-%d %H:%M:%S"
+    assert c(fmt, tz='US/Eastern') == '2016-12-31 18:59:59'
+    assert c(fmt, tz='US/Central') == '2016-12-31 17:59:59'
+    assert c(fmt, tz='US/Mountain') == '2016-12-31 16:59:59'
+    assert c(fmt, tz='US/Pacific') == '2016-12-31 15:59:59'
+    assert c(fmt, tz='US/Hawaii') == '2016-12-31 13:59:59'

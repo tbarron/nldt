@@ -9,52 +9,18 @@ import nldt
 
 
 # -----------------------------------------------------------------------------
-def test_flake():
+def test_month_init():
     """
-    Scan code for good formatting
-    """
-    result = tbx.run('flake8 test_nldt.py nldt')
-    assert result == ''
-
-
-# -----------------------------------------------------------------------------
-def test_pydoc():
-    """
-    Verify that public items show up in pydoc output while private items do not
+    nldt.month() constructor should return an object with dict of months
     """
     pytest.debug_func()
-    present = ['__call__', '__eq__', '__init__', '__repr__', '__str__',
-               'dst',
-               'epoch',
-               'localtime',
-               'moment',
-               'month_days', 'month_index', 'month_names',
-               'nldict', 'parse',
-               'timezone',
-               'weekday_index', 'weekday_names']
-
-    absent = ['_DAY', '_end_of_day', '_end_of_month', '_end_of_week',
-              '_guess_format', '_MONTHS', '_MONTH_LEN', '_nl_match',
-              '_parse_return', '_WEEK', '_week_ago', '_WEEKDAYS', ]
-
-    docker = pydoc.TextDoc()
-    result = re.sub("\x08.", "", docker.document(nldt))
-    for item in present:
-        assert item in result
-    for item in absent:
-        assert item not in result
-
-
-# -----------------------------------------------------------------------------
-def test_bug_001():
-    """
-    nldt.moment('2016-06-07')._yesterday() is yielding '2016-06-05' when it
-    should be '2016-06-06'
-    """
-    pytest.debug_func()
-    a = nldt.moment('2016-06-07')
-    b = nldt.moment(a._yesterday())
-    assert b() == '2016-06-06'
+    m = nldt.month()
+    assert hasattr(m, 'month_dict')
+    for midx in range(1, 13):
+        assert midx in m.month_dict
+    for mname in ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']:
+        assert mname in m.month_dict
 
 
 # -----------------------------------------------------------------------------
@@ -119,33 +85,23 @@ def test_weekday_names():
 
 
 # -----------------------------------------------------------------------------
-def test_repr():
-    """
-    The __repr__ method should provide enough info to rebuild the object
-    """
-    pytest.debug_func()
-    c = nldt.moment()
-    assert eval(repr(c)) == c
+# def test_obj_timezone_dstoff():
+#     """
+#     Querying the timezone on an object whose moment is set outside DST will get
+#     a timezone name reflecting standard time
+#     """
+#     obj = nldt.moment('2016.1201')
+#     assert obj.timezone() == time.tzname[0]
 
 
 # -----------------------------------------------------------------------------
-def test_obj_timezone_dstoff():
-    """
-    Querying the timezone on an object whose moment is set outside DST will get
-    a timezone name reflecting standard time
-    """
-    obj = nldt.moment('2016.1201')
-    assert obj.timezone() == time.tzname[0]
-
-
-# -----------------------------------------------------------------------------
-def test_obj_timezone_dston():
-    """
-    Querying the timezone on an object whose moment is set during DST will get
-    a timezone name reflecting DST
-    """
-    obj = nldt.moment('2016.0701')
-    assert obj.timezone() == time.tzname[1]
+# def test_obj_timezone_dston():
+#     """
+#     Querying the timezone on an object whose moment is set during DST will get
+#     a timezone name reflecting DST
+#     """
+#     obj = nldt.moment('2016.0701')
+#     assert obj.timezone() == time.tzname[1]
 
 
 # -----------------------------------------------------------------------------
@@ -307,6 +263,15 @@ def test_with_format():
        ('4 jul, 2022 19:14', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:14:00'),
        ('4 jul, 2022 19', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:00:00'),
        ('4 jul, 2022', None, '2022-07-04'),
+
+       ('4 July 2022 19:14:10', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:14:10'),
+       ('4 July 2022 19:14', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:14:00'),
+       ('4 July 2022 19', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:00:00'),
+       ('4 July 2022', '%Y-%m-%d %H:%M:%S', '2022-07-04 00:00:00'),
+       ('4 July, 2022 19:14:10', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:14:10'),
+       ('4 July, 2022 19:14', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:14:00'),
+       ('4 July, 2022 19', '%Y-%m-%d %H:%M:%S', '2022-07-04 19:00:00'),
+       ('4 July, 2022', None, '2022-07-04'),
        ])
 def test_intuit(inp, fmt, exp):
     """
@@ -375,7 +340,16 @@ def nl_oracle(spec):
     sees 'next', it counts foward to the target day. If it sees 'last', it
     counts backward, without trying to do any fancy arithmetic.
     """
-    if spec in ['today', 'tomorrow', 'yesterday']:
+    if spec == 'fourth day of this week':
+        now = nldt.moment('last week')
+        now.parse('next week')
+        now.parse('next thursday')
+        return now()
+    elif spec == 'fifth day of last week':
+        now = nldt.moment('last week')
+        now.parse('next friday')
+        return now()
+    elif spec in ['today', 'tomorrow', 'yesterday']:
         start = nldt.moment(spec)
         return start()
     elif 'year' in spec:
@@ -422,7 +396,7 @@ def nl_oracle(spec):
         while int(start('%u')) != wdidx:
             start.parse('tomorrow')
         return start()
-    elif spec == 'first week in January':
+    elif spec == 'first week in last January':
         wdidx = 1
         now = nldt.moment()
         year = now('%Y')
@@ -557,6 +531,7 @@ def nl_oracle(spec):
                           ('a week later'),
                           ('fourth day of this week'),
                           ('fifth day of last week'),
+                          ('beginning of this week'),
                           ])
 def test_natural_language(inp):
     pytest.debug_func()
