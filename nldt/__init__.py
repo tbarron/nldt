@@ -675,7 +675,7 @@ class time_units(object):
         Scans *text* and return the first unit found or None
         """
         found = [unit for unit in self.units.keys()
-                 if re.search("(^|\s){}(\s|$)".format(unit), text)]
+                 if re.search("(^|\s){}s?(\s|$)".format(unit), text)]
         if found:
             return found[0]
         else:
