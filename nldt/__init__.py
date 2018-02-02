@@ -303,11 +303,12 @@ class month(Indexable):     # I managed to lose this update
     """
     Defines and serves information about months
     """
+    # -------------------------------------------------------------------------
     def __init__(self):
         """
         Set up month info
         """
-        self.month_dict = {}
+        self._dict = {}
         for midx in range(1, 13):
             date = "2010.{:02d}01".format(midx)
             q = moment(date)
@@ -319,14 +320,59 @@ class month(Indexable):     # I managed to lose this update
                 'idx': midx,
                 'days': self._days(midx)
                 }
-            self.month_dict[abbr] = this
-            self.month_dict[midx] = this
+            self._dict[abbr] = this
+            self._dict[midx] = this
 
+    # -------------------------------------------------------------------------
+    def days(self, month, year=None):
+        month = indexify(month)              # noqa: F821
+        rval = self._dict[month]['days']
+        if month == 2 and self.isleap(year):
+            rval += 1
+        return rval
+
+    # -------------------------------------------------------------------------
     def _days(self, midx):
         q = moment("2010.{:02d}01".format((midx % 12) + 1))
         p = moment(q.moment - 24 * 3600)
         rval = int(p('%d'))
         return rval
+
+    # -------------------------------------------------------------------------
+    def index(self, name_or_idx):
+        """
+        Given a month name or index in *name_or_idx*, this returns the index of
+        the month or throws a ValueError.
+        """
+        midx = self.indexify(name_or_idx)
+        return self._dict[midx]['idx']
+
+    # -------------------------------------------------------------------------
+    def isleap(self, year):
+        if year is None:
+            rval = False
+        else:
+            rval = (year % 4 == 0 and year % 100 != 0) or year % 400 == 0
+        return rval
+
+    # -------------------------------------------------------------------------
+    def names(self):
+        return [self._dict[x]['name'] for x in self._dict
+                if isinstance(x, int)]
+
+    # -------------------------------------------------------------------------
+    def short_names(self):
+        return [self._dict[x]['abbr'] for x in self._dict
+                if isinstance(x, int)]
+
+    # -------------------------------------------------------------------------
+    def match_monthnames(self):
+        """
+        Return a regex that will match all month names
+        """
+        rgx = "(" + "|".join([self._dict[x]['name'] for x in self._dict
+                              if isinstance(x, int)]) + ")"
+        return rgx
 
 
 # -----------------------------------------------------------------------------
@@ -341,7 +387,7 @@ class week(Indexable):
         """
         self._dict = {}
         for idx in range(0, 7):
-            q = moment("2017.01{:02d}".format(idx+1))
+            q = moment("2018.01{:02d}".format(idx+1))
             wname = q('%A').lower()
             abbr = wname[0:3]
             this = {
@@ -353,6 +399,26 @@ class week(Indexable):
             self._dict[idx] = this
 
     # -------------------------------------------------------------------------
+    def day_list(self):
+        """
+        Return a list of weekday names
+        """
+        return [self._dict[x]['name'] for x in self._dict
+                if isinstance(x, int)]
+
+    # -------------------------------------------------------------------------
+    def find_day(self, text):
+        """
+        Find and return the first weekday name in *text*
+        """
+        found = [wday for wday in self.day_list()
+                 if re.search("(^|\s){}(\s|$)".format(wday), text)]
+        if found:
+            return found[0]
+        else:
+            return None
+
+    # -------------------------------------------------------------------------
     def forediff(self, start, end):
         """
         Return the number of days required to get from day *start* to day *end*
@@ -360,7 +426,7 @@ class week(Indexable):
         """
         start = self.indexify(start)
         end = self.indexify(end)
-        if end < start:
+        if end <= start:
             end += 7
         rval = end - start
         return rval
@@ -373,7 +439,7 @@ class week(Indexable):
         """
         start = self.indexify(start)
         end = self.indexify(end)
-        if start < end:
+        if start <= end:
             start += 7
         rval = start - end
         return rval
@@ -402,6 +468,33 @@ class week(Indexable):
         Return a regex that will match all weekdays
         """
         return "(mon|tues|wednes|thurs|fri|satur|sun)day"
+
+    # -------------------------------------------------------------------------
+    def day_number(self, moment_or_epoch, count=None):
+        """
+        This returns a weekday number based on a moment or epoch time. The
+        *count* argument can be one of 'mon0' (the default), 'sun0', or 'mon1'.
+        With 'mon0', mon=0 and sun=6. With sun0, sun=0 and sat=6. With mon1,
+        mon=1 and sun=7. mon0 is the counting regime used in the tm structures
+        returned by time.localtime() and time.gmtime(). sun0 is the counting
+        regime for the '%w' specifier in time.strftime() and time.strptime()
+        patterns. mon1 is the counting regime for the '%u' specifier in
+        time.strftime() and time.strptime().
+        """
+        count = count or 'mon0'
+        if isinstance(moment_or_epoch, moment):
+            epoch = moment_or_epoch.epoch()
+        elif isinstance(moment_or_epoch, numbers.Number):
+            epoch = moment_or_epoch
+        else:
+            raise TypeError('argument must be moment or epoch number')
+        tm = time.gmtime(epoch)
+        if count == 'mon0':
+            return tm.tm_wday
+        elif count == 'mon1' or count == '%u':
+            return tm.tm_wday + 1
+        elif count == 'sun0' or count == '%w':
+            return (tm.tm_wday + 1) % 7
 
 
 # -----------------------------------------------------------------------------
