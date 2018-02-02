@@ -482,8 +482,8 @@ def nl_oracle(spec):
         nxwk = nldt.parse('next week', nxwk)
         return nxwk()
     elif spec == 'week before last':
-        lswk = nldt.moment('last week')
-        lswk.parse('last week')
+        lswk = nldt.parse('last week')
+        lswk = nldt.parse('last week', lswk)
         return lswk()
     elif spec == 'a week ago':
         now = nldt.moment()

@@ -106,7 +106,6 @@ def parse(expr, start=None):
     """
     start = start or moment()
     wk = week()
-    tu = time_units()
     mon = month()
     wkdays_rgx = wk.match_weekdays()
     rval = None
@@ -140,6 +139,12 @@ def parse(expr, start=None):
         elif wb in wk.day_list():
             start = parse('next {}'.format(wb))
             rval = parse('next {}'.format(wb), start)
+        elif expr == 'week after next':
+            rval = parse('next week')
+            rval = parse('next week', rval)
+        elif expr == 'week before last':
+            rval = parse('last week')
+            rval = parse('last week', rval)
     elif re.search("(\s|^)year(\s|$)", expr):
         wb = word_before('year', expr)
         if wb == 'last':
