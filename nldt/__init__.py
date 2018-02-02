@@ -14,7 +14,9 @@ import re
 import time
 
 
-_DAY = 24*3600
+_MINUTE = 60
+_HOUR = 60 * _MINUTE
+_DAY = 24 * _HOUR
 _WEEK = 7 * _DAY
 
 
