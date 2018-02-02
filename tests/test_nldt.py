@@ -580,7 +580,7 @@ def nl_oracle(spec):
                           ('last monday'),
                           ('last tuesday'),
                           ('last wednesday'),
-                          ('last thurssday'),
+                          ('last thursday'),
                           ('last friday'),
                           ('last saturday'),
                           ('last sunday'),
