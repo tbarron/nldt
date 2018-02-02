@@ -22,6 +22,43 @@ _WEEK = 7 * _DAY
 
 
 # -----------------------------------------------------------------------------
+class Indexable(object):
+    """
+    This class has a _dict dictionary member and a method called indexify that
+    will take an argument that may be a number or string and return a numeric
+    index for one of the members of _dict. This class is intended as an
+    abstract base class for week and month.
+    """
+    # -------------------------------------------------------------------------
+    def indexify(self, name_or_idx):
+        """
+        Return an int idx in the range [0, 7) (i.e., between 0 and 6 inclusive)
+        or -1.
+        """
+        rval = None
+        if name_or_idx in self._dict:
+            rval = self._dict[name_or_idx]['idx']
+        elif isinstance(name_or_idx, str):
+            name_or_idx = name_or_idx.lower()
+            if name_or_idx.isdigit():
+                idx = int(name_or_idx)
+                if idx in self._dict:
+                    rval = self._dict[idx]['idx']
+            elif 3 < len(name_or_idx):
+                abbr = name_or_idx.lower()[0:3]
+                if abbr in self._dict:
+                    rval = self._dict[abbr]['idx']
+            elif name_or_idx in self._dict:
+                rval = self._dict[abbr]['idx']
+        elif isinstance(name_or_idx, numbers.Number):
+            if int(name_or_idx) in self._dict:
+                rval = self.dict[int(name_or_idx)]['idx']
+        if rval is None:
+            raise ValueError("Could not indexify '{}'".format(name_or_idx))
+        return rval
+
+
+# -----------------------------------------------------------------------------
 def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
