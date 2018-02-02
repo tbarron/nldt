@@ -4,6 +4,7 @@ Natural Language Date and Time package
 This module provides a simple natural language interfaace to Python's time and
 date processing machinery.
 """
+from calendar import timegm
 from datetime import datetime
 # import numberize
 import numbers
@@ -1198,7 +1199,7 @@ class moment(object):
                 raise(ValueError(msg))
         else:
             tm = time.strptime(args[0], args[1])
-            self.moment = int(time.mktime(tm) - utc_offset())
+            self.moment = int(timegm(tm))
 
     # -------------------------------------------------------------------------
     def __call__(self, format=None, tz=None):
@@ -1352,8 +1353,7 @@ class moment(object):
         """
         tm = time.gmtime(self.epoch())
         nflr_tm = (tm.tm_year, tm.tm_mon + 1, 1, 0, 0, 0, 0, 0, 0)
-        nflr = time.mktime(nflr_tm)
-        nflr += utc_offset(nflr)
+        nflr = timegm(nflr_tm)
         nflr -= nflr % _DAY
         return moment(nflr - 1)
 
@@ -1364,8 +1364,7 @@ class moment(object):
         """
         tm = time.gmtime(self.epoch())
         flr_tm = (tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0)
-        flr = time.mktime(flr_tm)
-        flr += utc_offset(flr)
+        flr = timegm(flr_tm)
         return moment(flr)
 
     # -------------------------------------------------------------------------
@@ -1382,8 +1381,7 @@ class moment(object):
             except ValueError:
                 pass
 
-        if tm is not None:
-            when = time.mktime(tm)
-            return int(when + utc_offset(when))
+        if tm:
+            return timegm(tm)
         else:
             return None
