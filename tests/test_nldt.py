@@ -307,25 +307,28 @@ def test_intuit(inp, fmt, exp):
 
 
 # -----------------------------------------------------------------------------
-def test_obj_tomorrow():
+def test_parse_tomorrow():
     """
-    Asking an object to parse 'tomorrow' advances it to the next date
+    Calling parse with 'tomorrow' and a moment object should return a moment
+    set to the following day.
     """
     pytest.debug_func()
     eoy = nldt.moment("2007-12-31")
-    eoy.parse('tomorrow')
-    assert eoy() == '2008-01-01'
+    assert not hasattr(eoy, 'parse')
+    result = nldt.parse('tomorrow', start=eoy)
+    assert result() == '2008-01-01'
 
 
 # -----------------------------------------------------------------------------
-def test_obj_yesterday():
+def test_parse_yesterday():
     """
     Asking an object to parse 'yesterday' moves it bacward on the calendar
     """
     pytest.debug_func()
     eoy = nldt.moment("2007-12-01")
-    eoy.parse('yesterday')
-    assert eoy() == '2007-11-30'
+    assert not hasattr(eoy, 'parse')
+    result = nldt.parse('yesterday', start=eoy)
+    assert result() == '2007-11-30'
 
 
 # -----------------------------------------------------------------------------
@@ -397,10 +400,10 @@ def nl_oracle(spec):
         return start()
     elif spec == 'last week':
         wdidx = nldt.weekday_index('mon')
-        start = nldt.moment('yesterday')
+        start = nldt.parse('yesterday')
         start = nldt.moment(start.epoch() - 6*24*3600)
         while int(start('%u'))-1 != wdidx:
-            start.parse('yesterday')
+            start = nldt.parse('yesterday', start)
         return start()
     elif spec == 'end of the week':
         wdidx = 6
@@ -409,11 +412,8 @@ def nl_oracle(spec):
             start.parse('tomorrow')
         return start()
     elif spec == 'end of last week':
-        wdidx = 6
-        start = nldt.moment(time.time()-7*24*3600)
-        while int(start('%u'))-1 != wdidx:
-            start.parse('tomorrow')
-        return start()
+        eolw = M(nldt.moment().week_floor().epoch() - 1)
+        return eolw()
     elif spec == 'beginning of next week':
         wdidx = 1
         start = nldt.moment('tomorrow')
@@ -485,17 +485,17 @@ def nl_oracle(spec):
         return then()
 
     (direction, day) = spec.split()
+    wk = nldt.week()
     if direction == 'next':
-        # pdb.set_trace()
-        wdidx = nldt.weekday_index(day)
-        start = nldt.moment('tomorrow')
-        while int(start('%u'))-1 != wdidx:
-            start.parse('tomorrow')
+        wdidx = wk.index(day)
+        start = M()
+        while int(start('%u')) != wdidx:
+            start = M(start.epoch() + nldt._DAY)
     elif direction == 'last':
-        wdidx = nldt.weekday_index(day)
-        start = nldt.moment('yesterday')
-        while int(start('%u'))-1 != wdidx:
-            start.parse('yesterday')
+        wdidx = wk.index(day)
+        start = M()
+        while int(start('%u')) != wdidx:
+            start = M(start.epoch() - nldt._DAY)
     elif day == 'week':
         (day, direction) = (direction, day)
         wdidx = nldt.weekday_index(day)
@@ -560,7 +560,7 @@ def nl_oracle(spec):
 def test_natural_language(inp):
     pytest.debug_func()
     exp = nl_oracle(inp)
-    wobj = nldt.moment(inp)
+    wobj = nldt.parse(inp)
     assert wobj() == exp
 
 
