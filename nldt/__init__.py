@@ -68,7 +68,8 @@ def parse(expr, start=None):
     not provided, the current UTC time is used.
     """
     start = start or moment()
-    wkdays_rgx = "(mon|tue|wed|thur|fri|satur|sun)day"
+    wk = week()
+    wkdays_rgx = wk.match_weekdays()
     rval = None
     result = []
     if expr == 'tomorrow':
@@ -320,6 +321,13 @@ class week(object):
         """
         idx = self.indexify(idx_or_abbr)
         return self._dict[idx]['name']
+
+    # -------------------------------------------------------------------------
+    def match_weekdays(self):
+        """
+        Return a regex that will match all weekdays
+        """
+        return "(mon|tues|wednes|thurs|fri|satur|sun)day"
 
 
 # -----------------------------------------------------------------------------
