@@ -1340,6 +1340,29 @@ class moment(object):
         return moment(then)
 
     # -------------------------------------------------------------------------
+    def month_ceiling(self):
+        """
+        Find the end of the month that contains *self*.moment
+        """
+        tm = time.gmtime(self.epoch())
+        nflr_tm = (tm.tm_year, tm.tm_mon + 1, 1, 0, 0, 0, 0, 0, 0)
+        nflr = time.mktime(nflr_tm)
+        nflr += utc_offset(nflr)
+        nflr -= nflr % _DAY
+        return moment(nflr - 1)
+
+    # -------------------------------------------------------------------------
+    def month_floor(self):
+        """
+        Find the beginning of the month that contains *self*.moment
+        """
+        tm = time.gmtime(self.epoch())
+        flr_tm = (tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0)
+        flr = time.mktime(flr_tm)
+        flr += utc_offset(flr)
+        return moment(flr)
+
+    # -------------------------------------------------------------------------
     def _guess_format(self, spec):
         """
         Try each of the parse formats in the list until one works or the list
