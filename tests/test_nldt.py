@@ -372,20 +372,20 @@ def test_timezone():
 
 
 # -----------------------------------------------------------------------------
-def word_before(text, selector):
-    """
-    return the word preceding *selector* in *text*
-    """
-    words = text.split()
-    next = False
-    rval = None
-    for w in reversed(words):
-        if next:
-            rval = w
-            break
-        elif w == selector:
-            next = True
-    return rval
+# def word_before(text, selector):
+#     """
+#     return the word preceding *selector* in *text*
+#     """
+#     words = text.split()
+#     next = False
+#     rval = None
+#     for w in reversed(words):
+#         if next:
+#             rval = w
+#             break
+#         elif w == selector:
+#             next = True
+#     return rval
 
 
 # -----------------------------------------------------------------------------
@@ -418,12 +418,23 @@ def nl_oracle(spec):
                               0, 0, 0, 0, 0, 0)))
         return then()
     elif 'year' in spec:
-        if word_before(spec, 'year') == 'next':
+        if nldt.word_before('year', spec) == 'next':
             year = int(time.strftime("%Y")) + 1
             return '{}-01-01'.format(year)
-        elif word_before(spec, 'year') == 'last':
+        elif nldt.word_before('year', spec) == 'last':
             year = int(time.strftime("%Y")) - 1
             return '{}-01-01'.format(year)
+    elif 'month' in spec:
+        if nldt.word_before('month', spec) == 'next':
+            tm = time.gmtime()
+            nmon = M(time.mktime((tm.tm_year, tm.tm_mon+1, 1,
+                                  0, 0, 0, 0, 0, 0)))
+            return nmon()
+        elif nldt.word_before('month', spec) == 'last':
+            tm = time.gmtime()
+            lmon = M(time.mktime((tm.tm_year, tm.tm_mon-1, 1,
+                                  0, 0, 0, 0, 0, 0)))
+            return lmon()
     elif spec == 'next year':
         year = int(time.strftime("%Y")) + 1
         return '{}-01-01'.format(year)
