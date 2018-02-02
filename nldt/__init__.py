@@ -90,7 +90,7 @@ def word_before(item, text):
 # -----------------------------------------------------------------------------
 def timezone():
     """
-    Return the locally configured timezone name
+    Returns the locally configured timezone name
 
     The timezone may vary with whether DST is in effect or not. The example
     show a timezone of 'EST' for Eastern Standard Time. At times of the year
