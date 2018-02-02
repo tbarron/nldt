@@ -109,7 +109,14 @@ def parse(expr, start=None):
     wkdays_rgx = wk.match_weekdays()
     rval = None
     result = []
-    if expr == 'tomorrow':
+
+    if research("\s(of|in)\s", expr, result):
+        rval = parse_of_in(expr, result[0].group())
+    elif expr.strip().lower() in mon.names():
+        rval = parse_month_name(expr)
+    elif expr == 'today':
+        rval = moment()
+    elif expr == 'tomorrow':
         rval = moment(start.moment + _DAY)
     elif expr == 'yesterday':
         rval = moment(start.moment - _DAY)
@@ -153,6 +160,36 @@ def parse_month(expr, start):
         rval = moment(start.month_floor().epoch() - _DAY).month_floor()
     elif wb == 'next':
         rval = moment(start.month_ceiling().epoch() + _WEEK).month_floor()
+    return rval
+
+
+# -----------------------------------------------------------------------------
+def parse_month_name(expr):
+    """
+    Parse a string recognized as the name of a month
+    """
+    mon = month()
+    rval = moment()
+    tm = rval.gmtime()
+    midx = mon.index(expr)
+    return moment((tm.tm_year, midx, 1, 0, 0, 0, 0, 0, 0))
+
+
+# -----------------------------------------------------------------------------
+def parse_of_in(expr, prep):
+    """
+    Parse expressions like 'first week in January', 'last day of April', etc.
+    """
+    tu = time_units()
+    unit = tu.find_unit(expr)
+    pre, post = expr.split(prep)
+    rval = parse(post)
+    if pre == 'end' and unit:
+        rval = rval.ceiling(unit)
+    elif pre == 'beginning':
+        pass
+    else:
+        rval = parse(pre, rval)
     return rval
 
 
