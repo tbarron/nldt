@@ -92,8 +92,6 @@ def parse(expr, start=None):
             rval = moment(then)
     elif research(wkdays_rgx, expr, result):
         wday = result[0].group()
-        wk = week()
-        widx = wk.index(wday)
         wb = word_before(wday, expr)
         if wb == 'next':
             swd = start('%A').lower()
