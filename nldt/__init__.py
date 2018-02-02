@@ -1402,6 +1402,80 @@ class moment(object):
         return time.localtime(self.moment)
 
     # -------------------------------------------------------------------------
+    def ceiling(self, unit):
+        """
+        Compute the ceiling of *unit* (second, minute, hour, day, etc.) from
+        *self*.epoch()
+        """
+        tm = time.gmtime(self.epoch())
+        if unit == 'second':
+            ceil = self.epoch()
+        elif unit == 'minute':
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                           tm.tm_hour, tm.tm_min, 59, 0, 0, 0))
+        elif unit == 'hour':
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                           tm.tm_hour, 59, 59, 0, 0, 0))
+        elif unit == 'day':
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                           23, 59, 59, 0, 0, 0))
+        elif unit == 'week':
+            # wk = week()
+            # delta = wk.forediff(tm.tm_wday, 'sun')
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + (6-tm.tm_wday),
+                           23, 59, 59, 0, 0, 0))
+        elif unit == 'month':
+            maxday = month.days(year=tm.tm_year, month=tm.tm_mon)
+            ceil = timegm((tm.tm_year, tm.tm_mon, maxday,
+                           23, 59, 59, 0, 0, 0))
+        elif unit == 'year':
+            ceil = timegm((tm.tm_year, 12, 31, 23, 59, 59, 0, 0, 0))
+        else:
+            raise ValueError('unit must be a time unit')
+        return moment(ceil)
+
+    # -------------------------------------------------------------------------
+    def floor(self, unit):
+        """
+        Compute the floor of *unit* (second, minute, hour, day, etc.) from
+        *self*.epoch()
+        """
+        epoch = self.epoch()
+        if unit == 'second':
+            rval = self
+        elif unit == 'minute':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                            tm.tm_hour, tm.tm_min, 0, 0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'hour':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour,
+                            0, 0, 0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'day':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday, 0, 0, 0,
+                            0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'week':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - tm.tm_wday,
+                            0, 0, 0, 0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'month':
+            tm = time.gmtime(epoch)
+            nflr = timegm((tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0))
+            rval = moment(nflr)
+        elif unit == 'year':
+            tm = time.gmtime(epoch)
+            nflr = timegm((tm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0))
+            rval = moment(nflr)
+        else:
+            raise ValueError('unit must be a time unit')
+        return rval
+
+    # -------------------------------------------------------------------------
     def week_floor(self):
         """
         Find the beginning of the week in which *self*.moment occurs and return
