@@ -130,6 +130,16 @@ def parse(expr, start=None):
             rval = moment(start.week_floor().epoch() - _WEEK)
         elif wb == 'next':
             rval = moment(start.week_floor().epoch() + _WEEK)
+        elif wb == 'first':
+            tm = start.gmtime()
+            delta = (7 - tm.tm_wday) % 7
+            rval = moment(timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
+                                  0, 0, 0, 0, 0, 0)))
+        elif wb == 'the':
+            rval = start.week_floor()
+        elif wb in wk.day_list():
+            start = parse('next {}'.format(wb))
+            rval = parse('next {}'.format(wb), start)
     elif re.search("(\s|^)year(\s|$)", expr):
         wb = word_before('year', expr)
         if wb == 'last':
