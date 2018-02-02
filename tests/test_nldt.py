@@ -498,13 +498,12 @@ def nl_oracle(spec):
         then = nldt.moment(now.epoch() + 21 * 24 * 3600)
         return then()
     elif 'first week in' in spec:
-        month = None
-        for mname in nldt.month_names():
-            mshort = mname.lower()[0:3]
-            if mshort in spec.lower():
-                month = nldt.month_index(mshort)
+        month = nldt.month()
+        for mname in month.short_names():
+            if mname in spec.lower():
+                midx = month.index(mname)
                 break
-        if month:
+        if midx:
             now = nldt.moment()
             year = now('%Y')
             start = nldt.moment('{}-{}-07'.format(year, midx))
@@ -536,23 +535,31 @@ def nl_oracle(spec):
     (direction, day) = spec.split()
     if direction == 'next':
         wdidx = wk.index(day)
-        start = M()
+        start = nldt.parse('tomorrow')
         while wk.day_number(start) != wdidx:
             start = M(start.epoch() + nldt._DAY)
     elif direction == 'last':
         wdidx = wk.index(day)
-        start = M()
+        start = nldt.parse('yesterday')
         while wk.day_number(start) != wdidx:
             start = M(start.epoch() - nldt._DAY)
     elif day == 'week':
         (day, direction) = (direction, day)
-        wdidx = nldt.weekday_index(day)
-        start = nldt.moment('tomorrow')
-            start.parse('tomorrow')
-        start.parse('tomorrow')
-        while int(start('%u'))-1 != wdidx:
-            start.parse('tomorrow')
+        # now direction is 'week' and day is likely a weekday (eg, 'monday
+        # week')
+        #
+        # we've already handled '{next,last} week' above, so we don't need to
+        # worry about those here
+        #
+        # advance to day
+        wdidx = wk.index(day)
+        when = nldt.parse('tomorrow')
         while wk.day_number(when) != wdidx:
+            when = M(when.epoch() + nldt._DAY)
+
+        # now jump forward a week
+        start = M(when.epoch() + nldt._WEEK)
+
     return start()
 
 
