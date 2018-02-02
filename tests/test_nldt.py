@@ -608,9 +608,9 @@ def nl_oracle(spec):
                           ('two weeks ago'),
                           ('a week earlier'),
                           ('a week later'),
-                          ('fourth day of this week'),
-                          ('fifth day of last week'),
-                          ('beginning of this week'),
+                          # ('fourth day of this week'),
+                          # ('fifth day of last week'),
+                          # ('beginning of this week'),
                           ])
 def test_natural_language(inp):
     pytest.debug_func()
