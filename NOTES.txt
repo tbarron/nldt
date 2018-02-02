@@ -1,3 +1,67 @@
+---------------------------------------------------------------------------
+2018-02-02 14:01:10: Rules
+
+  * Remember the layer cake (the "layer cake" rule)
+
+    We're building a layer cake here. The bottom layer consists of all the
+    python goodies we use to support everything else -- time, pytz,
+    datetime, calendar.timegm, etc.
+
+    The next layer up is the helper functions and modules I've built --
+    dst(), hhmm(), word_before(), research(), class week, month,
+    time_units.
+
+    The next layer is the moment and duration classes. This is the heart of
+    the package.
+
+    On top of the moment and duration functionality is the natural language
+    parsing.
+
+    Finally, the top-most layer is the command line user interface that
+    lets a user type something like "the first week in December" and get
+    back "2018-12-03".
+
+    The important thing about all this is that a lower level should NEVER
+    depend on a higher level. The code needs to be designed so that higher
+    levels depend on lower levels and never the other way around.
+
+  * Don't reinvent the wheel.
+
+    If python provides a piece of functionality, I'd rather use that than
+    write it for myself.
+
+  * On the other hand, don't settle.
+
+    If the functionality python provides doesn't work quite the way I want
+    it to, either figure out why it makes more sense the way python does
+    it, or write my own that does it the way I expect.
+
+  * The moment class stores a UTC point in time. Calculations should be
+    carried out in terms of UTC. Only translate to local time at the last
+    minute before displaying the time to the user.
+   
+
+---------------------------------------------------------------------------
+2018-02-02 08:53:17:
+
+Here's a confusing point:
+
+ * The output for strftime specifier %u is the weekday number with
+   mon=1 and sun=7
+
+ * The output for stftime specifier %w is the weekday number with sun=0 and
+   sat=6
+
+ * The value of tm_wday in the tm structure returned by time.localtime and
+   time.gmtime uses 0 for mon to 6 for sun
+
+ * The storal of the mory is that we should not use %w or %u to generate
+   numeric weekday values but should always get them out of a tm structure.
+   In fact, it would probably be smart to have the week class provide a
+   weekday_index function that takes a moment or epoch time and returns the
+   mon=0 based weekday index.
+
+---------------------------------------------------------------------------
 I'm thinking about a language parsing strategy that I'd like to use both in
 the natural language oracle in the test file and also in the nldt class
 itself.
