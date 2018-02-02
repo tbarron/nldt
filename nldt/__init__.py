@@ -76,6 +76,12 @@ def parse(expr, start=None):
         rval = moment(start.moment + _DAY)
     elif expr == 'yesterday':
         rval = moment(start.moment - _DAY)
+    elif re.search("(\s|^)month(\s|$)", expr):
+        wb = word_before('month', expr)
+        if wb == 'last':
+            rval = moment(start.month_floor().epoch() - _DAY).month_floor()
+        elif wb == 'next':
+            rval = moment(start.month_ceiling().epoch() + _WEEK).month_floor()
     elif re.search("(\s|^)week(\s|$)", expr):
         wb = word_before('week', expr)
         if wb == 'last':
