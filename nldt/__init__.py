@@ -6,7 +6,7 @@ date processing machinery.
 """
 from calendar import timegm
 from datetime import datetime
-# import numberize
+import numberize
 import numbers
 # import pdb
 from tzlocal import get_localzone
@@ -121,6 +121,10 @@ def parse(expr, start=None):
         rval = moment(start.moment + _DAY)
     elif expr == 'yesterday':
         rval = moment(start.moment - _DAY)
+    elif 'ago' in expr:
+        rval = parse_ago(expr)
+    elif 'from now' in expr:
+        rval = parse_from_now(expr)
     elif re.search("(\s|^)month(\s|$)", expr):
         rval = parse_month(expr, start)
     elif re.search("(\s|^)week(\s|$)", expr):
@@ -164,6 +168,46 @@ def parse(expr, start=None):
             swd = start('%A').lower()
             delta = wk.backdiff(swd, wday) or 7
             rval = moment(start.epoch() - delta * _DAY)
+    return rval
+
+
+# -----------------------------------------------------------------------------
+def parse_ago(expr):
+    """
+    Handle expressions like 'a week ago', 'three days ago', 'five years ago',
+    etc.
+    """
+    tu = time_units()
+    nums = numberize.scan(expr)
+    if isinstance(nums[0], int):
+        count = nums[0]
+    else:
+        count = 1
+    unit = tu.find_unit(expr)
+    if unit is None:
+        raise ValueError("No unit found in expression '{}'".format(expr))
+    rval = moment()
+    rval = moment(rval.epoch() - count * tu.magnitude(unit))
+    return rval
+
+
+# -----------------------------------------------------------------------------
+def parse_from_now(expr):
+    """
+    Handle expressions like 'an hour from now', 'two days from now', 'four
+    weeks from now', 'three years from now', etc.
+    """
+    tu = time_units()
+    nums = numberize.scan(expr)
+    if isinstance(nums[0], int):
+        count = nums[0]
+    else:
+        count = 1
+    unit = tu.find_unit(expr)
+    if unit is None:
+        raise ValueError("No unit found in expression '{}'".format(expr))
+    rval = moment()
+    rval = moment(rval.epoch() + count * tu.magnitude(unit))
     return rval
 
 
