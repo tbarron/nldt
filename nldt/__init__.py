@@ -78,7 +78,7 @@ def dst(when=None, tz=None):
     if tz == 'local':
         tm = time.localtime(when.moment)
     else:
-        tm = time.gmtime(when.moment + utc_offset(when, tz))
+        tm = time.gmtime(when.moment + utc_offset(when.moment, tz))
 
     return tm.tm_isdst == 1
 
