@@ -106,6 +106,8 @@ def parse(expr, start=None):
     """
     start = start or moment()
     wk = week()
+    tu = time_units()
+    mon = month()
     wkdays_rgx = wk.match_weekdays()
     rval = None
     result = []
