@@ -1350,6 +1350,12 @@ class moment(object):
         elif len(args) < 2:
             if isinstance(args[0], numbers.Number):
                 self.moment = int(args[0])
+            elif isinstance(args[0], time.struct_time):
+                self.moment = timegm(args[0])
+            elif isinstance(args[0], tuple):
+                if len(args[0]) < 6 or 9 < len(args[0]):
+                    raise ValueError('need at least 6 values, no more than 9')
+                self.moment = timegm(args[0])
             elif isinstance(args[0], str):
                 self.moment = self._guess_format(args[0])
             if self.moment is None:
