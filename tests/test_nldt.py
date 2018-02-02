@@ -512,7 +512,6 @@ def nl_oracle(spec):
 @pytest.mark.parametrize("inp",
                          [
                           ('last week'),
-                          ('end of last week'),
                           ('next year'),
                           ('next monday'),
                           ('next tuesday'),
@@ -542,6 +541,7 @@ def nl_oracle(spec):
                           ('friday week'),
                           ('saturday week'),
                           ('sunday week'),
+                          ('end of last week'),
                           ('end of the week'),
                           ('beginning of next week'),
                           ('first week in January'),
