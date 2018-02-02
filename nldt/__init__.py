@@ -62,6 +62,50 @@ def hhmm(seconds):
 
 
 # -----------------------------------------------------------------------------
+def parse(expr, start=None):
+    """
+    Returns a moment based on *expr* and *start*, if provided. If *start* is
+    not provided, the current UTC time is used.
+    """
+    start = start or moment()
+    wkdays_rgx = "(mon|tue|wed|thur|fri|satur|sun)day"
+    rval = None
+    result = []
+    if expr == 'tomorrow':
+        rval = moment(start.moment + _DAY)
+    elif expr == 'yesterday':
+        rval = moment(start.moment - _DAY)
+    elif re.search("(\s|^)week(\s|$)", expr):
+        wb = word_before('week', expr)
+        if wb == 'last':
+            rval = moment(start.week_floor().epoch() - _WEEK)
+        elif wb == 'next':
+            rval = moment(start.week_floor().epoch() + _WEEK)
+    elif re.search("(\s|^)year(\s|$)", expr):
+        wb = word_before('year', expr)
+        if wb == 'last':
+            then = "{}-01-01".format(int(start("%Y")) - 1)
+            rval = moment(then)
+        elif wb == 'next':
+            then = "{}-01-01".format(int(start("%Y")) + 1)
+            rval = moment(then)
+    elif research(wkdays_rgx, expr, result):
+        wday = result[0].group()
+        wk = week()
+        widx = wk.index(wday)
+        wb = word_before(wday, expr)
+        if wb == 'next':
+            swd = start('%A').lower()
+            delta = wk.forediff(swd, wday)
+            rval = moment(start.epoch() + delta * _DAY)
+        elif wb == 'last':
+            swd = start('%A').lower()
+            delta = wk.backdiff(swd, wday)
+            rval = moment(start.epoch() - delta * _DAY)
+    return rval
+
+
+# -----------------------------------------------------------------------------
 def research(pattern, haystack, result):
     """
     Look for pattern in haystack. If something is found, push the search object
