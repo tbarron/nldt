@@ -62,6 +62,18 @@ def hhmm(seconds):
 
 
 # -----------------------------------------------------------------------------
+def research(pattern, haystack, result):
+    """
+    Look for pattern in haystack. If something is found, push the search object
+    into result (which much be a list) and return it
+    """
+    q = re.search(pattern, haystack)
+    if q:
+        result.append(q)
+    return q
+
+
+# -----------------------------------------------------------------------------
 def word_before(item, text):
     """
     Parse out the word that occurs before *item* in *text* and return it
