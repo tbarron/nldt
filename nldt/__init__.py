@@ -140,7 +140,7 @@ def parse(expr, start=None):
             delta = (7 - tm.tm_wday) % 7
             rval = moment(timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
                                   0, 0, 0, 0, 0, 0)))
-        elif wb == 'the':
+        elif wb == 'the' or wb == 'this':
             rval = start.week_floor()
         elif wb in wk.day_list():
             start = parse('next {}'.format(wb))
