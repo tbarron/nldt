@@ -111,6 +111,9 @@ def parse(expr, start=None):
     rval = None
     result = []
 
+    expr = expr.replace('earlier', 'ago')
+    expr = expr.replace('later', 'from now')
+
     if research("\s(of|in)\s", expr, result):
         rval = parse_of_in(expr, result[0].group())
     elif expr.strip().lower() in mon.names():
