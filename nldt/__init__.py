@@ -330,7 +330,7 @@ class month(object):
 
 
 # -----------------------------------------------------------------------------
-class week(object):
+class week(Indexable):
     """
     Define and serve weekday information
     """
@@ -387,31 +387,6 @@ class week(object):
             wday = wday[0:3].lower()
         rval = self._dict.get(wday, -1)
         return rval['idx']
-
-    # -------------------------------------------------------------------------
-    def indexify(self, name_or_idx):
-        """
-        Return an int idx in the range [0, 7) (i.e., between 0 and 6 inclusive)
-        or -1.
-        """
-        rval = None
-        if name_or_idx in self._dict:
-            rval = self._dict[name_or_idx]['idx']
-        elif isinstance(name_or_idx, str):
-            if name_or_idx.isdigit():
-                idx = int(name_or_idx)
-                if idx in self._dict:
-                    rval = self._dict[idx]['idx']
-            elif 3 < len(name_or_idx):
-                abbr = name_or_idx[0:3]
-                if abbr in self._dict:
-                    rval = self._dict[abbr]['idx']
-        elif isinstance(name_or_idx, numbers.Number):
-            if int(name_or_idx) in self._dict:
-                rval = self.dict[int(name_or_idx)]['idx']
-        if rval is None:
-            raise ValueError("Could not indexify '{}'".format(name_or_idx))
-        return rval
 
     # -------------------------------------------------------------------------
     def fullname(self, idx_or_abbr):
