@@ -1276,6 +1276,20 @@ class moment(object):
         return time.localtime(self.moment)
 
     # -------------------------------------------------------------------------
+    def week_floor(self):
+        """
+        Find the beginning of the week in which *self*.moment occurs and return
+        a new moment object that stores that point in time.
+        """
+        tm = time.gmtime(self.moment)
+        then = self.epoch()
+        then -= tm.tm_wday * _DAY
+        then -= tm.tm_hour * _HOUR
+        then -= tm.tm_min * _MINUTE
+        then -= tm.tm_sec
+        return moment(then)
+
+    # -------------------------------------------------------------------------
     def _guess_format(self, spec):
         """
         Try each of the parse formats in the list until one works or the list
