@@ -214,7 +214,9 @@ def test_dst_now():
 # -----------------------------------------------------------------------------
 def test_dst_off():
     """
-    The dst method on a moment object should always return False for 2010-12-31
+    The dst function should always return False for for a moment object set to
+    2010-12-31 in timezone 'US/Eastern' (the local zone at the time of
+    writing).
     """
     pytest.debug_func()
     then = nldt.moment("2010-12-31", "%Y-%m-%d")
@@ -225,7 +227,9 @@ def test_dst_off():
 # -----------------------------------------------------------------------------
 def test_dst_on():
     """
-    The dst method on a moment object should always return True for 2012-07-01
+    The dst function should always return True for a moment object set to
+    2012-07-01 in timezone 'US/Eastern' (the local zone at the time of
+    writing).
     """
     pytest.debug_func()
     then = nldt.moment("2012-07-01", "%Y-%m-%d")
