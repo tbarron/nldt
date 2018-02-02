@@ -500,8 +500,8 @@ class week(Indexable):
 # -----------------------------------------------------------------------------
 def month_days(month):
     """
-    Given month name, return the number of days in the month for the current
-    year
+    Given a month name, this returns the number of days in the month for the
+    current year
 
     *month* - three+ letter month name string => int between 1 (jan) and 12
               (dec)
