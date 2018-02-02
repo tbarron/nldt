@@ -93,7 +93,6 @@ def hhmm(seconds):
         prefix = "-"
         seconds = -1 * seconds
     mins = int(seconds / 60)
-    # secs = seconds % 60
     hrs = int(mins / 60)
     mins = mins % 60
     return "{}{:02d}{:02d}".format(prefix, hrs, mins)
