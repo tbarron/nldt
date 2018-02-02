@@ -405,9 +405,18 @@ def nl_oracle(spec):
         now = nldt.moment('last week')
         now.parse('next friday')
         return now()
-    elif spec in ['today', 'tomorrow', 'yesterday']:
-        start = nldt.moment(spec)
-        return start()
+    elif spec == 'today':
+        return time.strftime("%Y-%m-%d")
+    elif spec == 'tomorrow':
+        tm = time.gmtime()
+        then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday+1,
+                              0, 0, 0, 0, 0, 0)))
+        return then()
+    elif spec == 'yesterday':
+        tm = time.gmtime()
+        then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday-1,
+                              0, 0, 0, 0, 0, 0)))
+        return then()
     elif 'year' in spec:
         if word_before(spec, 'year') == 'next':
             year = int(time.strftime("%Y")) + 1
