@@ -299,7 +299,7 @@ _MONTH_LEN = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 # -----------------------------------------------------------------------------
-class month(object):
+class month(Indexable):     # I managed to lose this update
     """
     Defines and serves information about months
     """
