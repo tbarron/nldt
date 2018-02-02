@@ -397,9 +397,9 @@ def nl_oracle(spec):
     """
     wk = nldt.week()
     if spec == 'fourth day of this week':
-        now = nldt.moment('last week')
-        now.parse('next week')
-        now.parse('next thursday')
+        now = nldt.parse('last week')
+        now = nldt.parse('next week', now)
+        now = nldt.parse('next thursday', now)
         return now()
     elif spec == 'fifth day of last week':
         now = nldt.moment('last week')
