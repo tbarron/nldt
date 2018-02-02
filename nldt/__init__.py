@@ -134,11 +134,11 @@ def parse(expr, start=None):
         wb = word_before(wday, expr)
         if wb == 'next':
             swd = start('%A').lower()
-            delta = wk.forediff(swd, wday)
+            delta = wk.forediff(swd, wday) or 7
             rval = moment(start.epoch() + delta * _DAY)
         elif wb == 'last':
             swd = start('%A').lower()
-            delta = wk.backdiff(swd, wday)
+            delta = wk.backdiff(swd, wday) or 7
             rval = moment(start.epoch() - delta * _DAY)
     return rval
 
