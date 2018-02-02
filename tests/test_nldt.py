@@ -15,12 +15,12 @@ def test_month_init():
     """
     pytest.debug_func()
     m = nldt.month()
-    assert hasattr(m, 'month_dict')
+    assert hasattr(m, '_dict')
     for midx in range(1, 13):
-        assert midx in m.month_dict
+        assert midx in m._dict
     for mname in ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
                   'jul', 'aug', 'sep', 'oct', 'nov', 'dec']:
-        assert mname in m.month_dict
+        assert mname in m._dict
 
 
 # -----------------------------------------------------------------------------
