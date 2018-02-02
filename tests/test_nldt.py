@@ -181,7 +181,7 @@ def test_display():
     """
     pytest.debug_func()
     now = time.time()
-    exp = time.strftime("%Y-%m-%d", time.localtime(now))
+    exp = time.strftime("%Y-%m-%d", time.gmtime(now))
     wobj = nldt.moment(now)
     assert wobj() == exp
 
