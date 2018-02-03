@@ -106,6 +106,7 @@ def parse(expr, start=None):
     start = start or moment()
     wk = week()
     mon = month()
+    tu = time_units()
     wkdays_rgx = wk.match_weekdays()
     rval = None
     result = []
@@ -165,11 +166,11 @@ def parse(expr, start=None):
         if wb == 'next':
             swd = start('%A').lower()
             delta = wk.forediff(swd, wday) or 7
-            rval = moment(start.epoch() + delta * _DAY)
+            rval = moment(start.epoch() + delta * tu.magnitude('day'))
         elif wb == 'last':
             swd = start('%A').lower()
             delta = wk.backdiff(swd, wday) or 7
-            rval = moment(start.epoch() - delta * _DAY)
+            rval = moment(start.epoch() - delta * tu.magnitude('day'))
     return rval
 
 
@@ -218,11 +219,14 @@ def parse_month(expr, start):
     """
     Handle 'next month', 'last month'
     """
+    tu = time_units()
     wb = word_before('month', expr)
     if wb == 'last':
-        rval = moment(start.month_floor().epoch() - _DAY).month_floor()
+        day_mag = tu.magnitude('day')
+        rval = moment(start.month_floor().epoch() - day_mag).month_floor()
     elif wb == 'next':
-        rval = moment(start.month_ceiling().epoch() + _WEEK).month_floor()
+        week_mag = tu.magnitude('week')
+        rval = moment(start.month_ceiling().epoch() + week_mag).month_floor()
     return rval
 
 
