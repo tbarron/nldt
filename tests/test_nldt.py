@@ -756,6 +756,74 @@ def test_find_day():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [(0, "monday"),
+                                      ("0", "monday"),
+                                      ("mon", "monday"),
+
+                                      (1, "tuesday"),
+                                      ("1", "tuesday"),
+                                      ("tue", "tuesday"),
+
+                                      (2, "wednesday"),
+                                      ("2", "wednesday"),
+                                      ("wed", "wednesday"),
+
+                                      (3, "thursday"),
+                                      ("3", "thursday"),
+                                      ("thu", "thursday"),
+
+                                      (4, "friday"),
+                                      ("4", "friday"),
+                                      ("fri", "friday"),
+
+                                      (5, "saturday"),
+                                      ("5", "saturday"),
+                                      ("sat", "saturday"),
+
+                                      (6, "sunday"),
+                                      ("6", "sunday"),
+                                      ("sun", "sunday"),
+
+                                      (13, "except"),
+                                      ("13", "except"),
+                                      ("nosuch", "except"),
+                                      ])
+def test_week_fullname(inp, exp):
+    """
+    Test week.fullname
+    """
+    w = nldt.week()
+    if exp == "except":
+        with pytest.raises(ValueError) as err:
+            w.fullname(inp) == exp
+        assert "Could not indexify '{}'".format(inp) in str(err)
+    else:
+        assert w.fullname(inp) == exp
+
+
+# -----------------------------------------------------------------------------
+def test_week_day_number():
+    """
+    Test week.day_number()
+    """
+    w = nldt.week()
+    sat = nldt.moment("2000-01-01")
+    sun = nldt.moment("2000-01-02")
+
+    assert w.day_number(sat.epoch()) == 5
+
+    with pytest.raises(TypeError) as err:
+        w.day_number("the other day") == 14
+    assert "argument must be moment or epoch number" in str(err)
+
+    assert w.day_number(sat, count='mon1') == 6
+    assert w.day_number(sun, count='mon1') == 7
+
+    assert w.day_number(sat, count='sun0') == 6
+    assert w.day_number(sun, count='sun0') == 0
+
+
+# -----------------------------------------------------------------------------
 def close_times(tm1, tm2):
     """
     Return True if the epoch times represented by *tm1* and *tm2* are 'close'
