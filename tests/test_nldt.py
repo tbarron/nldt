@@ -721,6 +721,21 @@ def test_month_days(month, year, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_find_day():
+    """
+    Coverage for week.find_day
+    """
+    none = "No weekday name in this text"
+    some = "Can you find the wednesday?"
+    front = "Tuesday is a fine day"
+    punct = "...Saturday we'll go to the store"
+    paren = "Which day precedes (Friday) and which follows?"
+    w = nldt.week()
+    assert w.find_day(none) == None
+    assert w.find_day(some) == "wednesday"
+
+
+# -----------------------------------------------------------------------------
 def close_times(tm1, tm2):
     """
     Return True if the epoch times represented by *tm1* and *tm2* are 'close'
