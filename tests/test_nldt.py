@@ -249,6 +249,15 @@ def test_dst_elsewhere_off():
 
 
 # -----------------------------------------------------------------------------
+def test_dst_list():
+    """
+    """
+    with pytest.raises(TypeError) as err:
+        nldt.dst(time.gmtime())
+    assert "dst() when arg must be str, number, or moment" in str(err)
+
+
+# -----------------------------------------------------------------------------
 # def test_dst_elsewhere_on():
 #     """
 #     The dst function should return True for non local timezones that support
@@ -357,6 +366,59 @@ def test_parse_yesterday():
     assert not hasattr(eoy, 'parse')
     result = nldt.parse('yesterday', start=eoy)
     assert result() == '2007-11-30'
+
+
+# -----------------------------------------------------------------------------
+def test_indexify_numfloat():
+    """
+    Cover lines in method month.indexify()
+    """
+    pytest.debug_func()
+    mon = nldt.month()
+    assert mon.indexify(3.4) == 3
+
+
+# -----------------------------------------------------------------------------
+def test_indexify_numint():
+    """
+    Cover lines in method month.indexify()
+    """
+    pytest.debug_func()
+    mon = nldt.month()
+    assert mon.indexify(11) == 11
+    with pytest.raises(ValueError) as err:
+        assert mon.indexify(17) == -1
+    assert "Could not indexify '17'" in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_indexify_numstr():
+    """
+    Cover lines in method month.indexify()
+    """
+    pytest.debug_func()
+    mon = nldt.month()
+    assert mon.indexify('5') == 5
+
+
+# -----------------------------------------------------------------------------
+def test_indexify_str():
+    """
+    Cover lines in method month.indexify()
+    """
+    pytest.debug_func()
+    mon = nldt.month()
+    assert mon.indexify('October') == 10
+
+
+# -----------------------------------------------------------------------------
+def test_indexify_lowstr():
+    """
+    Cover lines in method month.indexify()
+    """
+    pytest.debug_func()
+    mon = nldt.month()
+    assert mon.indexify('Oct') == 10
 
 
 # -----------------------------------------------------------------------------
@@ -600,6 +662,16 @@ def test_natural_language(inp):
     exp = nl_oracle(inp)
     wobj = nldt.parse(inp)
     assert wobj() == exp
+
+
+# -----------------------------------------------------------------------------
+def test_ago_except():
+    """
+    Cover the ValueError exception in parse_ago
+    """
+    with pytest.raises(ValueError) as err:
+        nldt.parse("no number no unit ago")
+    assert "No unit found in expression" in str(err)
 
 
 # -----------------------------------------------------------------------------
