@@ -1,5 +1,7 @@
 .cache
+.coverage
 .env
+.pytest_cache
 dev.py
 DODO.txt
 __pycache__
