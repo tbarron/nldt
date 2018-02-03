@@ -1570,8 +1570,6 @@ class moment(object):
             ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
                            23, 59, 59, 0, 0, 0))
         elif unit == 'week':
-            # wk = week()
-            # delta = wk.forediff(tm.tm_wday, 'sun')
             ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + (6-tm.tm_wday),
                            23, 59, 59, 0, 0, 0))
         elif unit == 'month':
