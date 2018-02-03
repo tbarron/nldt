@@ -126,6 +126,10 @@ def test_utc_offset():
     else:
         assert nldt.utc_offset() == -1 * time.timezone
 
+    with pytest.raises(TypeError) as err:
+        nldt.utc_offset("not a number")
+    assert "utc_offset requires an epoch time or None" in str(err)
+
 
 # -----------------------------------------------------------------------------
 def test_ambig():
@@ -671,6 +675,16 @@ def test_ago_except():
     """
     with pytest.raises(ValueError) as err:
         nldt.parse("no number no unit ago")
+    assert "No unit found in expression" in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_from_now_except():
+    """
+    Cover the ValueError exception in parse_ago
+    """
+    with pytest.raises(ValueError) as err:
+        nldt.parse("no number no unit from now")
     assert "No unit found in expression" in str(err)
 
 
