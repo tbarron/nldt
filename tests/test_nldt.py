@@ -721,6 +721,26 @@ def test_month_days(month, year, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_isleap():
+    """
+    When year is not given, isleap should always return False
+    """
+    m = nldt.month()
+    assert not m.isleap(None)
+
+
+# -----------------------------------------------------------------------------
+def test_match_monthnames():
+    """
+    Verify the regex returned by month.match_monthnames
+    """
+    m = nldt.month()
+    exp = "|".join(m.names())
+    exp = "(" + exp + ")"
+    assert exp == m.match_monthnames()
+
+
+# -----------------------------------------------------------------------------
 def test_find_day():
     """
     Coverage for week.find_day
