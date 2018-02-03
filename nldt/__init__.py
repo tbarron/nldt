@@ -48,10 +48,10 @@ class Indexable(object):
                 if abbr in self._dict:
                     rval = self._dict[abbr]['idx']
             elif name_or_idx in self._dict:
-                rval = self._dict[abbr]['idx']
+                rval = self._dict[name_or_idx]['idx']
         elif isinstance(name_or_idx, numbers.Number):
             if int(name_or_idx) in self._dict:
-                rval = self.dict[int(name_or_idx)]['idx']
+                rval = self._dict[int(name_or_idx)]['idx']
         if rval is None:
             raise ValueError("Could not indexify '{}'".format(name_or_idx))
         return rval
