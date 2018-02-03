@@ -29,7 +29,7 @@ def test_deployable():
     else:
         latest_tag = ""
 
-    assert latest_tag == version._version, "Version does not match tag"
+    assert latest_tag == _version, "Version does not match tag"
 
     # verify that the most recent tag points at HEAD
     cmd = "git --no-pager log -1 --format=format:\"%H\""
