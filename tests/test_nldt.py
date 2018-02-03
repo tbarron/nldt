@@ -372,23 +372,6 @@ def test_timezone():
 
 
 # -----------------------------------------------------------------------------
-# def word_before(text, selector):
-#     """
-#     return the word preceding *selector* in *text*
-#     """
-#     words = text.split()
-#     next = False
-#     rval = None
-#     for w in reversed(words):
-#         if next:
-#             rval = w
-#             break
-#         elif w == selector:
-#             next = True
-#     return rval
-
-
-# -----------------------------------------------------------------------------
 def nl_oracle(spec):
     """
     This function uses a simple-minded approach to find the target day. If it
