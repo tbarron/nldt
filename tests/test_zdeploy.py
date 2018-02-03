@@ -1,3 +1,4 @@
+import pytest
 import re
 import tbx
 from version import _version
@@ -9,6 +10,7 @@ def test_deployable():
     Check version against last git tag and check for untracked files or
     outstanding updates.
     """
+    pytest.debug_func()
     result = tbx.run("git status --porc")
 
     # check for untracked files
