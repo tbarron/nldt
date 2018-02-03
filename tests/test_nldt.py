@@ -389,7 +389,7 @@ def nl_oracle(spec):
         now.parse('next friday')
         return now()
     elif spec == 'today':
-        return time.strftime("%Y-%m-%d")
+        return time.strftime("%Y-%m-%d", time.gmtime())
     elif spec == 'tomorrow':
         tm = time.gmtime()
         then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday+1,
