@@ -675,6 +675,38 @@ def test_ago_except():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("month, year, exp", [(1, None, 31),
+                                              (2, 2017, 28),
+                                              (2, 2016, 29),
+                                              (2, 2000, 29),
+                                              (2, 1900, 28),
+                                              (3, 2018, 31),
+                                              (4, None, 30),
+
+                                              (5, None, 31),
+                                              (6, None, 30),
+                                              (7, None, 31),
+                                              (8, None, 31),
+                                              (9, None, 30),
+                                              (10, None, 31),
+                                              (11, None, 30),
+                                              (12, None, 31),
+                                              (19, None, "Could not indexify"),
+                                              ])
+def test_month_days(month, year, exp):
+    """
+    Get the number of days in each month
+    """
+    m = nldt.month()
+    if isinstance(exp, numbers.Number):
+        assert m.days(month=month, year=year) == exp
+    else:
+        with pytest.raises(ValueError) as err:
+            m.days(month=month, year=year)
+        assert exp in str(err)
+
+
+# -----------------------------------------------------------------------------
 def close_times(tm1, tm2):
     """
     Return True if the epoch times represented by *tm1* and *tm2* are 'close'

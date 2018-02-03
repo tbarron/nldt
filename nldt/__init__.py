@@ -376,7 +376,7 @@ class month(Indexable):     # I managed to lose this update
 
     # -------------------------------------------------------------------------
     def days(self, month, year=None):
-        month = indexify(month)              # noqa: F821
+        month = self.indexify(month)              # noqa: F821
         rval = self._dict[month]['days']
         if month == 2 and self.isleap(year):
             rval += 1
