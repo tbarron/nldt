@@ -402,6 +402,10 @@ class month(Indexable):     # I managed to lose this update
 
     # -------------------------------------------------------------------------
     def days(self, month, year=None):
+        """
+        Returns the number of days in the indicated *month*. If *year* is not
+        specified, the current year is used.
+        """
         month = self.indexify(month)              # noqa: F821
         rval = self._dict[month]['days']
         if month == 2 and self.isleap(year):
@@ -410,6 +414,10 @@ class month(Indexable):     # I managed to lose this update
 
     # -------------------------------------------------------------------------
     def _days(self, midx):
+        """
+        This is a private function returning the number of days in each month,
+        based on the year 2010. It is used for setting up self._dict.
+        """
         q = moment("2010.{:02d}01".format((midx % 12) + 1))
         p = moment(q.moment - 24 * 3600)
         rval = int(p('%d'))
@@ -419,13 +427,17 @@ class month(Indexable):     # I managed to lose this update
     def index(self, name_or_idx):
         """
         Given a month name or index in *name_or_idx*, this returns the index of
-        the month or throws a ValueError.
+        the month in the range 1 .. 12 or throws a ValueError.
         """
         midx = self.indexify(name_or_idx)
         return self._dict[midx]['idx']
 
     # -------------------------------------------------------------------------
-    def isleap(self, year):
+    def isleap(self, year=None):
+        """
+        Returns true if *year* is leap. If *year* is not provided, return True
+        if the current year is leap, else False.
+        """
         if year is None:
             rval = False
         else:
@@ -434,18 +446,24 @@ class month(Indexable):     # I managed to lose this update
 
     # -------------------------------------------------------------------------
     def names(self):
+        """
+        Returns a list of lowercase full month names
+        """
         return [self._dict[x]['name'] for x in self._dict
                 if isinstance(x, int)]
 
     # -------------------------------------------------------------------------
     def short_names(self):
+        """
+        Returns a list of three letter lowercase month name abbreviations
+        """
         return [self._dict[x]['abbr'] for x in self._dict
                 if isinstance(x, int)]
 
     # -------------------------------------------------------------------------
     def match_monthnames(self):
         """
-        Return a regex that will match all month names
+        Returns a regex that will match all month names
         """
         rgx = "(" + "|".join([self._dict[x]['name'] for x in self._dict
                               if isinstance(x, int)]) + ")"
@@ -455,12 +473,12 @@ class month(Indexable):     # I managed to lose this update
 # -----------------------------------------------------------------------------
 class week(Indexable):
     """
-    Define and serve weekday information
+    Defines and serves weekday information
     """
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        Set up week info
+        Sets up week info
         """
         self._dict = {}
         for idx in range(0, 7):
@@ -478,7 +496,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def day_list(self):
         """
-        Return a list of weekday names
+        Returns a list of weekday names
         """
         return [self._dict[x]['name'] for x in self._dict
                 if isinstance(x, int)]
@@ -486,7 +504,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def find_day(self, text):
         """
-        Find and return the first weekday name in *text*
+        Finds and returns the first weekday name in *text*
         """
         found = [wday for wday in self.day_list()
                  if re.search("(^|\W){}(\W|$)".format(wday), text)]
@@ -498,8 +516,9 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def forediff(self, start, end):
         """
-        Return the number of days required to get from day *start* to day *end*
-        going forward. *start* and *end* can be day names or index values.
+        Returns the number of days required to get from day *start* to day
+        *end* going forward. *start* and *end* can be day names or index
+        values.
         """
         start = self.indexify(start)
         end = self.indexify(end)
@@ -511,8 +530,9 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def backdiff(self, start, end):
         """
-        Return the number of days required to get from day *start* to day *end*
-        going forward. *start* and *end* can be day names or index values.
+        Returns the number of days required to get from day *start* to day
+        *end* going forward. *start* and *end* can be day names or index
+        values.
         """
         start = self.indexify(start)
         end = self.indexify(end)
@@ -524,7 +544,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def index(self, wday):
         """
-        Return the numeric index for *wday* (sun = 0, mon = 1, ... sat = 6)
+        Returns the numeric index for *wday* (sun = 0, mon = 1, ... sat = 6)
         """
         if 3 < len(wday):
             wday = wday[0:3].lower()
@@ -533,7 +553,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def fullname(self, idx_or_abbr):
         """
-        Look up *idx_or_abbr* in self._dict and return the 'name' item
+        Looks up *idx_or_abbr* in self._dict and return the 'name' item
         """
         idx = self.indexify(idx_or_abbr)
         return self._dict[idx]['name']
@@ -541,7 +561,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def match_weekdays(self):
         """
-        Return a regex that will match all weekdays
+        Returns a regex that will match all weekdays
         """
         return "(mon|tues|wednes|thurs|fri|satur|sun)day"
 
@@ -549,13 +569,20 @@ class week(Indexable):
     def day_number(self, moment_or_epoch, count=None):
         """
         This returns a weekday number based on a moment or epoch time. The
-        *count* argument can be one of 'mon0' (the default), 'sun0', or 'mon1'.
-        With 'mon0', mon=0 and sun=6. With sun0, sun=0 and sat=6. With mon1,
-        mon=1 and sun=7. mon0 is the counting regime used in the tm structures
-        returned by time.localtime() and time.gmtime(). sun0 is the counting
-        regime for the '%w' specifier in time.strftime() and time.strptime()
-        patterns. mon1 is the counting regime for the '%u' specifier in
-        time.strftime() and time.strptime().
+        *count* argument can be one of
+
+          * 'mon0' (the default) => mon = 0 ... sun = 6
+          * 'sun0' => sun = 0 ... sat = 6
+          * 'mon1' => mon = 1 ... sun = 7
+
+        'mon0' is the counting regime used in the tm structures
+        returned by time.localtime() and time.gmtime().
+
+        'sun0' is the counting regime for the '%w' specifier in time.strftime()
+        and time.strptime() patterns.
+
+        'mon1' is the counting regime for the '%u' specifier in time.strftime()
+        and time.strptime().
         """
         count = count or 'mon0'
         if isinstance(moment_or_epoch, moment):
@@ -576,13 +603,13 @@ class week(Indexable):
 # -----------------------------------------------------------------------------
 class prepositions(object):
     """
-    Provide information and tools for finding and interpreting prepositions in
+    Provides information and tools for finding and interpreting prepositions in
     natural language time expressions
     """
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        Set up the prepositions object. In the self.preps dict, the keys are
+        Sets up the prepositions object. In the self.preps dict, the keys are
         the recognized prepositions and the values indicate the temporal
         direction of the key -- +1 for forward in time, -1 for backward.
         """
@@ -591,7 +618,7 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def split(self, text):
         """
-        Construct (and cache) a regex based on the prepositions and use it to
+        Constructs (and caches) a regex based on the prepositions and use it to
         split *text*, returning the list of pieces.
         """
         if not hasattr(self, 'regex'):
@@ -612,7 +639,7 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def direction(self, prep):
         """
-        Return the direction for preposition *prep*
+        Returns the direction for preposition *prep*
         """
         return self.preps[prep]
 
@@ -620,7 +647,7 @@ class prepositions(object):
 # -----------------------------------------------------------------------------
 class time_units(object):
     """
-    Provide information about time units
+    Provides information about time units
     """
     # -------------------------------------------------------------------------
     def __init__(self):
@@ -1217,7 +1244,8 @@ class time_units(object):
 class moment(object):
     """
     Objects of this class represent a point in time. The moment is stored in
-    UTC.
+    UTC. The strptime formats in list moment.formats are used to intuit the
+    format of date/time strings for which no format is provided.
     """
     formats = ['%y-%m-%d',
                '%y-%m-%d %H',
@@ -1283,15 +1311,19 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __init__(self, *args):
         """
-        Construct a moment object
+        Constructs a moment object.
 
         *args*:
-            empty: object represents current time at instantiation
+            empty: object represents current UTC time at instantiation
             one element: may be a date/time spec matching one of the formats in
-                self.formats or a natural language expression describing the
-                time of interest (see Examples).
+                self.formats.
             two elements: args[0] is a date/time spec, args[1] is a format
-                describing args[0]
+                describing args[0].
+
+        If a timezone is provided in the input string, the string should be
+        interpreted as local to that timezone. The value stored in the
+        constructed object should be the UTC epoch corresponding to the
+        specified local time.
 
         Examples:
             >>> import nldt
@@ -1299,17 +1331,10 @@ class moment(object):
             >>> now = nldt.moment()
             >>> now()
             '2016-12-04'
-            # listed format
+            # format intuited
             >>> new_year_day = nldt.moment('2001-01-01')
             >>> new_year_day()
             '2001-01-01'
-            # natural language
-            >>> yesterday = nldt.moment('yesterday')
-            >>> yesterday()
-            '2016-12-03'
-            >>> nw = nldt.moment('next week')
-            >>> nw()
-            '2016-12-05'
             # specified format
             >>> then = nldt.moment('Dec 29 2016', '%b %m %Y')
             >>> then()
@@ -1343,9 +1368,18 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __call__(self, format=None, tz=None):
         """
-        Return a string representing the date of the CSM
+        Returns a string representing the date/time of the epoch value stored
+        in self.
 
         *format*: Optional string indicating the desired output format.
+
+        *tz*: Optional timezone indicating that the date/time in the output
+        string should be localized to the specified timezone.
+
+        If *format* contains a timezone specifier, localize the time to that
+        zone. If *tz* is not empty, it can be used to do the same thing. If
+        *format* contains a timezone specifier and *tz* is specified, *tz*
+        should be ignored and the timezone in the format string should be used.
 
         Examples:
             >>> import nldt
@@ -1377,8 +1411,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
-        Return True or False - whether two moment objects are equal
-        implicit)
+        Returns True or False - whether two moment objects are equal
+        implicit
 
         *other*: a second moment object to be compared to self
 
@@ -1392,10 +1426,10 @@ class moment(object):
             False
 
             # however, once they are both advanced to the beginning of
-            # tomorrow, so the both record the beginning of the day at
+            # tomorrow, so they both record the beginning of the day at
             # midnight, they will be equal
-            >>> a.parse('tomorrow')
-            >>> b.parse('tomorrow')
+            >>> a = nldt.parse('tomorrow', a)
+            >>> b = nldt.parse('tomorrow', b)
             >>> a == b
             True
         """
@@ -1404,7 +1438,7 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __repr__(self):
         """
-        Return a string that will regenerate this object if passed to eval()
+        Returns a string that will regenerate this object if passed to eval()
 
         Examples:
             >>> import nldt
@@ -1420,7 +1454,7 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __str__(self):
         """
-        Return a human-readable representation of this object
+        Returns a human-readable representation of this object
 
         Examples:
             >>> import nldt
@@ -1433,7 +1467,7 @@ class moment(object):
     # -------------------------------------------------------------------------
     def epoch(self):
         """
-        Return the CSM as an int epoch time
+        Returns the currently stored moment as an int UTC epoch
 
         Examples:
             >>> import nldt
@@ -1446,7 +1480,7 @@ class moment(object):
     # -------------------------------------------------------------------------
     def gmtime(self):
         """
-        Return the UTC tm structure for the CSM
+        Returns the UTC tm structure for the currently stored moment
 
         examples:
             >>> import nldt
@@ -1460,7 +1494,7 @@ class moment(object):
     # -------------------------------------------------------------------------
     def localtime(self):
         """
-        Return the tm structure for the CSM
+        Returns the local time tm structure for the stored moment
 
         examples:
             >>> import nldt
@@ -1474,7 +1508,7 @@ class moment(object):
     # -------------------------------------------------------------------------
     def ceiling(self, unit):
         """
-        Compute the ceiling of *unit* (second, minute, hour, day, etc.) from
+        Computes the ceiling of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
         """
         tm = time.gmtime(self.epoch())
@@ -1505,7 +1539,7 @@ class moment(object):
     # -------------------------------------------------------------------------
     def floor(self, unit):
         """
-        Compute the floor of *unit* (second, minute, hour, day, etc.) from
+        Computes the floor of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
         """
         epoch = self.epoch()
@@ -1546,30 +1580,31 @@ class moment(object):
     # -------------------------------------------------------------------------
     def week_floor(self):
         """
-        Find the beginning of the week in which *self*.moment occurs and return
-        a new moment object that stores that point in time.
+        Finds the beginning of the week in which *self*.moment occurs and
+        return a new moment object that stores that point in time.
         """
         return self.floor('week')
 
     # -------------------------------------------------------------------------
     def month_ceiling(self):
         """
-        Find the end of the month that contains *self*.moment
+        Finds the end of the month that contains *self*.moment
         """
         return self.ceiling('month')
 
     # -------------------------------------------------------------------------
     def month_floor(self):
         """
-        Find the beginning of the month that contains *self*.moment
+        Finds the beginning of the month that contains *self*.moment
         """
         return self.floor('month')
 
     # -------------------------------------------------------------------------
     def _guess_format(self, spec):
         """
-        Try each of the parse formats in the list until one works or the list
-        is exhausted
+        Tries each of the parse formats in the list until one works or the list
+        is exhausted. Returns the UTC epoch (or None if we don't find a
+        matching format).
         """
         tm = None
         for fmt in self.formats:
