@@ -521,114 +521,6 @@ class week(Indexable):
 
 
 # -----------------------------------------------------------------------------
-def month_days(month):
-    """
-    Given a month name, this returns the number of days in the month for the
-    current year
-
-    *month* - three+ letter month name string => int between 1 (jan) and 12
-              (dec)
-
-    Example:
-        >>> nldt.month_days('January')
-        31
-        >>> nldt.month_days('febr')
-        28
-        >>> nldt.month_days('september')
-        30
-        >>> nldt.month_days('dec')
-        31
-    """
-    idx = month.lower()[0:3]
-    mdx = _MONTHS[idx]
-    rval = _MONTH_LEN[mdx-1]
-    return rval
-
-
-# -----------------------------------------------------------------------------
-def month_index(month):
-    """
-    Given month name, return index (January == 1; December == 12)
-
-    *month* - three+ letter month name string => int between 1 (jan) and 12
-              (dec)
-
-    Example:
-        >>> nldt.month_index('January')
-        1
-        >>> nldt.month_index('febr')
-        2
-    """
-    idx = month.lower()[0:3]
-    rval = _MONTHS[idx]
-    return rval
-
-
-# -----------------------------------------------------------------------------
-def month_names():
-    """
-    Return the list of month names in order
-
-    Example:
-        >>> nldt.month_names()
-        ['january', 'february', 'march', 'april', 'may', 'june',
-         'july', 'august', 'september', 'october', 'november', 'december']
-    """
-    ikeys = sorted(_ for _ in _MONTHS if isinstance(_, int))
-    rval = [_MONTHS[_] for _ in ikeys]
-    return rval
-
-
-# -----------------------------------------------------------------------------
-def weekday_index(weekday):
-    """
-    Given weekday name, return index (Monday == 0; Sunday == 6)
-
-    *weekday* - int between 0 and 6 => three letter day name string
-                three letter day name string => int between 0 (mon) and 6 (sun)
-
-    Example:
-        >>> import nldt
-
-        # Compute weekday delta
-        >>> diff = nldt.weekday_index('thu') - nldt.weekday_index('mon')
-
-        # diff == number of days to jump from monday to thursday
-        >>> diff = nldt.weekday_index('mon') - nldt.weekday_index('thu')
-
-        # diff == number of days to jump from thursday to monday (negative)
-        # General:
-        >>> diff = nldt.weekday_index(end_day) - nldt.weekday_index(start_day)
-        # diff == days to jump from start to end, either forward or backward
-        # 7 + diff == days to jump from start to end in succeeding week
-    """
-    idx = weekday.lower()[0:3]
-    rval = _WEEKDAYS[idx]
-    return rval
-
-
-# -----------------------------------------------------------------------------
-def weekday_names():
-    """
-    Return the list of weekday names in order
-
-    *weekday* - int between 0 and 6 => three letter day name string
-                three letter day name string => int between 0 (mon) and 6 (sun)
-
-    Example:
-        >>> import nldt
-
-        # Get the list
-        >>> nldt.weekday_names()
-        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
-        'sunday']
-    """
-    ikeys = sorted(_ for _ in _WEEKDAYS if isinstance(_, int))
-    rval = [_WEEKDAYS[_] for _ in ikeys]
-    return rval
-
-
-# -----------------------------------------------------------------------------
 class prepositions(object):
     """
     Provide information and tools for finding and interpreting prepositions in
@@ -1545,7 +1437,7 @@ class moment(object):
             ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + (6-tm.tm_wday),
                            23, 59, 59, 0, 0, 0))
         elif unit == 'month':
-            maxday = month.days(year=tm.tm_year, month=tm.tm_mon)
+            maxday = month().days(year=tm.tm_year, month=tm.tm_mon)
             ceil = timegm((tm.tm_year, tm.tm_mon, maxday,
                            23, 59, 59, 0, 0, 0))
         elif unit == 'year':

@@ -29,20 +29,22 @@ def test_month_index():
     nldt.month_index() takes a month name and returns its index. On bad input,
     it will raise a KeyError.
     """
-    assert nldt.month_index('jan') == 1
-    assert nldt.month_index('February') == 2
-    assert nldt.month_index('marc') == 3
-    assert nldt.month_index('apr') == 4
-    assert nldt.month_index('May') == 5
-    assert nldt.month_index('june') == 6
-    assert nldt.month_index('jul') == 7
-    assert nldt.month_index('August') == 8
-    assert nldt.month_index('sep') == 9
-    assert nldt.month_index('Octob') == 10
-    assert nldt.month_index('nov') == 11
-    assert nldt.month_index('December') == 12
-    with pytest.raises(KeyError):
-        assert nldt.month_index('frobble')
+    m = nldt.month()
+    assert m.index('jan') == 1
+    assert m.index('February') == 2
+    assert m.index('marc') == 3
+    assert m.index('apr') == 4
+    assert m.index('May') == 5
+    assert m.index('june') == 6
+    assert m.index('jul') == 7
+    assert m.index('August') == 8
+    assert m.index('sep') == 9
+    assert m.index('Octob') == 10
+    assert m.index('nov') == 11
+    assert m.index('December') == 12
+    with pytest.raises(ValueError) as err:
+        assert m.index('frobble')
+    assert "Could not indexify 'frobble'" in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -62,15 +64,17 @@ def test_weekday_index():
     nldt.weekday_index() takes a weekday name and returns its index. On bad
     input, it will raise a KeyError.
     """
-    assert nldt.weekday_index('Monday') == 0
-    assert nldt.weekday_index('tue') == 1
-    assert nldt.weekday_index('wednesday') == 2
-    assert nldt.weekday_index('thur') == 3
-    assert nldt.weekday_index('fri') == 4
-    assert nldt.weekday_index('Saturday') == 5
-    assert nldt.weekday_index('sunda') == 6
+    pytest.debug_func()
+    w = nldt.week()
+    assert w.index('Monday') == 0
+    assert w.index('tue') == 1
+    assert w.index('wednesday') == 2
+    assert w.index('thur') == 3
+    assert w.index('fri') == 4
+    assert w.index('Saturday') == 5
+    assert w.index('sunda') == 6
     with pytest.raises(KeyError):
-        assert nldt.weekday_index('foobar')
+        assert w.index('foobar')
 
 
 # -----------------------------------------------------------------------------
@@ -498,7 +502,7 @@ def nl_oracle(spec):
             start = M(start.epoch() + tu.magnitude('day'))
         return start()
     elif spec == 'last week':
-        wdidx = nldt.weekday_index('mon')
+        wdidx = wk.index('mon')
         start = nldt.parse('yesterday')
         start = nldt.moment(start.epoch() - 6*24*3600)
         while wk.day_number(start) != wdidx:
@@ -592,7 +596,8 @@ def nl_oracle(spec):
         wdidx = wk.index(day)
         start = nldt.parse('yesterday')
         while wk.day_number(start) != wdidx:
-            start = M(start.epoch() - nldt._DAY)
+            # start = M(start.epoch() - nldt._DAY)
+            start = M(start.epoch() - tu.magnitude('day'))
     elif day == 'week':
         (day, direction) = (direction, day)
         # now direction is 'week' and day is likely a weekday (eg, 'monday
