@@ -543,7 +543,10 @@ class prepositions(object):
         if not hasattr(self, 'regex'):
             self.regex = "\\s(" + "|".join(self.preps.keys()) + ")\\s"
         rval = re.split(self.regex, text)
-        return rval[1], rval
+        if len(rval) < 2:
+            return None, rval
+        else:
+            return rval[1], rval
 
     # -------------------------------------------------------------------------
     def are_in(self, text):
