@@ -7,6 +7,8 @@ import tbx
 import time
 import nldt
 from nldt import moment as M
+from calendar import timegm
+
 
 # -----------------------------------------------------------------------------
 def test_month_init():
@@ -832,8 +834,186 @@ def test_week_day_number():
 
 
 # -----------------------------------------------------------------------------
+def test_prep_init():
     """
+    Verify that class prepositions instantiates properly
     """
+    prp = nldt.prepositions()
+    assert prp.preps['of'] == 1
+    assert prp.preps['in'] == 1
+    assert prp.preps['from'] == 1
+    assert prp.preps['after'] == 1
+    assert prp.preps['before'] == -1
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [
+    ("first of thirteenth", ("of", ["first", "of", "thirteenth"])),
+    ("last week in January", ("in", ["last week", "in", "January"])),
+    ("three weeks from yesterday",
+     ("from", ["three weeks", "from", "yesterday"])),
+    ("five days after tomorrow",
+     ("after", ["five days", "after", "tomorrow"])),
+    ("day before tomorrow", ("before", ["day", "before", "tomorrow"])),
+    ("one two three four five", (None, ["one two three four five"])),
+    ])
+def test_prep_split(inp, exp):
+    """
+    Verify that prepositions.split() does what's expected
+    """
+    prp = nldt.prepositions()
+    assert prp.split(inp) == exp
+
+
+# -----------------------------------------------------------------------------
+def test_prep_are_in():
+    """
+    """
+    prp = nldt.prepositions()
+    assert prp.are_in("preposition in this phrase")
+    assert not prp.are_in("no prepositions here")
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [
+    ("of", 1),
+    ("in", 1),
+    ("from", 1),
+    ("after", 1),
+    ("before", -1),
+    ("foobar", ""),
+    ])
+def test_prep_direction(inp, exp):
+    """
+    Test for prepositions.direction()
+    """
+    pytest.debug_func()
+    prp = nldt.prepositions()
+    if isinstance(exp, numbers.Number):
+        assert prp.direction(inp) == exp
+    else:
+        with pytest.raises(KeyError) as err:
+            assert prp.direction(inp) == exp
+        assert "'foobar'" in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_unit_list():
+    """
+    Verify time_units().unit_list()
+    """
+    tu = nldt.time_units()
+    exp = ["second", "minute", "hour", "day", "week", "month", "year"]
+    assert list(tu.unit_list()) == exp
+
+
+# -----------------------------------------------------------------------------
+def test_moment_init_tm():
+    """
+    Verify instantiating a moment based on a tm tuple
+    """
+    foo = time.time()
+    from_tm = nldt.moment(time.gmtime(foo))
+    from_epoch = nldt.moment(foo)
+    assert from_tm == from_epoch
+
+
+# -----------------------------------------------------------------------------
+def test_moment_init_except():
+    """
+    Verify that trying to instantiate a moment based on a tuple with too many
+    or not enough elements, raises an exception
+    """
+    msg = "need at least 6 values, no more than 9"
+    with pytest.raises(ValueError) as err:
+        blah = nldt.moment((1, 2, 3, 4, 5))
+    assert msg in str(err)
+    with pytest.raises(ValueError) as err:
+        blah = nldt.moment((1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    assert msg in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_moment_localtime():
+    """
+    Test moment().localtime()
+    """
+    now = time.time()
+    foo = nldt.moment(now)
+    expected = time.localtime(now)
+    actual = foo.localtime()
+    assert actual == expected
+
+
+# -----------------------------------------------------------------------------
+def test_moment_ceiling():
+    """
+    Test in moment().ceiling()
+    """
+
+    def expected_ceiling(unit, now):
+        if unit in ['second', 'minute', 'hour', 'day']:
+            mag = tu.magnitude(unit)
+            exp = now + mag - (now % mag) - 1
+        elif unit == 'week':
+            tm = time.gmtime(now)
+            delta = wk.forediff(tm.tm_wday, 'mon')
+            nflr = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
+                           0, 0, 0, 0, 0, 0))
+            exp = nflr - 1
+        elif unit == 'month':
+            tm = time.gmtime(now)
+            nflr = timegm((tm.tm_year, tm.tm_mon+1, 1, 0, 0, 0, 0, 0, 0))
+            exp = nflr - 1
+        elif unit == 'year':
+            tm = time.gmtime(now)
+            nflr = timegm((tm.tm_year+1, 1, 1, 0, 0, 0, 0, 0, 0))
+            exp = nflr - 1
+        return nldt.moment(exp)
+
+    tu = nldt.time_units()
+    wk = nldt.week()
+    now = time.time()
+    mug = nldt.moment(now)
+    for unit in tu.unit_list():
+        assert mug.ceiling(unit) == expected_ceiling(unit, now)
+
+    with pytest.raises(ValueError) as err:
+        mug.ceiling('frumpy')
+    assert "'frumpy' is not a time unit" in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_moment_floor():
+    """
+    Test in moment().floor()
+    """
+
+    def expected_floor(unit, now):
+        if unit in ['second', 'minute', 'hour', 'day']:
+            mag = tu.magnitude(unit)
+            exp = now - (now % mag)
+        elif unit == 'week':
+            tm = time.gmtime(now)
+            delta = wk.backdiff(tm.tm_wday, 'mon')
+            exp = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
+                          0, 0, 0, 0, 0, 0))
+        elif unit == 'month':
+            tm = time.gmtime(now)
+            exp = timegm((tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0))
+        elif unit == 'year':
+            tm = time.gmtime(now)
+            exp = timegm((tm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0))
+        return nldt.moment(exp)
+
+    pytest.debug_func()
+    tu = nldt.time_units()
+    wk = nldt.week()
+    now = time.time()
+    mug = nldt.moment(now)
+    for unit in tu.unit_list():
+        assert mug.floor(unit) == expected_floor(unit, now)
+
+    with pytest.raises(ValueError) as err:
+        mug.floor('frumpy')
+    assert "'frumpy' is not a time unit" in str(err)
