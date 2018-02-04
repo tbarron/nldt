@@ -445,6 +445,7 @@ def nl_oracle(spec):
     counts backward, without trying to do any fancy arithmetic.
     """
     wk = nldt.week()
+    tu = nldt.time_units()
     if spec == 'fourth day of this week':
         now = nldt.parse('last week')
         now = nldt.parse('next week', now)
@@ -494,7 +495,7 @@ def nl_oracle(spec):
         wdidx = wk.index('mon')
         start = M()
         while wk.day_number(start) != wdidx:
-            start = M(start.epoch() + nldt._DAY)
+            start = M(start.epoch() + tu.magnitude('day'))
         return start()
     elif spec == 'last week':
         wdidx = nldt.weekday_index('mon')
@@ -586,7 +587,7 @@ def nl_oracle(spec):
         wdidx = wk.index(day)
         start = nldt.parse('tomorrow')
         while wk.day_number(start) != wdidx:
-            start = M(start.epoch() + nldt._DAY)
+            start = M(start.epoch() + tu.magnitude('day'))
     elif direction == 'last':
         wdidx = wk.index(day)
         start = nldt.parse('yesterday')
@@ -604,10 +605,10 @@ def nl_oracle(spec):
         wdidx = wk.index(day)
         when = nldt.parse('tomorrow')
         while wk.day_number(when) != wdidx:
-            when = M(when.epoch() + nldt._DAY)
+            when = M(when.epoch() + tu.magnitude('day'))
 
         # now jump forward a week
-        start = M(when.epoch() + nldt._WEEK)
+        start = M(when.epoch() + tu.magnitude('week'))
 
     return start()
 

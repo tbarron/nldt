@@ -14,12 +14,6 @@ import re
 import time
 
 
-_MINUTE = 60
-_HOUR = 60 * _MINUTE
-_DAY = 24 * _HOUR
-_WEEK = 7 * _DAY
-
-
 # -----------------------------------------------------------------------------
 class Indexable(object):
     """
@@ -121,9 +115,9 @@ def parse(expr, start=None):
     elif expr == 'today':
         rval = moment()
     elif expr == 'tomorrow':
-        rval = moment(start.moment + _DAY)
+        rval = moment(start.moment + tu.magnitude('day'))
     elif expr == 'yesterday':
-        rval = moment(start.moment - _DAY)
+        rval = moment(start.moment - tu.magnitude('day'))
     elif 'ago' in expr:
         rval = parse_ago(expr)
     elif 'from now' in expr:
@@ -133,9 +127,9 @@ def parse(expr, start=None):
     elif re.search("(\s|^)week(\s|$)", expr):
         wb = word_before('week', expr)
         if wb == 'last':
-            rval = moment(start.week_floor().epoch() - _WEEK)
+            rval = moment(start.week_floor().epoch() - tu.magnitude('week'))
         elif wb == 'next':
-            rval = moment(start.week_floor().epoch() + _WEEK)
+            rval = moment(start.week_floor().epoch() + tu.magnitude('week'))
         elif wb == 'first':
             tm = start.gmtime()
             delta = (7 - tm.tm_wday) % 7
