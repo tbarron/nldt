@@ -3,6 +3,60 @@ Natural Language Date and Time package
 
 This module provides a simple natural language interfaace to Python's time and
 date processing machinery.
+
+NLDT Rules
+
+ * The basic time representation is an epoch, which is a 64 bit int
+   representing the number of seconds since Thu Jan 1 00:00:00 1970 UTC. Epoch
+   values always reflect UTC (not local) time.
+
+ * NLDT stores epoch values in objects of moment class, which provides a number
+   of useful methods.
+
+ * The NLDT classes month, week, and time_units depend on functionality
+   provided by Python.
+
+ * The NLDT classes moment and duration depend on month, week, time_units, and
+   functionality provided by Python.
+
+ * Actual natural language parsing is provided in a layer above moment and
+   duration. Nothing in a lower layer should ever depend on something in a
+   higher layer. Here's the 'layer cake':
+
+
+       Layer  Functionality
+       ----------------------------------------------------------------
+        4     natural language command line interface
+       ----------------------------------------------------------------
+        3     natural language parsing ('tommorrow', 'yesterday', etc.)
+       ----------------------------------------------------------------
+        2     moment, duration
+       ----------------------------------------------------------------
+        1     month, week, time_units
+       ----------------------------------------------------------------
+        0     Python
+       ----------------------------------------------------------------
+
+  * Calculations are carried out in UTC. Dates and times are only converted to
+    local time when being delivered to the consumer, if desired.
+
+We import and use calendar.timegm because it provides something the time module
+is missing. Specifically, the time provides:
+
+  * gmtime (convert UTC epoch to UTC tm struct),
+  * localtime (convert UTC epoch to local time tm struct), and
+  * mktime (convert local time tm struct to UTC epoch),
+
+but it does not provide a way to get from a UTC tm struct to UTC epoch.
+
+If we apply time.mktime to a UTC tm struct, the resulting epoch is adjusted by
+the UTC offset. Since local time's UTC offset may change from one part of the
+year to another as DST goes on and off, using mktime and then adjusting
+backward is problematic and confusing.
+
+The better solution is to import and use calendar.timegm() because it provides
+the desired functionality, converting a UTC tm struct to the corresponding UTC
+epoch.
 """
 from calendar import timegm
 from datetime import datetime
