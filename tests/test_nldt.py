@@ -733,10 +733,14 @@ def test_month_days(month, year, exp):
 # -----------------------------------------------------------------------------
 def test_isleap():
     """
-    When year is not given, isleap should always return False
+    When year is not given, isleap should return True if the current year is
+    leap, else False
     """
     m = nldt.month()
-    assert not m.isleap(None)
+    if m.days(2) == 29:
+        assert m.isleap(None)
+    else:
+        assert not m.isleap(None)
 
 
 # -----------------------------------------------------------------------------
