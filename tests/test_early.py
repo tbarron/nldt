@@ -25,12 +25,15 @@ def test_pydoc():
                'epoch',
                'localtime',
                'moment',
-               'month_days', 'month_index', 'month_names',
-               'weekday_index', 'weekday_names']
+               'month',
+               'week',
+               ]
 
     absent = ['_DAY', '_end_of_day', '_end_of_month', '_end_of_week',
               '_guess_format', '_MONTHS', '_MONTH_LEN', '_nl_match',
-              '_parse_return', '_WEEK', '_week_ago', '_WEEKDAYS', ]
+              '_parse_return', '_WEEK', '_week_ago', '_WEEKDAYS',
+              'month_index', 'month_names', 'weekday_index', 'weekday_names'
+              ]
 
     docker = pydoc.TextDoc()
     result = re.sub("\x08.", "", docker.document(nldt))
