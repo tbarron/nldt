@@ -474,8 +474,7 @@ class week(Indexable):
         """
         if 3 < len(wday):
             wday = wday[0:3].lower()
-        rval = self._dict.get(wday, -1)
-        return rval['idx']
+        return self._dict[wday]['idx']
 
     # -------------------------------------------------------------------------
     def fullname(self, idx_or_abbr):
