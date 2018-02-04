@@ -1492,34 +1492,21 @@ class moment(object):
         Find the beginning of the week in which *self*.moment occurs and return
         a new moment object that stores that point in time.
         """
-        tm = time.gmtime(self.moment)
-        then = self.epoch()
-        then -= tm.tm_wday * _DAY
-        then -= tm.tm_hour * _HOUR
-        then -= tm.tm_min * _MINUTE
-        then -= tm.tm_sec
-        return moment(then)
+        return self.floor('week')
 
     # -------------------------------------------------------------------------
     def month_ceiling(self):
         """
         Find the end of the month that contains *self*.moment
         """
-        tm = time.gmtime(self.epoch())
-        nflr_tm = (tm.tm_year, tm.tm_mon + 1, 1, 0, 0, 0, 0, 0, 0)
-        nflr = timegm(nflr_tm)
-        nflr -= nflr % _DAY
-        return moment(nflr - 1)
+        return self.ceiling('month')
 
     # -------------------------------------------------------------------------
     def month_floor(self):
         """
         Find the beginning of the month that contains *self*.moment
         """
-        tm = time.gmtime(self.epoch())
-        flr_tm = (tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0)
-        flr = timegm(flr_tm)
-        return moment(flr)
+        return self.floor('month')
 
     # -------------------------------------------------------------------------
     def _guess_format(self, spec):
