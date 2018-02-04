@@ -731,6 +731,18 @@ def test_month_days(month, year, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_month_days_curyear():
+    """
+    Verify that month.days() for february this year does the right thing
+    """
+    mobj = nldt.month()
+    now = nldt.moment()
+    curyear = int(now('%Y'))
+    exp = 29 if mobj.isleap(curyear) else 28
+    assert mobj.days(2) == exp
+
+
+# -----------------------------------------------------------------------------
 def test_isleap():
     """
     When year is not given, isleap should return True if the current year is
