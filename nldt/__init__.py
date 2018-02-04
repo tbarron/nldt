@@ -322,32 +322,6 @@ def utc_offset(epoch=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-_WEEKDAYS = {'mon': 0, 0: 'monday',
-             'tue': 1, 1: 'tuesday',
-             'wed': 2, 2: 'wednesday',
-             'thu': 3, 3: 'thursday',
-             'fri': 4, 4: 'friday',
-             'sat': 5, 5: 'saturday',
-             'sun': 6, 6: 'sunday'}
-
-_MONTHS = {'jan': 1, 1: 'january',
-           'feb': 2, 2: 'february',
-           'mar': 3, 3: 'march',
-           'apr': 4, 4: 'april',
-           'may': 5, 5: 'may',
-           'jun': 6, 6: 'june',
-           'jul': 7, 7: 'july',
-           'aug': 8, 8: 'august',
-           'sep': 9, 9: 'september',
-           'oct': 10, 10: 'october',
-           'nov': 11, 11: 'november',
-           'dec': 12, 12: 'december',
-           }
-
-_MONTH_LEN = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-
-# -----------------------------------------------------------------------------
 class month(Indexable):     # I managed to lose this update
     """
     Defines and serves information about months
