@@ -832,20 +832,8 @@ def test_week_day_number():
 
 
 # -----------------------------------------------------------------------------
-def close_times(tm1, tm2):
     """
-    Return True if the epoch times represented by *tm1* and *tm2* are 'close'
     """
-    return abs(tm1 - tm2) < 0.01
 
 
 # -----------------------------------------------------------------------------
-# @pytest.fixture
-# def nl_oracle(spec):
-#     """
-#     """
-#     if spec == 'next saturday':
-#         tm = time.localtime()
-#         diff = 5 - tm.tm_wday
-#         target = time.time() + diff*24*3600
-#         return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(target))
