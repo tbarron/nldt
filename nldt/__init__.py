@@ -1443,7 +1443,7 @@ class moment(object):
         elif unit == 'year':
             ceil = timegm((tm.tm_year, 12, 31, 23, 59, 59, 0, 0, 0))
         else:
-            raise ValueError('unit must be a time unit')
+            raise ValueError("'{}' is not a time unit".format(unit))
         return moment(ceil)
 
     # -------------------------------------------------------------------------
@@ -1484,7 +1484,7 @@ class moment(object):
             nflr = timegm((tm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0))
             rval = moment(nflr)
         else:
-            raise ValueError('unit must be a time unit')
+            raise ValueError("'{}' is not a time unit".format(unit))
         return rval
 
     # -------------------------------------------------------------------------

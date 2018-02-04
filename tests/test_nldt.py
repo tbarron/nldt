@@ -52,7 +52,8 @@ def test_month_names():
     """
     nldt.month_names() returns the list of month names in order
     """
-    result = nldt.month_names()
+    m = nldt.month()
+    result = m.names()
     exp = ['january', 'february', 'march', 'april', 'may', 'june',
            'july', 'august', 'september', 'october', 'november', 'december']
     assert result == exp
@@ -82,7 +83,8 @@ def test_weekday_names():
     """
     nldt.weekday_names() returns the list of weekday names in order
     """
-    result = nldt.weekday_names()
+    w = nldt.week()
+    result = w.day_list()
     exp = ['monday', 'tuesday', 'wednesday', 'thursday',
            'friday', 'saturday', 'sunday']
     assert result == exp
