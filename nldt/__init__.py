@@ -145,19 +145,6 @@ class Indexable(object):
 
 
 
-# -----------------------------------------------------------------------------
-def hhmm(seconds):
-    """
-    Returns a string showing HHMM based on *seconds*
-    """
-    prefix = ""
-    if seconds < 0:
-        prefix = "-"
-        seconds = -1 * seconds
-    mins = int(seconds / 60)
-    hrs = int(mins / 60)
-    mins = mins % 60
-    return "{}{:02d}{:02d}".format(prefix, hrs, mins)
 
 
 # -----------------------------------------------------------------------------
@@ -871,6 +858,21 @@ def dst(when=None, tz=None):
         """
         Returns True or False - whether two moment objects are equal
         implicit
+# -----------------------------------------------------------------------------
+def hhmm(seconds):
+    """
+    Returns a string showing HHMM based on *seconds*
+    """
+    prefix = ""
+    if seconds < 0:
+        prefix = "-"
+        seconds = -1 * seconds
+    mins = int(seconds / 60)
+    hrs = int(mins / 60)
+    mins = mins % 60
+    return "{}{:02d}{:02d}".format(prefix, hrs, mins)
+
+
 
         *other*: a second moment object to be compared to self
 # -----------------------------------------------------------------------------
