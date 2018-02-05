@@ -1067,3 +1067,10 @@ class moment(object):
             return timegm(tm)
         else:
             return None
+
+# -----------------------------------------------------------------------------
+def caller_name():
+    """
+    Returns the name of the caller of the caller of this function
+    """
+    return inspect.stack()[2].function
