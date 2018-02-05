@@ -662,7 +662,7 @@ class Parser(object):
             rval = self.parse_week(expr, start)
         elif self.research("(\s|^)year(\s|$)", expr, result):
             rval = self.parse_year(expr, start)
-        elif self.research(self.wkdays_rgx, expr, result):
+        elif self.research(self.wkday_rgx, expr, result):
             rval = self.parse_weekday(expr, result, start)
         return rval
 
