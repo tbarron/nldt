@@ -614,10 +614,8 @@ class month(Indexable):
 
 
 # -----------------------------------------------------------------------------
-class week(Indexable):
 class Parser(object):
     """
-    Defines and serves weekday information
     This class provides a method object whose __call__() method will examine
     its input to determine the correct submethod(s) to do the work or parsing
     the input.
@@ -625,21 +623,8 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        Sets up week info
         Sets up the Parser object
         """
-        self._dict = {}
-        for idx in range(0, 7):
-            q = moment("2018.01{:02d}".format(idx+1))
-            wname = q('%A').lower()
-            abbr = wname[0:3]
-            this = {
-                'name': wname,
-                'abbr': abbr,
-                'idx': idx,
-                }
-            self._dict[abbr] = this
-            self._dict[idx] = this
         self.preps = prepositions()
         self.tu = time_units()
         self.wk = week()
@@ -647,7 +632,6 @@ class Parser(object):
         self.wkday_rgx = self.wk.match_weekdays()
 
     # -------------------------------------------------------------------------
-    def day_list(self):
     def __call__(self, expr, start=None):
         """
         Parses *expr*, using *start* as the initial reference point if
@@ -685,128 +669,56 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_of_in(self, expr, result, start):
         """
-        Returns a list of weekday names
         Handles expressions like 'third of May', 'first week in June'
         """
-        return [self._dict[x]['name'] for x in self._dict
-                if isinstance(x, int)]
         raise Stub()
 
     # -------------------------------------------------------------------------
-    def find_day(self, text):
     def parse_mon_name(self, expr, start):
         """
-        Finds and returns the first weekday name in *text*
         Handles expressions like 'May', 'October', 'February, 1933'
         """
-        found = [wday for wday in self.day_list()
-                 if re.search("(^|\W){}(\W|$)".format(wday), text)]
-        if found:
-            return found[0]
-        else:
-            return None
         raise Stub()
 
     # -------------------------------------------------------------------------
-    def forediff(self, start, end):
     def parse_ago(self, expr, start):
         """
-        Returns the number of days required to get from day *start* to day
-        *end* going forward. *start* and *end* can be day names or index
-        values.
         """
-        start = self.indexify(start)
-        end = self.indexify(end)
-        if end <= start:
-            end += 7
-        rval = end - start
-        return rval
         raise Stub()
 
     # -------------------------------------------------------------------------
-    def backdiff(self, start, end):
     def parse_from_now(self, expr, start):
         """
-        Returns the number of days required to get from day *start* to day
-        *end* going forward. *start* and *end* can be day names or index
-        values.
         """
-        start = self.indexify(start)
-        end = self.indexify(end)
-        if start <= end:
-            start += 7
-        rval = start - end
-        return rval
         raise Stub()
 
     # -------------------------------------------------------------------------
-    def index(self, wday):
     def parse_month(self, expr, start):
         """
-        Returns the numeric index for *wday* (sun = 0, mon = 1, ... sat = 6)
         """
-        if 3 < len(wday):
-            wday = wday[0:3].lower()
-        return self._dict[wday]['idx']
         raise Stub()
 
     # -------------------------------------------------------------------------
-    def fullname(self, idx_or_abbr):
     def parse_week(self, expr, start):
         """
-        Looks up *idx_or_abbr* in self._dict and return the 'name' item
         """
-        idx = self.indexify(idx_or_abbr)
-        return self._dict[idx]['name']
         raise Stub()
 
     # -------------------------------------------------------------------------
-    def match_weekdays(self):
     def parse_year(self, expr, start):
         """
-        Returns a regex that will match all weekdays
         """
-        return "(mon|tues|wednes|thurs|fri|satur|sun)day"
         raise Stub()
 
     # -------------------------------------------------------------------------
-    def day_number(self, moment_or_epoch, count=None):
     def parse_weekday(self, expr, result, start):
         """
-        This returns a weekday number based on a moment or epoch time. The
-        *count* argument can be one of
-
-          * 'mon0' (the default) => mon = 0 ... sun = 6
-          * 'sun0' => sun = 0 ... sat = 6
-          * 'mon1' => mon = 1 ... sun = 7
-
-        'mon0' is the counting regime used in the tm structures
-        returned by time.localtime() and time.gmtime().
-
-        'sun0' is the counting regime for the '%w' specifier in time.strftime()
-        and time.strptime() patterns.
         """
         raise Stub()
 
-        'mon1' is the counting regime for the '%u' specifier in time.strftime()
-        and time.strptime().
     # -------------------------------------------------------------------------
     def research(self, pattern, text, result):
         """
-        count = count or 'mon0'
-        if isinstance(moment_or_epoch, moment):
-            epoch = moment_or_epoch.epoch()
-        elif isinstance(moment_or_epoch, numbers.Number):
-            epoch = moment_or_epoch
-        else:
-            raise TypeError('argument must be moment or epoch number')
-        tm = time.gmtime(epoch)
-        if count == 'mon0':
-            return tm.tm_wday
-        elif count == 'mon1' or count == '%u':
-            return tm.tm_wday + 1
-        elif count == 'sun0' or count == '%w':
-            return (tm.tm_wday + 1) % 7
         Looks for *pattern* in *text*. If something is found, push the search
         object into *result* (which must be a list) and also return it.
         """
@@ -908,41 +820,128 @@ class time_units(object):
 
 
 # -----------------------------------------------------------------------------
+class week(Indexable):
     """
+    Defines and serves weekday information
     """
+    # -------------------------------------------------------------------------
+    def __init__(self):
+        """
+        Sets up week info
+        """
+        self._dict = {}
+        for idx in range(0, 7):
+            q = moment("2018.01{:02d}".format(idx+1))
+            wname = q('%A').lower()
+            abbr = wname[0:3]
+            this = {
+                'name': wname,
+                'abbr': abbr,
+                'idx': idx,
+                }
+            self._dict[abbr] = this
+            self._dict[idx] = this
 
+    # -------------------------------------------------------------------------
+    def day_list(self):
+        """
+        Returns a list of weekday names
+        """
+        return [self._dict[x]['name'] for x in self._dict
+                if isinstance(x, int)]
 
+    # -------------------------------------------------------------------------
+    def find_day(self, text):
+        """
+        Finds and returns the first weekday name in *text*
+        """
+        found = [wday for wday in self.day_list()
+                 if re.search("(^|\W){}(\W|$)".format(wday), text)]
+        if found:
+            return found[0]
+        else:
+            return None
 
                "%d %b, %Y %H:%M:%S",
                "%d %b, %Y %H:%M",
                "%d %b, %Y %H",
                "%d %b, %Y",
+    # -------------------------------------------------------------------------
+    def forediff(self, start, end):
+        """
+        Returns the number of days required to get from day *start* to day
+        *end* going forward. *start* and *end* can be day names or index
+        values.
+        """
+        start = self.indexify(start)
+        end = self.indexify(end)
+        if end <= start:
+            end += 7
+        rval = end - start
+        return rval
 
                "%B %d %Y %H:%M:%S",
                "%B %d %Y %H:%M",
                "%B %d %Y %H",
                "%B %d %Y",
+    # -------------------------------------------------------------------------
+    def backdiff(self, start, end):
+        """
+        Returns the number of days required to get from day *start* to day
+        *end* going forward. *start* and *end* can be day names or index
+        values.
+        """
+        start = self.indexify(start)
+        end = self.indexify(end)
+        if start <= end:
+            start += 7
+        rval = start - end
+        return rval
 
                "%B %d, %Y %H:%M:%S",
                "%B %d, %Y %H:%M",
                "%B %d, %Y %H",
                "%B %d, %Y",
+    # -------------------------------------------------------------------------
+    def index(self, wday):
+        """
+        Returns the numeric index for *wday* (sun = 0, mon = 1, ... sat = 6)
+        """
+        if 3 < len(wday):
+            wday = wday[0:3].lower()
+        return self._dict[wday]['idx']
 
                "%d %B %Y %H:%M:%S",
                "%d %B %Y %H:%M",
                "%d %B %Y %H",
                "%d %B %Y",
+    # -------------------------------------------------------------------------
+    def fullname(self, idx_or_abbr):
+        """
+        Looks up *idx_or_abbr* in self._dict and return the 'name' item
+        """
+        idx = self.indexify(idx_or_abbr)
+        return self._dict[idx]['name']
 
                "%d %B, %Y %H:%M:%S",
                "%d %B, %Y %H:%M",
                "%d %B, %Y %H",
                "%d %B, %Y",
                ]
+    # -------------------------------------------------------------------------
+    def match_weekdays(self):
+        """
+        Returns a regex that will match all weekdays
+        """
+        return "(mon|tues|wednes|thurs|fri|satur|sun)day"
 
     # -------------------------------------------------------------------------
     def __init__(self, *args):
+    def day_number(self, moment_or_epoch, count=None):
         """
         Constructs a moment object.
+        This returns a weekday number based on a moment or epoch time. The
+        *count* argument can be one of
 
         *args*:
             empty: object represents current UTC time at instantiation
@@ -950,11 +949,16 @@ class time_units(object):
                 self.formats.
             two elements: args[0] is a date/time spec, args[1] is a format
                 describing args[0].
+          * 'mon0' (the default) => mon = 0 ... sun = 6
+          * 'sun0' => sun = 0 ... sat = 6
+          * 'mon1' => mon = 1 ... sun = 7
 
         If a timezone is provided in the input string, the string should be
         interpreted as local to that timezone. The value stored in the
         constructed object should be the UTC epoch corresponding to the
         specified local time.
+        'mon0' is the counting regime used in the tm structures
+        returned by time.localtime() and time.gmtime().
 
         Examples:
             >>> import nldt
@@ -970,6 +974,11 @@ class time_units(object):
             >>> then = nldt.moment('Dec 29 2016', '%b %m %Y')
             >>> then()
             '2016-12-29'
+        'sun0' is the counting regime for the '%w' specifier in time.strftime()
+        and time.strptime() patterns.
+
+        'mon1' is the counting regime for the '%u' specifier in time.strftime()
+        and time.strptime().
         """
         self.moment = None
         if len(args) < 1:
@@ -992,9 +1001,22 @@ class time_units(object):
                                  "    nldt.moment('YYYY-mm-dd')",
                                  "    nldt.moment(<date-str>[, <format>])"])
                 raise(ValueError(msg))
+        count = count or 'mon0'
+        if isinstance(moment_or_epoch, moment):
+            epoch = moment_or_epoch.epoch()
+        elif isinstance(moment_or_epoch, numbers.Number):
+            epoch = moment_or_epoch
         else:
             tm = time.strptime(args[0], args[1])
             self.moment = int(timegm(tm))
+            raise TypeError('argument must be moment or epoch number')
+        tm = time.gmtime(epoch)
+        if count == 'mon0':
+            return tm.tm_wday
+        elif count == 'mon1' or count == '%u':
+            return tm.tm_wday + 1
+        elif count == 'sun0' or count == '%w':
+            return (tm.tm_wday + 1) % 7
 
     # -------------------------------------------------------------------------
     def __call__(self, format=None, tz=None):
