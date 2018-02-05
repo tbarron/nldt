@@ -1011,7 +1011,7 @@ def test_moment_floor():
             exp = now - (now % mag)
         elif unit == 'week':
             tm = time.gmtime(now)
-            delta = wk.backdiff(tm.tm_wday, 'mon')
+            delta = wk.backdiff(tm.tm_wday, 'mon') % 7
             exp = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
                           0, 0, 0, 0, 0, 0))
         elif unit == 'month':
