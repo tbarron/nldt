@@ -468,6 +468,25 @@ class month(Indexable):     # I managed to lose this update
         rgx = "(" + "|".join([self._dict[x]['name'] for x in self._dict
                               if isinstance(x, int)]) + ")"
         return rgx
+    # -------------------------------------------------------------------------
+    def _guess_format(self, spec):
+        """
+        Tries each of the parse formats in the list until one works or the list
+        is exhausted. Returns the UTC epoch (or None if we don't find a
+        matching format).
+        """
+        tm = None
+        for fmt in self.formats:
+            try:
+                tm = time.strptime(spec, fmt)
+                break
+            except ValueError:
+                pass
+
+        if tm:
+            return timegm(tm)
+        else:
+            return None
 
 
 # -----------------------------------------------------------------------------
@@ -1056,29 +1075,12 @@ class Stub(Exception):
     To be raised in stub functions
     """
     # -------------------------------------------------------------------------
-    def _guess_format(self, spec):
-        """
-        Tries each of the parse formats in the list until one works or the list
-        is exhausted. Returns the UTC epoch (or None if we don't find a
-        matching format).
-        """
-        tm = None
-        for fmt in self.formats:
-            try:
-                tm = time.strptime(spec, fmt)
-                break
-            except ValueError:
-                pass
     def __init__(self, msg=None):
         fullmsg = "{}() is a stub -- please complete it.".format(caller_name())
         if msg:
             fullmsg += " ({})".format(msg)
         super().__init__(fullmsg)
 
-        if tm:
-            return timegm(tm)
-        else:
-            return None
 
 # -----------------------------------------------------------------------------
 def caller_name():
