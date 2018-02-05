@@ -611,25 +611,6 @@ class month(Indexable):
         rgx = "(" + "|".join([self._dict[x]['name'] for x in self._dict
                               if isinstance(x, int)]) + ")"
         return rgx
-    # -------------------------------------------------------------------------
-    def _guess_format(self, spec):
-        """
-        Tries each of the parse formats in the list until one works or the list
-        is exhausted. Returns the UTC epoch (or None if we don't find a
-        matching format).
-        """
-        tm = None
-        for fmt in self.formats:
-            try:
-                tm = time.strptime(spec, fmt)
-                break
-            except ValueError:
-                pass
-
-        if tm:
-            return timegm(tm)
-        else:
-            return None
 
 
 # -----------------------------------------------------------------------------
