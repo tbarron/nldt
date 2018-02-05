@@ -139,13 +139,72 @@ class Indexable(object):
 
 
 # -----------------------------------------------------------------------------
+class moment(object):
     """
+    Objects of this class represent a point in time. The moment is stored in
+    UTC. The strptime formats in list moment.formats are used to intuit the
+    format of date/time strings for which no format is provided.
     """
+    formats = ['%y-%m-%d',
+               '%y-%m-%d %H',
+               '%y-%m-%d %H:%M',
+               '%y-%m-%d %H:%M:%S',
 
+               '%Y-%m-%d',
+               '%Y-%m-%d %H',
+               '%Y-%m-%d %H:%M',
+               '%Y-%m-%d %H:%M:%S',
 
+               "%Y.%m%d",
+               "%Y.%m%d %H",
+               "%Y.%m%d %H:%M",
+               "%Y.%m%d %H:%M:%S",
 
+               "%Y-%m-%d",
+               "%Y-%m-%d %H",
+               "%Y-%m-%d %H:%M",
+               "%Y-%m-%d %H:%M:%S",
 
+               "%b %d %Y",
+               "%b %d %Y %H",
+               "%b %d %Y %H:%M",
+               "%b %d %Y %H:%M:%S",
 
+               "%b %d, %Y",
+               "%b %d, %Y %H",
+               "%b %d, %Y %H:%M",
+               "%b %d, %Y %H:%M:%S",
+
+               "%d %b %Y %H:%M:%S",
+               "%d %b %Y %H:%M",
+               "%d %b %Y %H",
+               "%d %b %Y",
+
+               "%d %b, %Y %H:%M:%S",
+               "%d %b, %Y %H:%M",
+               "%d %b, %Y %H",
+               "%d %b, %Y",
+
+               "%B %d %Y %H:%M:%S",
+               "%B %d %Y %H:%M",
+               "%B %d %Y %H",
+               "%B %d %Y",
+
+               "%B %d, %Y %H:%M:%S",
+               "%B %d, %Y %H:%M",
+               "%B %d, %Y %H",
+               "%B %d, %Y",
+
+               "%d %B %Y %H:%M:%S",
+               "%d %B %Y %H:%M",
+               "%d %B %Y %H",
+               "%d %B %Y",
+
+               "%d %B, %Y %H:%M:%S",
+               "%d %B, %Y %H:%M",
+               "%d %B, %Y %H",
+               "%d %B, %Y",
+               ]
 
 # -----------------------------------------------------------------------------
 def parse(expr, start=None):
@@ -160,9 +219,19 @@ def parse(expr, start=None):
     wkdays_rgx = wk.match_weekdays()
     rval = None
     result = []
+    # -------------------------------------------------------------------------
+    def __init__(self, *args):
+        """
+        Constructs a moment object.
 
     expr = expr.replace('earlier', 'ago')
     expr = expr.replace('later', 'from now')
+        *args*:
+            empty: object represents current UTC time at instantiation
+            one element: may be a date/time spec matching one of the formats in
+                self.formats.
+            two elements: args[0] is a date/time spec, args[1] is a format
+                describing args[0].
 
     if research("\s(of|in)\s", expr, result):
         rval = parse_of_in(expr, result[0].group())
@@ -222,7 +291,50 @@ def parse(expr, start=None):
             delta = wk.backdiff(swd, wday) or 7
             rval = moment(start.epoch() - delta * tu.magnitude('day'))
     return rval
+        If a timezone is provided in the input string, the string should be
+        interpreted as local to that timezone. The value stored in the
+        constructed object should be the UTC epoch corresponding to the
+        specified local time.
 
+        Examples:
+            >>> import nldt
+            # current time
+            >>> now = nldt.moment()
+            >>> now()
+            '2016-12-04'
+            # format intuited
+            >>> new_year_day = nldt.moment('2001-01-01')
+            >>> new_year_day()
+            '2001-01-01'
+            # specified format
+            >>> then = nldt.moment('Dec 29 2016', '%b %m %Y')
+            >>> then()
+            '2016-12-29'
+        """
+        self.moment = None
+        if len(args) < 1:
+            self.moment = int(time.time())
+        elif len(args) < 2:
+            if isinstance(args[0], numbers.Number):
+                self.moment = int(args[0])
+            elif isinstance(args[0], time.struct_time):
+                self.moment = timegm(args[0])
+            elif isinstance(args[0], tuple):
+                if len(args[0]) < 6 or 9 < len(args[0]):
+                    raise ValueError('need at least 6 values, no more than 9')
+                self.moment = timegm(args[0])
+            elif isinstance(args[0], str):
+                self.moment = self._guess_format(args[0])
+            if self.moment is None:
+                msg = "\n".join(["Valid ways of calling nldt.moment():",
+                                 "    nldt.moment()",
+                                 "    nldt.moment(<epoch-seconds>)",
+                                 "    nldt.moment('YYYY-mm-dd')",
+                                 "    nldt.moment(<date-str>[, <format>])"])
+                raise(ValueError(msg))
+        else:
+            tm = time.strptime(args[0], args[1])
+            self.moment = int(timegm(tm))
 
 # -----------------------------------------------------------------------------
 def parse_ago(expr):
@@ -242,7 +354,13 @@ def parse_ago(expr):
     rval = moment()
     rval = moment(rval.epoch() - count * tu.magnitude(unit))
     return rval
+    # -------------------------------------------------------------------------
+    def __call__(self, format=None, tz=None):
+        """
+        Returns a string representing the date/time of the epoch value stored
+        in self.
 
+        *format*: Optional string indicating the desired output format.
 
 # -----------------------------------------------------------------------------
 def parse_from_now(expr):
@@ -262,7 +380,13 @@ def parse_from_now(expr):
     rval = moment()
     rval = moment(rval.epoch() + count * tu.magnitude(unit))
     return rval
+        *tz*: Optional timezone indicating that the date/time in the output
+        string should be localized to the specified timezone.
 
+        If *format* contains a timezone specifier, localize the time to that
+        zone. If *tz* is not empty, it can be used to do the same thing. If
+        *format* contains a timezone specifier and *tz* is specified, *tz*
+        should be ignored and the timezone in the format string should be used.
 
 # -----------------------------------------------------------------------------
 def parse_month(expr, start):
@@ -278,7 +402,38 @@ def parse_month(expr, start):
         week_mag = tu.magnitude('week')
         rval = moment(start.month_ceiling().epoch() + week_mag).month_floor()
     return rval
+        Examples:
+            >>> import nldt
+            >>> a = nldt.moment()
+            # No arguments, default format (ISO)
+            >>> a()
+            '2016-12-04'
 
+            # *format* specified
+            >>> a('%Y.%m%d %H:%M:%S')
+            '2016.1204 07:16:20'
+        """
+        format = format or "%Y-%m-%d"
+        tz = tz or 'UTC'
+        if tz == 'local':
+            tm = time.localtime(self.moment)
+        elif tz == 'UTC':
+            tm = time.gmtime(self.moment)
+        else:
+            zone = pytz.timezone(tz)
+            dt = datetime.fromtimestamp(self.moment)
+            offset = zone.utcoffset(dt).total_seconds()
+            tm = time.gmtime(self.moment + offset)
+            format = format.replace('%Z', zone.tzname(dt))
+            format = format.replace('%z', hhmm(offset))
+        rval = time.strftime(format, tm)
+        return rval
+
+    # -------------------------------------------------------------------------
+    def __eq__(self, other):
+        """
+        Returns True or False - whether two moment objects are equal
+        implicit
 
 # -----------------------------------------------------------------------------
 def parse_month_name(expr):
@@ -290,7 +445,10 @@ def parse_month_name(expr):
     tm = rval.gmtime()
     midx = mon.index(expr)
     return moment((tm.tm_year, midx, 1, 0, 0, 0, 0, 0, 0))
+        *other*: a second moment object to be compared to self
 
+        Examples:
+            >>> import nldt
 
 # -----------------------------------------------------------------------------
 def parse_of_in(expr, prep):
@@ -308,7 +466,21 @@ def parse_of_in(expr, prep):
     else:
         rval = parse(pre, rval)
     return rval
+            # instantiated seconds apart, a and b will not be equal
+            >>> a = nldt.moment()
+            >>> b = nldt.moment()
+            >>> a == b
+            False
 
+            # however, once they are both advanced to the beginning of
+            # tomorrow, so they both record the beginning of the day at
+            # midnight, they will be equal
+            >>> a = nldt.parse('tomorrow', a)
+            >>> b = nldt.parse('tomorrow', b)
+            >>> a == b
+            True
+        """
+        return self.moment == other.moment
 
 # -----------------------------------------------------------------------------
 def research(pattern, haystack, result):
@@ -320,16 +492,189 @@ def research(pattern, haystack, result):
     if q:
         result.append(q)
     return q
+    # -------------------------------------------------------------------------
+    def __repr__(self):
+        """
+        Returns a string that will regenerate this object if passed to eval()
 
+        Examples:
+            >>> import nldt
+            >>> c = nldt.moment()
+            >>> assert eval(repr(c)) == c
+            True
+            >>> print repr(c)
+            nldt.moment(1481000400)
+        """
+        rval = "nldt.moment({:d})".format(int(self.moment))
+        return rval
 
+    # -------------------------------------------------------------------------
+    def __str__(self):
+        """
+        Returns a human-readable representation of this object
 
+        Examples:
+            >>> import nldt
+            >>> c = nldt.moment()
+            >>> print(c)
+            2016-12-04 07:31:08
+        """
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(self.moment))
 
+    # -------------------------------------------------------------------------
+    def epoch(self):
+        """
+        Returns the currently stored moment as an int UTC epoch
 
+        Examples:
+            >>> import nldt
+            >>> q = nldt.moment()
+            >>> q.epoch()
+            1480855032
+        """
+        return int(self.moment)
 
+    # -------------------------------------------------------------------------
+    def gmtime(self):
+        """
+        Returns the UTC tm structure for the currently stored moment
 
+        examples:
+            >>> import nldt
+            >>> q = nldt.moment()
+            >>> q.gmtime()
+            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
+            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
+        """
+        return time.gmtime(self.moment)
 
+    # -------------------------------------------------------------------------
+    def localtime(self):
+        """
+        Returns the local time tm structure for the stored moment
 
+        examples:
+            >>> import nldt
+            >>> q = nldt.moment()
+            >>> q.localtime()
+            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
+            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
+        """
+        return time.localtime(self.moment)
 
+    # -------------------------------------------------------------------------
+    def ceiling(self, unit):
+        """
+        Computes the ceiling of *unit* (second, minute, hour, day, etc.) from
+        *self*.epoch()
+        """
+        tm = time.gmtime(self.epoch())
+        if unit == 'second':
+            ceil = self.epoch()
+        elif unit == 'minute':
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                           tm.tm_hour, tm.tm_min, 59, 0, 0, 0))
+        elif unit == 'hour':
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                           tm.tm_hour, 59, 59, 0, 0, 0))
+        elif unit == 'day':
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                           23, 59, 59, 0, 0, 0))
+        elif unit == 'week':
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + (6-tm.tm_wday),
+                           23, 59, 59, 0, 0, 0))
+        elif unit == 'month':
+            maxday = month().days(year=tm.tm_year, month=tm.tm_mon)
+            ceil = timegm((tm.tm_year, tm.tm_mon, maxday,
+                           23, 59, 59, 0, 0, 0))
+        elif unit == 'year':
+            ceil = timegm((tm.tm_year, 12, 31, 23, 59, 59, 0, 0, 0))
+        else:
+            raise ValueError("'{}' is not a time unit".format(unit))
+        return moment(ceil)
+
+    # -------------------------------------------------------------------------
+    def floor(self, unit):
+        """
+        Computes the floor of *unit* (second, minute, hour, day, etc.) from
+        *self*.epoch()
+        """
+        epoch = self.epoch()
+        if unit == 'second':
+            rval = self
+        elif unit == 'minute':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
+                            tm.tm_hour, tm.tm_min, 0, 0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'hour':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour,
+                            0, 0, 0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'day':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday, 0, 0, 0,
+                            0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'week':
+            tm = time.gmtime(epoch)
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - tm.tm_wday,
+                            0, 0, 0, 0, 0, 0))
+            rval = moment(floor)
+        elif unit == 'month':
+            tm = time.gmtime(epoch)
+            nflr = timegm((tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0))
+            rval = moment(nflr)
+        elif unit == 'year':
+            tm = time.gmtime(epoch)
+            nflr = timegm((tm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0))
+            rval = moment(nflr)
+        else:
+            raise ValueError("'{}' is not a time unit".format(unit))
+        return rval
+
+    # -------------------------------------------------------------------------
+    def week_floor(self):
+        """
+        Finds the beginning of the week in which *self*.moment occurs and
+        return a new moment object that stores that point in time.
+        """
+        return self.floor('week')
+
+    # -------------------------------------------------------------------------
+    def month_ceiling(self):
+        """
+        Finds the end of the month that contains *self*.moment
+        """
+        return self.ceiling('month')
+
+    # -------------------------------------------------------------------------
+    def month_floor(self):
+        """
+        Finds the beginning of the month that contains *self*.moment
+        """
+        return self.floor('month')
+
+    # -------------------------------------------------------------------------
+    def _guess_format(self, spec):
+        """
+        Tries each of the parse formats in the list until one works or the list
+        is exhausted. Returns the UTC epoch (or None if we don't find a
+        matching format).
+        """
+        tm = None
+        for fmt in self.formats:
+            try:
+                tm = time.strptime(spec, fmt)
+                break
+            except ValueError:
+                pass
+
+        if tm:
+            return timegm(tm)
+        else:
+            return None
 
 
 # -----------------------------------------------------------------------------
@@ -666,46 +1011,10 @@ class time_units(object):
 
 
 # -----------------------------------------------------------------------------
-class moment(object):
     """
-    Objects of this class represent a point in time. The moment is stored in
-    UTC. The strptime formats in list moment.formats are used to intuit the
-    format of date/time strings for which no format is provided.
     """
-    formats = ['%y-%m-%d',
-               '%y-%m-%d %H',
-               '%y-%m-%d %H:%M',
-               '%y-%m-%d %H:%M:%S',
 
-               '%Y-%m-%d',
-               '%Y-%m-%d %H',
-               '%Y-%m-%d %H:%M',
-               '%Y-%m-%d %H:%M:%S',
 
-               "%Y.%m%d",
-               "%Y.%m%d %H",
-               "%Y.%m%d %H:%M",
-               "%Y.%m%d %H:%M:%S",
-
-               "%Y-%m-%d",
-               "%Y-%m-%d %H",
-               "%Y-%m-%d %H:%M",
-               "%Y-%m-%d %H:%M:%S",
-
-               "%b %d %Y",
-               "%b %d %Y %H",
-               "%b %d %Y %H:%M",
-               "%b %d %Y %H:%M:%S",
-
-               "%b %d, %Y",
-               "%b %d, %Y %H",
-               "%b %d, %Y %H:%M",
-               "%b %d, %Y %H:%M:%S",
-
-               "%d %b %Y %H:%M:%S",
-               "%d %b %Y %H:%M",
-               "%d %b %Y %H",
-               "%d %b %Y",
 
                "%d %b, %Y %H:%M:%S",
                "%d %b, %Y %H:%M",
@@ -802,8 +1111,6 @@ def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
 
-        *tz*: Optional timezone indicating that the date/time in the output
-        string should be localized to the specified timezone.
     Examples:
         >>> import nldt
         >>> nldt.dst()
@@ -825,39 +1132,9 @@ def dst(when=None, tz=None):
     else:
         tm = time.gmtime(when.moment + utc_offset(when.moment, tz))
 
-        Examples:
-            >>> import nldt
-            >>> a = nldt.moment()
-            # No arguments, default format (ISO)
-            >>> a()
-            '2016-12-04'
     return tm.tm_isdst == 1
 
-            # *format* specified
-            >>> a('%Y.%m%d %H:%M:%S')
-            '2016.1204 07:16:20'
-        """
-        format = format or "%Y-%m-%d"
-        tz = tz or 'UTC'
-        if tz == 'local':
-            tm = time.localtime(self.moment)
-        elif tz == 'UTC':
-            tm = time.gmtime(self.moment)
-        else:
-            zone = pytz.timezone(tz)
-            dt = datetime.fromtimestamp(self.moment)
-            offset = zone.utcoffset(dt).total_seconds()
-            tm = time.gmtime(self.moment + offset)
-            format = format.replace('%Z', zone.tzname(dt))
-            format = format.replace('%z', hhmm(offset))
-        rval = time.strftime(format, tm)
-        return rval
 
-    # -------------------------------------------------------------------------
-    def __eq__(self, other):
-        """
-        Returns True or False - whether two moment objects are equal
-        implicit
 # -----------------------------------------------------------------------------
 def hhmm(seconds):
     """
@@ -873,181 +1150,26 @@ def hhmm(seconds):
     return "{}{:02d}{:02d}".format(prefix, hrs, mins)
 
 
-
-        *other*: a second moment object to be compared to self
 # -----------------------------------------------------------------------------
 def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
 
-        Examples:
-            >>> import nldt
 
-            # instantiated seconds apart, a and b will not be equal
-            >>> a = nldt.moment()
-            >>> b = nldt.moment()
-            >>> a == b
-            False
 
-            # however, once they are both advanced to the beginning of
-            # tomorrow, so they both record the beginning of the day at
-            # midnight, they will be equal
-            >>> a = nldt.parse('tomorrow', a)
-            >>> b = nldt.parse('tomorrow', b)
-            >>> a == b
-            True
-        """
-        return self.moment == other.moment
 
-    # -------------------------------------------------------------------------
-    def __repr__(self):
-        """
-        Returns a string that will regenerate this object if passed to eval()
 
-        Examples:
-            >>> import nldt
-            >>> c = nldt.moment()
-            >>> assert eval(repr(c)) == c
-            True
-            >>> print repr(c)
-            nldt.moment(1481000400)
-        """
-        rval = "nldt.moment({:d})".format(int(self.moment))
-        return rval
 
-    # -------------------------------------------------------------------------
-    def __str__(self):
-        """
-        Returns a human-readable representation of this object
 
-        Examples:
-            >>> import nldt
-            >>> c = nldt.moment()
-            >>> print(c)
-            2016-12-04 07:31:08
-        """
-        return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(self.moment))
 
-    # -------------------------------------------------------------------------
-    def epoch(self):
-        """
-        Returns the currently stored moment as an int UTC epoch
 
-        Examples:
-            >>> import nldt
-            >>> q = nldt.moment()
-            >>> q.epoch()
-            1480855032
-        """
-        return int(self.moment)
 
-    # -------------------------------------------------------------------------
-    def gmtime(self):
-        """
-        Returns the UTC tm structure for the currently stored moment
 
-        examples:
-            >>> import nldt
-            >>> q = nldt.moment()
-            >>> q.gmtime()
-            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
-            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
-        """
-        return time.gmtime(self.moment)
 
-    # -------------------------------------------------------------------------
-    def localtime(self):
-        """
-        Returns the local time tm structure for the stored moment
 
-        examples:
-            >>> import nldt
-            >>> q = nldt.moment()
-            >>> q.localtime()
-            time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
-            tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
-        """
-        return time.localtime(self.moment)
 
-    # -------------------------------------------------------------------------
-    def ceiling(self, unit):
-        """
-        Computes the ceiling of *unit* (second, minute, hour, day, etc.) from
-        *self*.epoch()
-        """
-        tm = time.gmtime(self.epoch())
-        if unit == 'second':
-            ceil = self.epoch()
-        elif unit == 'minute':
-            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
-                           tm.tm_hour, tm.tm_min, 59, 0, 0, 0))
-        elif unit == 'hour':
-            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
-                           tm.tm_hour, 59, 59, 0, 0, 0))
-        elif unit == 'day':
-            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
-                           23, 59, 59, 0, 0, 0))
-        elif unit == 'week':
-            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + (6-tm.tm_wday),
-                           23, 59, 59, 0, 0, 0))
-        elif unit == 'month':
-            maxday = month().days(year=tm.tm_year, month=tm.tm_mon)
-            ceil = timegm((tm.tm_year, tm.tm_mon, maxday,
-                           23, 59, 59, 0, 0, 0))
-        elif unit == 'year':
-            ceil = timegm((tm.tm_year, 12, 31, 23, 59, 59, 0, 0, 0))
-        else:
-            raise ValueError("'{}' is not a time unit".format(unit))
-        return moment(ceil)
 
-    # -------------------------------------------------------------------------
-    def floor(self, unit):
-        """
-        Computes the floor of *unit* (second, minute, hour, day, etc.) from
-        *self*.epoch()
-        """
-        epoch = self.epoch()
-        if unit == 'second':
-            rval = self
-        elif unit == 'minute':
-            tm = time.gmtime(epoch)
-            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
-                            tm.tm_hour, tm.tm_min, 0, 0, 0, 0))
-            rval = moment(floor)
-        elif unit == 'hour':
-            tm = time.gmtime(epoch)
-            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour,
-                            0, 0, 0, 0, 0))
-            rval = moment(floor)
-        elif unit == 'day':
-            tm = time.gmtime(epoch)
-            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday, 0, 0, 0,
-                            0, 0, 0))
-            rval = moment(floor)
-        elif unit == 'week':
-            tm = time.gmtime(epoch)
-            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - tm.tm_wday,
-                            0, 0, 0, 0, 0, 0))
-            rval = moment(floor)
-        elif unit == 'month':
-            tm = time.gmtime(epoch)
-            nflr = timegm((tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0))
-            rval = moment(nflr)
-        elif unit == 'year':
-            tm = time.gmtime(epoch)
-            nflr = timegm((tm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0))
-            rval = moment(nflr)
-        else:
-            raise ValueError("'{}' is not a time unit".format(unit))
-        return rval
 
-    # -------------------------------------------------------------------------
-    def week_floor(self):
-        """
-        Finds the beginning of the week in which *self*.moment occurs and
-        return a new moment object that stores that point in time.
-        """
-        return self.floor('week')
 # -----------------------------------------------------------------------------
 def word_before(item, text):
     """
@@ -1061,19 +1183,7 @@ def word_before(item, text):
             next = True
     return None
 
-    # -------------------------------------------------------------------------
-    def month_ceiling(self):
-        """
-        Finds the end of the month that contains *self*.moment
-        """
-        return self.ceiling('month')
 
-    # -------------------------------------------------------------------------
-    def month_floor(self):
-        """
-        Finds the beginning of the month that contains *self*.moment
-        """
-        return self.floor('month')
 # -----------------------------------------------------------------------------
 def timezone():
     """
