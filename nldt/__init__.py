@@ -139,28 +139,10 @@ class Indexable(object):
 
 
 # -----------------------------------------------------------------------------
-def dst(when=None, tz=None):
     """
-    Return True or False - daylight savings time is in force or not
-
-    Examples:
-        >>> import nldt
-        >>> nldt.dst()
-        False
     """
-    when = when or moment("2010-01-01")
-    if isinstance(when, numbers.Number) or isinstance(when, str):
-        when = moment(when)
-    if not isinstance(when, moment):
-        raise TypeError("dst() when arg must be str, number, or moment")
 
-    tz = tz or 'local'
-    if tz == 'local':
-        tm = time.localtime(when.moment)
-    else:
-        tm = time.gmtime(when.moment + utc_offset(when.moment, tz))
 
-    return tm.tm_isdst == 1
 
 
 # -----------------------------------------------------------------------------
@@ -828,14 +810,33 @@ class moment(object):
         in self.
 
         *format*: Optional string indicating the desired output format.
+# -----------------------------------------------------------------------------
+def dst(when=None, tz=None):
+    """
+    Return True or False - daylight savings time is in force or not
 
         *tz*: Optional timezone indicating that the date/time in the output
         string should be localized to the specified timezone.
+    Examples:
+        >>> import nldt
+        >>> nldt.dst()
+        False
+    """
+    when = when or moment("2010-01-01")
+    if isinstance(when, numbers.Number) or isinstance(when, str):
+        when = moment(when)
+    if not isinstance(when, moment):
+        raise TypeError("dst() when arg must be str, number, or moment")
 
         If *format* contains a timezone specifier, localize the time to that
         zone. If *tz* is not empty, it can be used to do the same thing. If
         *format* contains a timezone specifier and *tz* is specified, *tz*
         should be ignored and the timezone in the format string should be used.
+    tz = tz or 'local'
+    if tz == 'local':
+        tm = time.localtime(when.moment)
+    else:
+        tm = time.gmtime(when.moment + utc_offset(when.moment, tz))
 
         Examples:
             >>> import nldt
@@ -843,6 +844,7 @@ class moment(object):
             # No arguments, default format (ISO)
             >>> a()
             '2016-12-04'
+    return tm.tm_isdst == 1
 
             # *format* specified
             >>> a('%Y.%m%d %H:%M:%S')
@@ -871,6 +873,10 @@ class moment(object):
         implicit
 
         *other*: a second moment object to be compared to self
+# -----------------------------------------------------------------------------
+def dst(when=None, tz=None):
+    """
+    Return True or False - daylight savings time is in force or not
 
         Examples:
             >>> import nldt
