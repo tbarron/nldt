@@ -673,13 +673,13 @@ class Parser(object):
         """
         unit = self.tu.find_unit(expr)
         pre, post = expr.split(prep)
-        rval = parse(post)
+        rval = self(post)
         if pre == 'end' and unit:
             rval = rval.ceiling(unit)
         elif pre == 'beginning':
             pass
         else:
-            rval = parse(pre, rval)
+            rval = self(pre, rval)
         return rval
 
     # -------------------------------------------------------------------------
@@ -764,14 +764,14 @@ class Parser(object):
         elif wb == 'the' or wb == 'this':
             rval = start.week_floor()
         elif wb in self.wk.day_list():
-            start = parse('next {}'.format(wb))
-            rval = parse('next {}'.format(wb), start)
+            start = self('next {}'.format(wb))
+            rval = self('next {}'.format(wb), start)
         elif expr == 'week after next':
-            rval = parse('next week')
-            rval = parse('next week', rval)
+            rval = self('next week')
+            rval = self('next week', rval)
         elif expr == 'week before last':
-            rval = parse('last week')
-            rval = parse('last week', rval)
+            rval = self('last week')
+            rval = self('last week', rval)
         return rval
 
     # -------------------------------------------------------------------------
