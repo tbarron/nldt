@@ -862,10 +862,6 @@ class week(Indexable):
         else:
             return None
 
-               "%d %b, %Y %H:%M:%S",
-               "%d %b, %Y %H:%M",
-               "%d %b, %Y %H",
-               "%d %b, %Y",
     # -------------------------------------------------------------------------
     def forediff(self, start, end):
         """
@@ -880,10 +876,6 @@ class week(Indexable):
         rval = end - start
         return rval
 
-               "%B %d %Y %H:%M:%S",
-               "%B %d %Y %H:%M",
-               "%B %d %Y %H",
-               "%B %d %Y",
     # -------------------------------------------------------------------------
     def backdiff(self, start, end):
         """
@@ -898,10 +890,6 @@ class week(Indexable):
         rval = start - end
         return rval
 
-               "%B %d, %Y %H:%M:%S",
-               "%B %d, %Y %H:%M",
-               "%B %d, %Y %H",
-               "%B %d, %Y",
     # -------------------------------------------------------------------------
     def index(self, wday):
         """
@@ -911,10 +899,6 @@ class week(Indexable):
             wday = wday[0:3].lower()
         return self._dict[wday]['idx']
 
-               "%d %B %Y %H:%M:%S",
-               "%d %B %Y %H:%M",
-               "%d %B %Y %H",
-               "%d %B %Y",
     # -------------------------------------------------------------------------
     def fullname(self, idx_or_abbr):
         """
@@ -923,11 +907,6 @@ class week(Indexable):
         idx = self.indexify(idx_or_abbr)
         return self._dict[idx]['name']
 
-               "%d %B, %Y %H:%M:%S",
-               "%d %B, %Y %H:%M",
-               "%d %B, %Y %H",
-               "%d %B, %Y",
-               ]
     # -------------------------------------------------------------------------
     def match_weekdays(self):
         """
@@ -936,79 +915,30 @@ class week(Indexable):
         return "(mon|tues|wednes|thurs|fri|satur|sun)day"
 
     # -------------------------------------------------------------------------
-    def __init__(self, *args):
     def day_number(self, moment_or_epoch, count=None):
         """
-        Constructs a moment object.
         This returns a weekday number based on a moment or epoch time. The
         *count* argument can be one of
 
-        *args*:
-            empty: object represents current UTC time at instantiation
-            one element: may be a date/time spec matching one of the formats in
-                self.formats.
-            two elements: args[0] is a date/time spec, args[1] is a format
-                describing args[0].
           * 'mon0' (the default) => mon = 0 ... sun = 6
           * 'sun0' => sun = 0 ... sat = 6
           * 'mon1' => mon = 1 ... sun = 7
 
-        If a timezone is provided in the input string, the string should be
-        interpreted as local to that timezone. The value stored in the
-        constructed object should be the UTC epoch corresponding to the
-        specified local time.
         'mon0' is the counting regime used in the tm structures
         returned by time.localtime() and time.gmtime().
 
-        Examples:
-            >>> import nldt
-            # current time
-            >>> now = nldt.moment()
-            >>> now()
-            '2016-12-04'
-            # format intuited
-            >>> new_year_day = nldt.moment('2001-01-01')
-            >>> new_year_day()
-            '2001-01-01'
-            # specified format
-            >>> then = nldt.moment('Dec 29 2016', '%b %m %Y')
-            >>> then()
-            '2016-12-29'
         'sun0' is the counting regime for the '%w' specifier in time.strftime()
         and time.strptime() patterns.
 
         'mon1' is the counting regime for the '%u' specifier in time.strftime()
         and time.strptime().
         """
-        self.moment = None
-        if len(args) < 1:
-            self.moment = int(time.time())
-        elif len(args) < 2:
-            if isinstance(args[0], numbers.Number):
-                self.moment = int(args[0])
-            elif isinstance(args[0], time.struct_time):
-                self.moment = timegm(args[0])
-            elif isinstance(args[0], tuple):
-                if len(args[0]) < 6 or 9 < len(args[0]):
-                    raise ValueError('need at least 6 values, no more than 9')
-                self.moment = timegm(args[0])
-            elif isinstance(args[0], str):
-                self.moment = self._guess_format(args[0])
-            if self.moment is None:
-                msg = "\n".join(["Valid ways of calling nldt.moment():",
-                                 "    nldt.moment()",
-                                 "    nldt.moment(<epoch-seconds>)",
-                                 "    nldt.moment('YYYY-mm-dd')",
-                                 "    nldt.moment(<date-str>[, <format>])"])
-                raise(ValueError(msg))
         count = count or 'mon0'
         if isinstance(moment_or_epoch, moment):
             epoch = moment_or_epoch.epoch()
         elif isinstance(moment_or_epoch, numbers.Number):
             epoch = moment_or_epoch
         else:
-            tm = time.strptime(args[0], args[1])
-            self.moment = int(timegm(tm))
             raise TypeError('argument must be moment or epoch number')
         tm = time.gmtime(epoch)
         if count == 'mon0':
@@ -1018,13 +948,7 @@ class week(Indexable):
         elif count == 'sun0' or count == '%w':
             return (tm.tm_wday + 1) % 7
 
-    # -------------------------------------------------------------------------
-    def __call__(self, format=None, tz=None):
-        """
-        Returns a string representing the date/time of the epoch value stored
-        in self.
 
-        *format*: Optional string indicating the desired output format.
 # -----------------------------------------------------------------------------
 def dst(when=None, tz=None):
     """
