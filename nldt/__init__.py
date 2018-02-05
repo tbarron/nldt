@@ -667,11 +667,20 @@ class Parser(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def parse_of_in(self, expr, result, start):
+    def parse_of_in(self, expr, prep, start):
         """
         Handles expressions like 'third of May', 'first week in June'
         """
-        raise Stub()
+        unit = self.tu.find_unit(expr)
+        pre, post = expr.split(prep)
+        rval = parse(post)
+        if pre == 'end' and unit:
+            rval = rval.ceiling(unit)
+        elif pre == 'beginning':
+            pass
+        else:
+            rval = parse(pre, rval)
+        return rval
 
     # -------------------------------------------------------------------------
     def parse_mon_name(self, expr, start):
@@ -683,38 +692,115 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_ago(self, expr, start):
         """
+        Handle expressions like 'a week ago', 'three days ago', 'five years
+        ago', etc.
         """
-        raise Stub()
+        nums = numberize.scan(expr)
+        if isinstance(nums[0], int):
+            count = nums[0]
+        else:
+            count = 1
+        unit = self.tu.find_unit(expr)
+        if unit is None:
+            raise ValueError("No unit found in expression '{}'".format(expr))
+        rval = moment()
+        rval = moment(rval.epoch() - count * self.tu.magnitude(unit))
+        return rval
 
     # -------------------------------------------------------------------------
     def parse_from_now(self, expr, start):
         """
+        Handle expressions like 'an hour from now', 'two days from now', 'four
+        weeks from now', 'three years from now', etc.
         """
-        raise Stub()
+        nums = numberize.scan(expr)
+        if isinstance(nums[0], int):
+            count = nums[0]
+        else:
+            count = 1
+        unit = self.tu.find_unit(expr)
+        if unit is None:
+            raise ValueError("No unit found in expression '{}'".format(expr))
+        rval = moment()
+        rval = moment(rval.epoch() + count * self.tu.magnitude(unit))
+        return rval
 
     # -------------------------------------------------------------------------
     def parse_month(self, expr, start):
         """
+        Handle 'next month', 'last month'
         """
-        raise Stub()
+        wb = word_before('month', expr)
+        if wb == 'last':
+            day_mag = self.tu.magnitude('day')
+            floor = start.floor('month').epoch()
+            rval = moment(floor - day_mag).floor('month')
+        elif wb == 'next':
+            week_mag = self.tu.magnitude('week')
+            ceil = start.ceiling('month').epoch()
+            rval = moment(ceil + week_mag).floor('month')
+        return rval
 
     # -------------------------------------------------------------------------
     def parse_week(self, expr, start):
         """
+        Various expressions that involve 'week'
         """
-        raise Stub()
+        wb = word_before('week', expr)
+        if wb == 'last':
+            flr = start.week_floor().epoch()
+            rval = moment(flr - self.tu.magnitude('week'))
+        elif wb == 'next':
+            flr = start.week_floor().epoch()
+            rval = moment(flr + self.tu.magnitude('week'))
+        elif wb == 'first':
+            tm = start.gmtime()
+            delta = (7 - tm.tm_wday) % 7
+            rval = moment(timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
+                                  0, 0, 0, 0, 0, 0)))
+        elif wb == 'the' or wb == 'this':
+            rval = start.week_floor()
+        elif wb in self.wk.day_list():
+            start = parse('next {}'.format(wb))
+            rval = parse('next {}'.format(wb), start)
+        elif expr == 'week after next':
+            rval = parse('next week')
+            rval = parse('next week', rval)
+        elif expr == 'week before last':
+            rval = parse('last week')
+            rval = parse('last week', rval)
+        return rval
 
     # -------------------------------------------------------------------------
     def parse_year(self, expr, start):
         """
+        Parse expressions like 'last year', 'next year'
         """
-        raise Stub()
+        wb = word_before('year', expr)
+        if wb == 'last':
+            then = "{}-01-01".format(int(start("%Y")) - 1)
+            rval = moment(then)
+        elif wb == 'next':
+            then = "{}-01-01".format(int(start("%Y")) + 1)
+            rval = moment(then)
+        return rval
 
     # -------------------------------------------------------------------------
     def parse_weekday(self, expr, result, start):
         """
+        Parse expressions like 'next monday', 'last wednesday', etc.
         """
-        raise Stub()
+        wday = result[0].group()
+        wb = word_before(wday, expr)
+        if wb == 'next':
+            swd = start('%A').lower()
+            delta = self.wk.forediff(swd, wday) or 7
+            rval = moment(start.epoch() + delta * self.tu.magnitude('day'))
+        elif wb == 'last':
+            swd = start('%A').lower()
+            delta = self.wk.backdiff(swd, wday) or 7
+            rval = moment(start.epoch() - delta * self.tu.magnitude('day'))
+        return rval
 
     # -------------------------------------------------------------------------
     def research(self, pattern, text, result):
