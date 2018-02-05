@@ -70,6 +70,29 @@ import time
 
 
 # -----------------------------------------------------------------------------
+class duration(object):
+    """
+    This class represents a time interval by storing the number of seconds in
+    the interval.
+    """
+    def __init__(self, start=None, end=None,
+                 years=None, weeks=None, days=None, hours=None, minutes=None,
+                 seconds=None):
+        """
+        If *start* or *end* are present, both must be, and none of the other
+        arguments are allowed. Each can be in any of the following formats: 1)
+        an epoch, 2) a tm struct, 3) a moment, or 4) a date/time string in a
+        format moment recognizes, and they don't have to be in the same format.
+        You could pass in *start* as a moment and *end* as a tm struct, for
+        example.
+
+        If *start* and *end* are both absent, any combination of *years*,
+        *weeks*, *days*, *hours*, *minutes*, and *seconds* can be used.
+        """
+        pass
+
+
+# -----------------------------------------------------------------------------
 class Indexable(object):
     """
     This class has a _dict dictionary member and a method called indexify that
