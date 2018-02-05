@@ -1070,12 +1070,8 @@ def hhmm(seconds):
 
 
 # -----------------------------------------------------------------------------
-def dst(when=None, tz=None):
 def parse(expr, start=None):
     """
-    Return True or False - daylight savings time is in force or not
-
-
     Returns a moment based on *expr* and *start*, if provided. If *start* is
     not provided, the current UTC time is used.
     """
