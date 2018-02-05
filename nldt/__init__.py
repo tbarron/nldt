@@ -687,7 +687,10 @@ class Parser(object):
         """
         Handles expressions like 'May', 'October', 'February, 1933'
         """
-        raise Stub()
+        rval = moment()
+        tm = rval.gmtime()
+        midx = self.mon.index(expr)
+        return moment((tm.tm_year, midx, 1, 0, 0, 0, 0, 0, 0))
 
     # -------------------------------------------------------------------------
     def parse_ago(self, expr, start):
