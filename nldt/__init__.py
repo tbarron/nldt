@@ -101,6 +101,15 @@ class Indexable(object):
     abstract base class for week and month.
     """
     # -------------------------------------------------------------------------
+    def __init__(self):
+        """
+        Don't instantiate this class. It is an abstract base for month and
+        week.
+        """
+        raise TypeError("This is an abstract base class -- "
+                        "don't instantiate it.")
+
+    # -------------------------------------------------------------------------
     def indexify(self, name_or_idx):
         """
         Return an int idx in the range [0, 7) (i.e., between 0 and 6 inclusive)
