@@ -965,10 +965,6 @@ def dst(when=None, tz=None):
     if not isinstance(when, moment):
         raise TypeError("dst() when arg must be str, number, or moment")
 
-        If *format* contains a timezone specifier, localize the time to that
-        zone. If *tz* is not empty, it can be used to do the same thing. If
-        *format* contains a timezone specifier and *tz* is specified, *tz*
-        should be ignored and the timezone in the format string should be used.
     tz = tz or 'local'
     if tz == 'local':
         tm = time.localtime(when.moment)
