@@ -1048,6 +1048,13 @@ class moment(object):
         """
         return self.floor('month')
 
+
+
+# -----------------------------------------------------------------------------
+class Stub(Exception):
+    """
+    To be raised in stub functions
+    """
     # -------------------------------------------------------------------------
     def _guess_format(self, spec):
         """
@@ -1062,6 +1069,11 @@ class moment(object):
                 break
             except ValueError:
                 pass
+    def __init__(self, msg=None):
+        fullmsg = "{}() is a stub -- please complete it.".format(caller_name())
+        if msg:
+            fullmsg += " ({})".format(msg)
+        super().__init__(fullmsg)
 
         if tm:
             return timegm(tm)
