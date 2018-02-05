@@ -504,7 +504,7 @@ def nl_oracle(spec):
         return '{}-01-01'.format(year)
     elif spec == 'next week':
         wdidx = wk.index('mon')
-        start = M()
+        start = prs('tomorrow')
         while wk.day_number(start) != wdidx:
             start = M(start.epoch() + tu.magnitude('day'))
         return start()
