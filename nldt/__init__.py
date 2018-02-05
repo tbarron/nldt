@@ -519,7 +519,7 @@ class moment(object):
 
 
 # -----------------------------------------------------------------------------
-class month(Indexable):     # I managed to lose this update
+class month(Indexable):
     """
     Defines and serves information about months
     """
@@ -634,13 +634,18 @@ class month(Indexable):     # I managed to lose this update
 
 # -----------------------------------------------------------------------------
 class week(Indexable):
+class Parser(object):
     """
     Defines and serves weekday information
+    This class provides a method object whose __call__() method will examine
+    its input to determine the correct submethod(s) to do the work or parsing
+    the input.
     """
     # -------------------------------------------------------------------------
     def __init__(self):
         """
         Sets up week info
+        Sets up the Parser object
         """
         self._dict = {}
         for idx in range(0, 7):
@@ -654,19 +659,64 @@ class week(Indexable):
                 }
             self._dict[abbr] = this
             self._dict[idx] = this
+        self.preps = prepositions()
+        self.tu = time_units()
+        self.wk = week()
+        self.mon = month()
+        self.wkday_rgx = self.wk.match_weekdays()
 
     # -------------------------------------------------------------------------
     def day_list(self):
+    def __call__(self, expr, start=None):
+        """
+        Parses *expr*, using *start* as the initial reference point if
+        provided.
+        """
+        expr = expr.replace("earlier", "ago")
+        expr = expr.replace("later", "from now")
+
+        result = []
+        start = start or moment()
+        if self.research("\s(of|in)\s", expr, result):
+            rval = self.parse_of_in(expr, result[0].group(), start)
+        elif expr.strip().lower() in self.mon.names():
+            rval = self.parse_mon_name(expr, start)
+        elif expr == 'today' or expr == 'now':
+            rval = start or moment()
+        elif expr == 'tomorrow':
+            rval = moment(start.epoch() + self.tu.magnitude('day'))
+        elif expr == 'yesterday':
+            rval = moment(start.epoch() - self.tu.magnitude('day'))
+        elif 'ago' in expr:
+            rval = self.parse_ago(expr, start)
+        elif 'from now' in expr:
+            rval = self.parse_from_now(expr, start)
+        elif self.research("(\s|^)month(\s|$)", expr, result):
+            rval = self.parse_month(expr, start)
+        elif self.research("(\s|^)week(\s|$)", expr, result):
+            rval = self.parse_week(expr, start)
+        elif self.research("(\s|^)year(\s|$)", expr, result):
+            rval = self.parse_year(expr, start)
+        elif self.research(self.wkdays_rgx, expr, result):
+            rval = self.parse_weekday(expr, result, start)
+        return rval
+
+    # -------------------------------------------------------------------------
+    def parse_of_in(self, expr, result, start):
         """
         Returns a list of weekday names
+        Handles expressions like 'third of May', 'first week in June'
         """
         return [self._dict[x]['name'] for x in self._dict
                 if isinstance(x, int)]
+        raise Stub()
 
     # -------------------------------------------------------------------------
     def find_day(self, text):
+    def parse_mon_name(self, expr, start):
         """
         Finds and returns the first weekday name in *text*
+        Handles expressions like 'May', 'October', 'February, 1933'
         """
         found = [wday for wday in self.day_list()
                  if re.search("(^|\W){}(\W|$)".format(wday), text)]
@@ -674,9 +724,11 @@ class week(Indexable):
             return found[0]
         else:
             return None
+        raise Stub()
 
     # -------------------------------------------------------------------------
     def forediff(self, start, end):
+    def parse_ago(self, expr, start):
         """
         Returns the number of days required to get from day *start* to day
         *end* going forward. *start* and *end* can be day names or index
@@ -688,9 +740,11 @@ class week(Indexable):
             end += 7
         rval = end - start
         return rval
+        raise Stub()
 
     # -------------------------------------------------------------------------
     def backdiff(self, start, end):
+    def parse_from_now(self, expr, start):
         """
         Returns the number of days required to get from day *start* to day
         *end* going forward. *start* and *end* can be day names or index
@@ -702,33 +756,41 @@ class week(Indexable):
             start += 7
         rval = start - end
         return rval
+        raise Stub()
 
     # -------------------------------------------------------------------------
     def index(self, wday):
+    def parse_month(self, expr, start):
         """
         Returns the numeric index for *wday* (sun = 0, mon = 1, ... sat = 6)
         """
         if 3 < len(wday):
             wday = wday[0:3].lower()
         return self._dict[wday]['idx']
+        raise Stub()
 
     # -------------------------------------------------------------------------
     def fullname(self, idx_or_abbr):
+    def parse_week(self, expr, start):
         """
         Looks up *idx_or_abbr* in self._dict and return the 'name' item
         """
         idx = self.indexify(idx_or_abbr)
         return self._dict[idx]['name']
+        raise Stub()
 
     # -------------------------------------------------------------------------
     def match_weekdays(self):
+    def parse_year(self, expr, start):
         """
         Returns a regex that will match all weekdays
         """
         return "(mon|tues|wednes|thurs|fri|satur|sun)day"
+        raise Stub()
 
     # -------------------------------------------------------------------------
     def day_number(self, moment_or_epoch, count=None):
+    def parse_weekday(self, expr, result, start):
         """
         This returns a weekday number based on a moment or epoch time. The
         *count* argument can be one of
@@ -742,9 +804,13 @@ class week(Indexable):
 
         'sun0' is the counting regime for the '%w' specifier in time.strftime()
         and time.strptime() patterns.
+        """
+        raise Stub()
 
         'mon1' is the counting regime for the '%u' specifier in time.strftime()
         and time.strptime().
+    # -------------------------------------------------------------------------
+    def research(self, pattern, text, result):
         """
         count = count or 'mon0'
         if isinstance(moment_or_epoch, moment):
@@ -760,6 +826,15 @@ class week(Indexable):
             return tm.tm_wday + 1
         elif count == 'sun0' or count == '%w':
             return (tm.tm_wday + 1) % 7
+        Looks for *pattern* in *text*. If something is found, push the search
+        object into *result* (which must be a list) and also return it.
+        """
+        if not isinstance(result, list):
+            raise TypeError("result must be an empty list")
+        q = re.search(pattern, text)
+        if q:
+            result.append(q)
+        return q
 
 
 # -----------------------------------------------------------------------------
