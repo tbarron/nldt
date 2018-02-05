@@ -320,18 +320,6 @@ def research(pattern, haystack, result):
     return q
 
 
-# -----------------------------------------------------------------------------
-def word_before(item, text):
-    """
-    Parse out the word that occurs before *item* in *text* and return it
-    """
-    next = False
-    for word in reversed(text.split()):
-        if next:
-            return word
-        if word == item:
-            next = True
-    return None
 
 
 
@@ -1019,6 +1007,18 @@ class moment(object):
         return a new moment object that stores that point in time.
         """
         return self.floor('week')
+# -----------------------------------------------------------------------------
+def word_before(item, text):
+    """
+    Parse out the word that occurs before *item* in *text* and return it
+    """
+    next = False
+    for word in reversed(text.split()):
+        if next:
+            return word
+        if word == item:
+            next = True
+    return None
 
     # -------------------------------------------------------------------------
     def month_ceiling(self):
