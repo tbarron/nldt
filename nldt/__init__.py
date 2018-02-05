@@ -334,23 +334,8 @@ def word_before(item, text):
     return None
 
 
-# -----------------------------------------------------------------------------
-def timezone():
-    """
-    Returns the locally configured timezone name
 
-    The timezone may vary with whether DST is in effect or not. The example
-    show a timezone of 'EST' for Eastern Standard Time. At times of the year
-    when DST is in effect, the timezone is EDT.
 
-    Examples:
-        >>> import nldt
-        >>> nldt.timezone
-        EST
-    """
-    now = time.localtime()
-    rval = time.tzname[now.tm_isdst]
-    return rval
 
 
 
@@ -1048,6 +1033,23 @@ class moment(object):
         Finds the beginning of the month that contains *self*.moment
         """
         return self.floor('month')
+# -----------------------------------------------------------------------------
+def timezone():
+    """
+    Returns the locally configured timezone name
+
+    The timezone may vary with whether DST is in effect or not. The example
+    show a timezone of 'EST' for Eastern Standard Time. At times of the year
+    when DST is in effect, the timezone is EDT.
+
+    Examples:
+        >>> import nldt
+        >>> nldt.timezone
+        EST
+    """
+    now = time.localtime()
+    rval = time.tzname[now.tm_isdst]
+    return rval
 
 
 # -----------------------------------------------------------------------------
