@@ -34,7 +34,8 @@ def test_pydoc():
     absent = ['_DAY', '_end_of_day', '_end_of_month', '_end_of_week',
               '_guess_format', '_MONTHS', '_MONTH_LEN', '_nl_match',
               '_parse_return', '_WEEK', '_week_ago', '_WEEKDAYS',
-              'month_index', 'month_names', 'weekday_index', 'weekday_names'
+              'month_index', 'month_names', 'weekday_index', 'weekday_names',
+              'parse'
               ]
 
     docker = pydoc.TextDoc()
@@ -42,4 +43,5 @@ def test_pydoc():
     for item in present:
         assert item in result
     for item in absent:
-        assert item not in result
+        pattern = "\W" + item + "\W"
+        assert not re.search(pattern, result)

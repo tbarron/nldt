@@ -326,8 +326,9 @@ class moment(object):
             # however, once they are both advanced to the beginning of
             # tomorrow, so they both record the beginning of the day at
             # midnight, they will be equal
-            >>> a = nldt.parse('tomorrow', a)
-            >>> b = nldt.parse('tomorrow', b)
+            >>> prs = nldt.Parser()
+            >>> a = prs('tomorrow', a)
+            >>> b = prs('tomorrow', b)
             >>> a == b
             True
         """
