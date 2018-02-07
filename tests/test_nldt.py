@@ -356,6 +356,18 @@ def test_intuit(inp, fmt, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_parse_now():
+    """
+    """
+    prs = nldt.Parser()
+    q = M()
+    then = M(time.time() - 30)
+    assert prs('now') == q
+    assert prs('now', q) == q
+    assert prs('now', then) == then
+
+
+# -----------------------------------------------------------------------------
 def test_parse_tomorrow():
     """
     Calling parse with 'tomorrow' and a moment object should return a moment
