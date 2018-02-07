@@ -130,6 +130,25 @@ class duration(object):
         return "{:d}.{:02d}:{:02d}:{:02d}".format(days, hours, minutes, secs)
 
     # -------------------------------------------------------------------------
+    def __add__(self, other):
+        """
+        Add *self* and *other*:
+          - duration + moment => moment
+          - duration + duration => duration
+          - duration + number-of-seconds => duration
+        """
+        if isinstance(other, duration):
+            rval = duration(seconds=self.seconds + other.seconds)
+        elif isinstance(other, numbers.Number):
+            rval = duration(seconds=self.seconds + other)
+        elif isinstance(other, moment):
+            rval = moment(other + self.seconds)
+        else:
+            other = moment(other)
+            rval = other + self
+        return rval
+
+    # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
         Assess whether this object is equal to the *other* value
