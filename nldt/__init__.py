@@ -433,6 +433,11 @@ class moment(object):
             rval = moment(self.epoch() + other.seconds)
         elif isinstance(other, numbers.Number):
             rval = moment(self.epoch() + other)
+        elif isinstance(other, moment):
+            raise TypeError("sum of moments is not defined")
+        else:
+            raise TypeError("unsupported operand type(s) for +:"
+                            " '{}' and '{}'".format(type(self), type(other)))
         return rval
 
     # -------------------------------------------------------------------------
