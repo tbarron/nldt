@@ -126,6 +126,9 @@ class duration(object):
 
     # -------------------------------------------------------------------------
     def __str__(self):
+        """
+        class duration: return the object's str suitable human consumption
+        """
         secs = self.seconds
         days = int(secs / (3600 * 24))
         secs -= days * 3600 * 24
@@ -138,7 +141,7 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __add__(self, other):
         """
-        Add *self* and *other*:
+        class duration: Add *self* and *other*:
           - duration + moment => moment
           - duration + duration => duration
           - duration + number-of-seconds => duration
@@ -157,7 +160,8 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
-        Assess whether this object is equal to the *other* value
+        class duration: Assess whether this object is equal to the *other*
+        value
         """
         if isinstance(other, numbers.Number):
             return self.seconds == other
@@ -167,7 +171,7 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __sub__(self, other):
         """
-        Subtract *other* from *self*
+        class duration: Subtract *other* from *self*
           - duration - duration => duration
           - duration - number-of-seconds => duration
           - duration - moment => exception
@@ -188,6 +192,7 @@ class duration(object):
     # -------------------------------------------------------------------------
     def _resolve_value(self, start_end_value):
         """
+        class duration
         *start_end_value* may be any of the following types:
 
             1) an epoch,
