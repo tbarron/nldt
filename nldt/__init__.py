@@ -1089,6 +1089,8 @@ class time_units(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
+        class time_units
+
         Sets up the list of units with the number of seconds in each
         """
         self.units = {'second': 1,
@@ -1102,6 +1104,8 @@ class time_units(object):
     # -------------------------------------------------------------------------
     def find_unit(self, text):
         """
+        class time_units
+
         Scans *text* and return the first unit found or None
         """
         found = [unit for unit in self.units.keys()
@@ -1114,6 +1118,8 @@ class time_units(object):
     # -------------------------------------------------------------------------
     def magnitude(self, unit):
         """
+        class time_units
+
         Returns the number of seconds in *unit* or -1 if *unit* is not valid
         """
         return self.units.get(unit, -1)
@@ -1121,6 +1127,8 @@ class time_units(object):
     # -------------------------------------------------------------------------
     def unit_list(self):
         """
+        class time_units
+
         Returns the list of units
         """
         return self.units.keys()
