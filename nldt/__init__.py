@@ -229,6 +229,7 @@ class Indexable(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
+        class Indexable
         Don't instantiate this class. It is an abstract base for month and
         week.
         """
@@ -238,6 +239,7 @@ class Indexable(object):
     # -------------------------------------------------------------------------
     def indexify(self, name_or_idx):
         """
+        class Indexable
         Return an int idx in the range [0, 7) (i.e., between 0 and 6 inclusive)
         or -1.
         """
