@@ -665,20 +665,6 @@ class moment(object):
         return self.floor('week')
 
     # -------------------------------------------------------------------------
-    def month_ceiling(self):
-        """
-        Finds the end of the month that contains *self*.moment
-        """
-        return self.ceiling('month')
-
-    # -------------------------------------------------------------------------
-    def month_floor(self):
-        """
-        Finds the beginning of the month that contains *self*.moment
-        """
-        return self.floor('month')
-
-    # -------------------------------------------------------------------------
     def _guess_format(self, spec):
         """
         class moment
