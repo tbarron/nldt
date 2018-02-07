@@ -337,6 +337,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __init__(self, *args):
         """
+        class moment
+
         Constructs a moment object.
 
         *args*:
@@ -396,6 +398,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __call__(self, format=None, tz=None):
         """
+        class moment
+
         Returns a string representing the date/time of the epoch value stored
         in self.
 
@@ -439,8 +443,10 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __add__(self, other):
         """
-        moment + duration => moment
-        moment + number-of-seconds => moment
+        class moment:
+            moment + duration => moment
+            moment + number-of-seconds => moment
+            moment + moment => exception
         """
         if isinstance(other, duration):
             rval = moment(self.epoch() + other.seconds)
@@ -456,6 +462,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
+        class moment
+
         Returns True or False - whether two moment objects are equal
         implicit
 
@@ -484,6 +492,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __sub__(self, other):
         """
+        class moment
+
         Returns the difference of *self* and *other* as a duration
         """
         return duration(seconds=(self.epoch() - other.epoch()))
@@ -491,6 +501,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __repr__(self):
         """
+        class moment
+
         Returns a string that will regenerate this object if passed to eval()
 
         Examples:
@@ -507,6 +519,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __str__(self):
         """
+        class moment
+
         Returns a human-readable representation of this object
 
         Examples:
@@ -520,6 +534,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def epoch(self):
         """
+        class moment
+
         Returns the currently stored moment as an int UTC epoch
 
         Examples:
@@ -533,6 +549,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def gmtime(self):
         """
+        class moment
+
         Returns the UTC tm structure for the currently stored moment
 
         examples:
@@ -547,6 +565,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def localtime(self):
         """
+        class moment
+
         Returns the local time tm structure for the stored moment
 
         examples:
@@ -561,6 +581,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def ceiling(self, unit):
         """
+        class moment
+
         Computes the ceiling of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
         """
@@ -592,6 +614,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def floor(self, unit):
         """
+        class moment
+
         Computes the floor of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
         """
@@ -633,6 +657,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def week_floor(self):
         """
+        class moment
+
         Finds the beginning of the week in which *self*.moment occurs and
         return a new moment object that stores that point in time.
         """
@@ -655,6 +681,8 @@ class moment(object):
     # -------------------------------------------------------------------------
     def _guess_format(self, spec):
         """
+        class moment
+
         Tries each of the parse formats in the list until one works or the list
         is exhausted. Returns the UTC epoch (or None if we don't find a
         matching format).
@@ -681,6 +709,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
+        class month
+
         Set up month info
         """
         self._dict = {}
@@ -701,6 +731,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def days(self, month, year=None):
         """
+        class month
+
         Returns the number of days in the indicated *month*. If *year* is not
         specified, the current year is used.
         """
@@ -713,6 +745,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def _days(self, midx):
         """
+        class month
+
         This is a private function returning the number of days in each month,
         based on the year 2010. It is used for setting up self._dict.
         """
@@ -724,6 +758,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def index(self, name_or_idx):
         """
+        class month
+
         Given a month name or index in *name_or_idx*, this returns the index of
         the month in the range 1 .. 12 or throws a ValueError.
         """
@@ -733,6 +769,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def isleap(self, year=None):
         """
+        class month
+
         Returns true if *year* is leap. If *year* is not provided, return True
         if the current year is leap, else False.
         """
@@ -745,6 +783,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def names(self):
         """
+        class month
+
         Returns a list of lowercase full month names
         """
         return [self._dict[x]['name'] for x in self._dict
@@ -753,6 +793,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def short_names(self):
         """
+        class month
+
         Returns a list of three letter lowercase month name abbreviations
         """
         return [self._dict[x]['abbr'] for x in self._dict
@@ -761,6 +803,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def match_monthnames(self):
         """
+        class month
+
         Returns a regex that will match all month names
         """
         rgx = "(" + "|".join([self._dict[x]['name'] for x in self._dict
