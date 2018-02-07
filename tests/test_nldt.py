@@ -182,6 +182,21 @@ def test_dur_moment_diff(start, end, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_dur_init_exc():
+    """
+    D(start=...) and D(end=...) should throw an exception
+    """
+    pytest.debug_func()
+    with pytest.raises(nldt.InitError) as err:
+        _ = D(start=M("2013-07-04"), years=5)
+    assert "If start or end is specified, both must be" in str(err)
+
+    with pytest.raises(nldt.InitError) as err:
+        _ = D(end=M("2013-07-04"), years=5)
+    assert "If start or end is specified, both must be" in str(err)
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment
