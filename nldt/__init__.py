@@ -822,6 +822,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
+        class Parser:
         Sets up the Parser object
         """
         self.preps = prepositions()
@@ -833,6 +834,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def __call__(self, expr, start=None):
         """
+        class Parser:
         Parses *expr*, using *start* as the initial reference point if
         provided.
         """
@@ -868,6 +870,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_of_in(self, expr, prep, start):
         """
+        class Parser:
         Handles expressions like 'third of May', 'first week in June'
         """
         unit = self.tu.find_unit(expr)
@@ -884,6 +887,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_mon_name(self, expr, start):
         """
+        class Parser:
         Handles expressions like 'May', 'October', 'February, 1933'
         """
         rval = moment()
@@ -894,6 +898,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_ago(self, expr, start):
         """
+        class Parser:
         Handle expressions like 'a week ago', 'three days ago', 'five years
         ago', etc.
         """
@@ -912,6 +917,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_from_now(self, expr, start):
         """
+        class Parser:
         Handle expressions like 'an hour from now', 'two days from now', 'four
         weeks from now', 'three years from now', etc.
         """
@@ -930,6 +936,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_month(self, expr, start):
         """
+        class Parser:
         Handle 'next month', 'last month'
         """
         wb = word_before('month', expr)
@@ -946,6 +953,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_week(self, expr, start):
         """
+        class Parser:
         Various expressions that involve 'week'
         """
         wb = word_before('week', expr)
@@ -976,6 +984,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_year(self, expr, start):
         """
+        class Parser:
         Parse expressions like 'last year', 'next year'
         """
         wb = word_before('year', expr)
@@ -990,6 +999,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_weekday(self, expr, result, start):
         """
+        class Parser:
         Parse expressions like 'next monday', 'last wednesday', etc.
         """
         wday = result[0].group()
@@ -1007,6 +1017,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def research(self, pattern, text, result):
         """
+        class Parser:
         Looks for *pattern* in *text*. If something is found, push the search
         object into *result* (which must be a list) and also return it.
         """
