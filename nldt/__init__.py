@@ -116,7 +116,13 @@ class duration(object):
 
     # -------------------------------------------------------------------------
     def __repr__(self):
-        return "duration(seconds={})".format(self.seconds)
+        """
+        class duration: return the object's repr suitable to be processed by
+        eval()
+        """
+        return "{}.{}(seconds={})".format(self.__module__,
+                                          self.__class__.__name__,
+                                          self.seconds)
 
     # -------------------------------------------------------------------------
     def __str__(self):
