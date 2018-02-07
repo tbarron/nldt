@@ -1419,3 +1419,17 @@ def test_moment_floor():
     with pytest.raises(ValueError) as err:
         mug.floor('frumpy')
     assert "'frumpy' is not a time unit" in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_parser_research():
+    """
+    """
+    prs = nldt.Parser()
+    frink = "this is a string"
+    with pytest.raises(TypeError) as err:
+        if prs.research("boofar", "one two boofar three four", frink):
+            assert frink == "this is a string"
+    assert "result must be an empty list" in str(err)
+
+
