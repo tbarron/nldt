@@ -89,6 +89,19 @@ def test_dur_start_end(start, end, exp):
     pytest.debug_func()
     if isinstance(exp, Exception):
         with pytest.raises(type(exp)) as err:
+            _ = D(end=M(end), start=M(start))
+        assert str(exp) == str(err.value)
+    else:
+        result = D(start=M(start), end=M(end))
+        assert exp == result
+
+
+    """
+    Test creating a duration by difference of times
+    """
+    pytest.debug_func()
+    if isinstance(exp, Exception):
+        with pytest.raises(type(exp)) as err:
             _ = M(end) - M(start)
         assert str(exp) == str(err.value)
     else:
