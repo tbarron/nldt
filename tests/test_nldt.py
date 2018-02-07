@@ -12,6 +12,18 @@ from calendar import timegm
 
 
 # -----------------------------------------------------------------------------
+def test_indexable_abc():
+    """
+    Indexable is an abstract base class that should not be instantiated
+    directly.
+    """
+    msg = "This is an abstract base class -- don't instantiate it."
+    with pytest.raises(TypeError) as err:
+        _ = nldt.Indexable()
+    assert msg in str(err)
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("start, end, exp",
     [(1325242800, 1325246400, D(seconds=3600)),
 
