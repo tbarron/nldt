@@ -384,6 +384,18 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def __add__(self, other):
+        """
+        moment + duration => moment
+        moment + number-of-seconds => moment
+        """
+        if isinstance(other, duration):
+            rval = moment(self.epoch() + other.seconds)
+        elif isinstance(other, numbers.Number):
+            rval = moment(self.epoch() + other)
+        return rval
+
+    # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
         Returns True or False - whether two moment objects are equal

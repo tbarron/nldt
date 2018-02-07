@@ -97,6 +97,18 @@ def test_dur_start_end(start, end, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_moment_plus():
+    """
+    moment + duration should produce another moment
+    moment + number-of-seconds should produce another moment
+    """
+    pytest.debug_func()
+    base = M("2018-02-01")
+    assert base + D(hours=3) == M("2018-02-01 03:00:00")
+    assert base + 23*3600 == M("2018-02-01 23:00:00")
+
+
+# -----------------------------------------------------------------------------
 def test_month_init():
     """
     nldt.month() constructor should return an object with dict of months
