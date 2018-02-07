@@ -1445,3 +1445,11 @@ def test_Stub():
     assert msg in str(err)
 
 
+# -----------------------------------------------------------------------------
+def test_caller_name():
+    """
+    Test function caller_name()
+    """
+    def foobar():
+        assert nldt.caller_name() == 'test_caller_name'
+    foobar()
