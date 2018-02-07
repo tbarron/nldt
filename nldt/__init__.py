@@ -159,6 +159,27 @@ class duration(object):
             return self.seconds == other.seconds
 
     # -------------------------------------------------------------------------
+    def __sub__(self, other):
+        """
+        Subtract *other* from *self*
+          - duration - duration => duration
+          - duration - number-of-seconds => duration
+          - duration - moment => exception
+        """
+        if isinstance(other, numbers.Number):
+            rval = self.seconds - other
+        elif isinstance(other, duration):
+            rval = self.seconds - other.seconds
+        elif isinstance(other, moment):
+            msg = "unsupported operand type(s): try 'moment' - 'duration'"
+            raise TypeError(msg)
+        else:
+            msg = ("unsupported operand type(s): '{}' and '{}'"
+                   .format(type(self), type(other)))
+            raise TypeError(msg)
+        return rval
+
+    # -------------------------------------------------------------------------
     def _resolve_value(self, start_end_value):
         """
         *start_end_value* may be any of the following types:
