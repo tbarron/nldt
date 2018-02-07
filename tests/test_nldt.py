@@ -89,10 +89,10 @@ def test_dur_start_end(start, end, exp):
     pytest.debug_func()
     if isinstance(exp, Exception):
         with pytest.raises(type(exp)) as err:
-            _ = D(end=M(end), start=M(start))
+            _ = D(end=end, start=start)
         assert str(exp) == str(err.value)
     else:
-        result = D(start=M(start), end=M(end))
+        result = D(start=start, end=end)
         assert exp == result
 
 
