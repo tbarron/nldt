@@ -89,7 +89,82 @@ class duration(object):
         If *start* and *end* are both absent, any combination of *years*,
         *weeks*, *days*, *hours*, *minutes*, and *seconds* can be used.
         """
-        pass
+        if start or end:
+            # build duration from the difference between end and start
+            if not start or not end:
+                raise InitError('If start or end is specified, both must be')
+            start = self._resolve_value(start)
+            end = self._resolve_value(end)
+            self.seconds = end.epoch() - start.epoch()
+        else:
+            # build duration from years, weeks, days, hours, minutes, seconds
+            tsecs = 0
+            tu = time_units()
+            if seconds:
+                tsecs += seconds
+            if minutes:
+                tsecs += tu.magnitude('minute') * minutes
+            if hours:
+                tsecs += tu.magnitude('hour') * hours
+            if days:
+                tsecs += tu.magnitude('day') * days
+            if weeks:
+                tsecs += tu.magnitude('week') * weeks
+            if years:
+                tsecs += tu.magnitude('year') * years
+            self.seconds = tsecs
+
+    # -------------------------------------------------------------------------
+    def __repr__(self):
+        return "duration(seconds={})".format(self.seconds)
+
+    # -------------------------------------------------------------------------
+    def __str__(self):
+        secs = self.seconds
+        days = int(secs / (3600 * 24))
+        secs -= days * 3600 * 24
+        hours = int(secs / 3600)
+        secs -= hours * 3600
+        minutes = int(secs / 60)
+        secs -= minutes * 60
+        return "{:d}.{:02d}:{:02d}:{:02d}".format(days, hours, minutes, secs)
+
+    # -------------------------------------------------------------------------
+    def __eq__(self, other):
+        """
+        Assess whether this object is equal to the *other* value
+        """
+        if isinstance(other, numbers.Number):
+            return self.seconds == other
+        elif isinstance(other, duration):
+            return self.seconds == other.seconds
+
+    # -------------------------------------------------------------------------
+    def _resolve_value(self, start_end_value):
+        """
+        *start_end_value* may be any of the following types:
+
+            1) an epoch,
+            2) a tm struct,
+            3) a moment, or
+            4) a date/time string in a format moment recognizes,
+
+        and they don't have to be in the same format.
+        """
+        if isinstance(start_end_value, numbers.Number):
+            rval = moment(start_end_value)
+        elif isinstance(start_end_value, tuple):
+            if len(start_end_value) < 6 or 9 < len(start_end_value):
+                raise InitError('Invalid tm tuple')
+            else:
+                rval = moment(start_end_value)
+        elif isinstance(start_end_value, time.struct_time):
+            rval = moment(start_end_value)
+        elif isinstance(start_end_value, moment):
+            rval = start_end_value
+        elif isinstance(start_end_value, str):
+            rval = moment(start_end_value)
+        return rval
 
 
 # -----------------------------------------------------------------------------
@@ -252,6 +327,8 @@ class moment(object):
                 self.moment = timegm(args[0])
             elif isinstance(args[0], str):
                 self.moment = self._guess_format(args[0])
+            elif isinstance(args[0], moment):
+                self.moment = args[0].moment
             if self.moment is None:
                 msg = "\n".join(["Valid ways of calling nldt.moment():",
                                  "    nldt.moment()",
@@ -333,6 +410,13 @@ class moment(object):
             True
         """
         return self.moment == other.moment
+
+    # -------------------------------------------------------------------------
+    def __sub__(self, other):
+        """
+        Returns the difference of *self* and *other* as a duration
+        """
+        return duration(seconds=(self.epoch() - other.epoch()))
 
     # -------------------------------------------------------------------------
     def __repr__(self):
@@ -1145,6 +1229,14 @@ class Stub(Exception):
         if msg:
             fullmsg += " ({})".format(msg)
         super().__init__(fullmsg)
+
+
+# -----------------------------------------------------------------------------
+class InitError(Exception):
+    """
+    This exception is for calling out problems in initializing objects
+    """
+    pass
 
 
 # -----------------------------------------------------------------------------
