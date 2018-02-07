@@ -204,13 +204,13 @@ class duration(object):
         """
         if isinstance(start_end_value, numbers.Number):
             rval = moment(start_end_value)
+        elif isinstance(start_end_value, time.struct_time):
+            rval = moment(start_end_value)
         elif isinstance(start_end_value, tuple):
             if len(start_end_value) < 6 or 9 < len(start_end_value):
                 raise InitError('Invalid tm tuple')
             else:
                 rval = moment(start_end_value)
-        elif isinstance(start_end_value, time.struct_time):
-            rval = moment(start_end_value)
         elif isinstance(start_end_value, moment):
             rval = start_end_value
         elif isinstance(start_end_value, str):
@@ -1142,6 +1142,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
+        class week
+
         Sets up week info
         """
         self._dict = {}
@@ -1160,6 +1162,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def day_list(self):
         """
+        class week
+
         Returns a list of weekday names
         """
         return [self._dict[x]['name'] for x in self._dict
@@ -1168,6 +1172,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def find_day(self, text):
         """
+        class week
+
         Finds and returns the first weekday name in *text*
         """
         found = [wday for wday in self.day_list()
@@ -1180,6 +1186,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def forediff(self, start, end):
         """
+        class week
+
         Returns the number of days required to get from day *start* to day
         *end* going forward. *start* and *end* can be day names or index
         values.
@@ -1194,6 +1202,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def backdiff(self, start, end):
         """
+        class week
+
         Returns the number of days required to get from day *start* to day
         *end* going forward. *start* and *end* can be day names or index
         values.
@@ -1208,6 +1218,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def index(self, wday):
         """
+        class week
+
         Returns the numeric index for *wday* (sun = 0, mon = 1, ... sat = 6)
         """
         if 3 < len(wday):
@@ -1217,6 +1229,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def fullname(self, idx_or_abbr):
         """
+        class week
+
         Looks up *idx_or_abbr* in self._dict and return the 'name' item
         """
         idx = self.indexify(idx_or_abbr)
@@ -1225,6 +1239,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def match_weekdays(self):
         """
+        class week
+
         Returns a regex that will match all weekdays
         """
         return "(mon|tues|wednes|thurs|fri|satur|sun)day"
@@ -1232,6 +1248,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def day_number(self, moment_or_epoch, count=None):
         """
+        class week
+
         This returns a weekday number based on a moment or epoch time. The
         *count* argument can be one of
 
