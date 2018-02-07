@@ -455,8 +455,8 @@ class moment(object):
         elif isinstance(other, moment):
             raise TypeError("sum of moments is not defined")
         else:
-            raise TypeError("unsupported operand type(s) for +:"
-                            " '{}' and '{}'".format(type(self), type(other)))
+            raise TypeError("unsupported operand type(s) for +: '{}' and '{}'"
+                            .format(type(self), type(other)))
         return rval
 
     # -------------------------------------------------------------------------
