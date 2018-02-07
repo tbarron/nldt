@@ -329,6 +329,18 @@ def test_dur_sub_exc():
 
 
 # -----------------------------------------------------------------------------
+def test_dur_repr_str():
+    """
+    Verify duration.__repr__
+    """
+    d = nldt.duration(years=1, weeks=2, days=3,
+                      hours=4, minutes=5, seconds=6)
+    assert eval(repr(d)) == d
+    assert str(d) == '382.04:05:06'
+
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment
