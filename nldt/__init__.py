@@ -1038,6 +1038,8 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
+        class prepositions
+
         Sets up the prepositions object. In the self.preps dict, the keys are
         the recognized prepositions and the values indicate the temporal
         direction of the key -- +1 for forward in time, -1 for backward.
@@ -1047,6 +1049,8 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def split(self, text):
         """
+        class prepositions
+
         Constructs (and caches) a regex based on the prepositions and use it to
         split *text*, returning the list of pieces.
         """
@@ -1061,6 +1065,8 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def are_in(self, text):
         """
+        class prepositions
+
         Returns True if *text* contains any prepositions
         """
         return any([x in self.preps for x in text.split()])
@@ -1068,6 +1074,8 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def direction(self, prep):
         """
+        class prepositions
+
         Returns the direction for preposition *prep*
         """
         return self.preps[prep]
