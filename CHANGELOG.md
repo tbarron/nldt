@@ -1,11 +1,15 @@
 ## 0.0.3 ...
 
+ * 100% test coverage
+ * Class tag all the object methods
  * Moment and duration arithmetic:
    * number-of-seconds treated like duration
    * duration + moment produces moment
    * duration + duration produces duration
    * moment +/- duration produces moment
    * moment - moment produces duration
+   * duration(start, no end) -> exception
+   * duration(end, no start) -> exception
  * Replace 'parse' and friends with class Parser
  * Create and define class duration
  * Stub exception for marking code under construction
