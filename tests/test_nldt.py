@@ -17,9 +17,9 @@ from calendar import timegm
 
      (1325242801, (2011, 12, 30, 10, 0, 1), D(seconds=-3600)),
      (1325242802, (2011, 12, 30, 10, 0),
-      ValueError('need at least 6 values, no more than 9')),
+      nldt.InitError('Invalid tm tuple')),
      (1325242803, (2011, 12, 30, 10, 0, 0, 0, 0, 0, 0),
-      ValueError('need at least 6 values, no more than 9')),
+      nldt.InitError('Invalid tm tuple')),
 
      (1325242804, time.struct_time((2011, 12, 29, 11, 0, 4, 0, 0, 0)),
       D(days=-1)),
