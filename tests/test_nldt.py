@@ -122,6 +122,17 @@ def test_duration_plus():
     assert D(hours=3) + 75 == D(hours=3, minutes=1, seconds=15)
 
 
+# -----------------------------------------------------------------------------
+def test_duration_minus():
+    """
+    duration - moment should produce exception
+    """
+    pytest.debug_func()
+    assert D(hours=1) - D(minutes=30) == D(seconds=1800)
+    assert D(minutes=10) - 150 == D(seconds=450)
+    with pytest.raises(TypeError) as err:
+        assert D(seconds=25) - M("2018-02-01")
+    assert "unsupported operand type(s): try 'moment' - 'duration'" in str(err)
 
 
 # -----------------------------------------------------------------------------
