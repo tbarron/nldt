@@ -1433,3 +1433,15 @@ def test_parser_research():
     assert "result must be an empty list" in str(err)
 
 
+# -----------------------------------------------------------------------------
+def test_Stub():
+    """
+    The Stub class raises an exception reporting the current function that
+    needs attention
+    """
+    with pytest.raises(nldt.Stub) as err:
+        raise nldt.Stub("extra text")
+    msg = "test_Stub() is a stub -- please complete it. (extra text)"
+    assert msg in str(err)
+
+
