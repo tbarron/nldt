@@ -9,15 +9,6 @@ import nldt
 
 
 # -----------------------------------------------------------------------------
-# def test_bug_001():
-#     """
-#     nldt.moment('2016-06-07')._yesterday() is yielding '2016-06-05' when it
-#     should be '2016-06-06'
-#     """
-#     pytest.debug_func()
-#     a = nldt.moment('2016-06-07')
-#     b = nldt.moment(a._yesterday())
-#     assert b() == '2016-06-06'
 # -----------------------------------------------------------------------------
 def test_moment_plus():
     """

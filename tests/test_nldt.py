@@ -448,26 +448,6 @@ def test_weekday_names():
 
 
 # -----------------------------------------------------------------------------
-# def test_obj_timezone_dstoff():
-#     """
-#     Querying the timezone on an object whose moment is set outside DST will get
-#     a timezone name reflecting standard time
-#     """
-#     obj = nldt.moment('2016.1201')
-#     assert obj.timezone() == time.tzname[0]
-
-
-# -----------------------------------------------------------------------------
-# def test_obj_timezone_dston():
-#     """
-#     Querying the timezone on an object whose moment is set during DST will get
-#     a timezone name reflecting DST
-#     """
-#     obj = nldt.moment('2016.0701')
-#     assert obj.timezone() == time.tzname[1]
-
-
-# -----------------------------------------------------------------------------
 def test_utc_offset():
     """
     Check routine utc_offset() against some known timezones that don't change
