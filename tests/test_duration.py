@@ -172,9 +172,11 @@ def test_dur_moment_diff(start, end, exp):
     pytest.debug_func()
     if isinstance(exp, Exception):
         with pytest.raises(type(exp)) as err:
+            # payload
             _ = M(end) - M(start)
         assert str(exp) == str(err.value)
     else:
+        # payload
         result = M(end) - M(start)
         assert exp == result
 
@@ -186,10 +188,12 @@ def test_dur_init_exc():
     """
     pytest.debug_func()
     with pytest.raises(nldt.InitError) as err:
+        # payload
         _ = D(start=M("2013-07-04"), years=5)
     assert "If start or end is specified, both must be" in str(err)
 
     with pytest.raises(nldt.InitError) as err:
+        # payload
         _ = D(end=M("2013-07-04"), years=5)
     assert "If start or end is specified, both must be" in str(err)
 
@@ -282,6 +286,7 @@ def test_dur_ywdhms(y, w, d, h, m, s, x):
     Durations can initialized by any combination of years, weeks, days, hours,
     minutes, and seconds
     """
+    # payload
     assert D(years=y, weeks=w, days=d, hours=h, minutes=m, seconds=s) == x
 
 
