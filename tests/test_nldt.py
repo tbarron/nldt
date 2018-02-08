@@ -930,9 +930,11 @@ def test_month_days(month, year, exp):
     """
     m = nldt.month()
     if isinstance(exp, numbers.Number):
+        # payload
         assert m.days(month=month, year=year) == exp
     else:
         with pytest.raises(ValueError) as err:
+            # payload
             m.days(month=month, year=year)
         assert exp in str(err)
 
@@ -946,6 +948,7 @@ def test_month_days_curyear():
     now = nldt.moment()
     curyear = int(now('%Y'))
     exp = 29 if mobj.isleap(curyear) else 28
+    # payload
     assert mobj.days(2) == exp
 
 
@@ -957,8 +960,10 @@ def test_isleap():
     """
     m = nldt.month()
     if m.days(2) == 29:
+        # payload
         assert m.isleap(None)
     else:
+        # payload
         assert not m.isleap(None)
 
 
@@ -1047,6 +1052,7 @@ def test_week_day_number():
     assert w.day_number(sat) == 5
 
     with pytest.raises(TypeError) as err:
+        # payload
         w.day_number("the other day") == 14
     assert "argument must be moment or epoch number" in str(err)
 
