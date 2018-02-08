@@ -206,6 +206,39 @@ class duration(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def format(self, fmtstr):
+        """
+        class duration
+        This function reports the stored interval according to *fmtstr*
+        """
+        interval = self._deconstruct()
+        result = fmtstr
+        sfmt = "{}"
+        for foo in ["Y", "d", "H", "M", "S"]:
+            result = re.sub("%"+foo, sfmt.format(interval[foo]), result)
+            if foo == "d":
+                sfmt = "{:02d}"
+        return result
+
+    # -------------------------------------------------------------------------
+    def _deconstruct(self):
+        """
+        Allocate the seconds to a year, day, hour, min, sec dict
+        """
+        rval = {}
+        secs = self.seconds
+        rval["Y"] = int(secs / (365*24*3600))
+        secs -= rval["Y"] * 365*24*3600
+        rval["d"] = int(secs / (24*3600))
+        secs -= rval["d"] * 24*3600
+        rval["H"] = int(secs / 3600)
+        secs -= rval["H"] * 3600
+        rval["M"] = int(secs / 60)
+        secs -= rval["M"] * 60
+        rval["S"] = secs
+        return rval
+
+    # -------------------------------------------------------------------------
     def _resolve_value(self, start_end_value):
         """
         class duration
