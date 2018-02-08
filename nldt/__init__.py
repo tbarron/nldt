@@ -1164,7 +1164,9 @@ class week(Indexable):
         Finds and returns the first weekday name in *text*
         """
         found = [wday for wday in self.day_list()
-                 if re.search("(^|\W){}(\W|$)".format(wday), text)]
+                 if re.search("(^|\W){}(\W|$)".format(wday),
+                              text,
+                              re.IGNORECASE)]
         if found:
             return found[0]
         else:

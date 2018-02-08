@@ -634,18 +634,23 @@ def test_match_monthnames():
 
 
 # -----------------------------------------------------------------------------
-def test_find_day():
+@pytest.mark.parametrize("inp, exp", [
+                         ("No weekday name in this text", None),
+                         ("Can you find the wednesday?", "wednesday"),
+                         ("Here it is monday again", "monday"),
+                         ("tuesday is a fine day", "tuesday"),
+                         ("...Saturday we'll go to the store", 'saturday'),
+                         ("Which day precedes (Friday) and which follows?",
+                          'friday'),
+                         ("Still need a Thursday test", 'thursday'),
+                         ("On Sunday all the tests are finished", 'sunday'),
+                         ])
+def test_find_day(inp, exp):
     """
     Coverage for week.find_day
     """
-    none = "No weekday name in this text"
-    some = "Can you find the wednesday?"
-    front = "Tuesday is a fine day"
-    punct = "...Saturday we'll go to the store"
-    paren = "Which day precedes (Friday) and which follows?"
     w = nldt.week()
-    assert w.find_day(none) == None
-    assert w.find_day(some) == "wednesday"
+    assert w.find_day(inp) == exp
 
 
 # -----------------------------------------------------------------------------
