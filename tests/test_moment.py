@@ -81,6 +81,21 @@ def test_display_formatted():
 
 
 # -----------------------------------------------------------------------------
+def test_epoch():
+    """
+    Return the epoch form of times past, present, and future
+    """
+    pytest.debug_func()
+    now = time.time()
+    yesterday = nldt.moment(now - (24*3600))
+    tomorrow = nldt.moment(now + (24*3600))
+    wobj = nldt.moment(now)
+    assert wobj.epoch() == int(now)
+    assert yesterday.epoch() == int(now - (24*3600))
+    assert tomorrow.epoch() == int(now + (24*3600))
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment
