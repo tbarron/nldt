@@ -475,36 +475,6 @@ def test_utc_offset():
 
 
 # -----------------------------------------------------------------------------
-def test_arg_tomorrow():
-    """
-    Offset as an argument. moment('tomorrow') generates the beginning of
-    tomorrow.
-    """
-    pytest.debug_func()
-    assert not hasattr(nldt, 'tomorrow')
-    with pytest.raises(ValueError) as err:
-        argl = nldt.moment('tomorrow')
-    errmsg = "ValueError: Valid ways of calling nldt.moment():"
-    assert errmsg in str(err)
-    obj = nldt.moment()
-    assert not hasattr(obj, 'parse')
-
-
-# -----------------------------------------------------------------------------
-def test_arg_yesterday():
-    """
-    Offset as an argument. moment('yesterday') generates the beginning of
-    yesterday.
-    """
-    pytest.debug_func()
-    assert not hasattr(nldt, 'yesterday')
-    with pytest.raises(ValueError) as err:
-        then = nldt.moment("yesterday")
-    errmsg = "ValueError: Valid ways of calling nldt.moment():"
-    assert errmsg in str(err)
-
-
-# -----------------------------------------------------------------------------
 def test_display():
     """
     Simply calling an nldt object should make it report itself in ISO format
