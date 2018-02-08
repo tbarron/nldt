@@ -285,3 +285,49 @@ def test_dur_ywdhms(y, w, d, h, m, s, x):
     assert D(years=y, weeks=w, days=d, hours=h, minutes=m, seconds=s) == x
 
 
+# -----------------------------------------------------------------------------
+def test_dur_add():
+    """
+    duration + moment-parseable => moment
+    """
+    d = D(hours=3)
+    # payload
+    assert d + "2018-01-01" == M("2018-01-01 03:00:00")
+    msg = ("unsupported operand type(s) for +: "
+           "'<class 'nldt.moment'>' and '<class 'list'>'")
+    with pytest.raises(TypeError) as err:
+        # payload
+        M("2018-02-01") + [1,2,3]
+    assert msg in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_dur_sub_exc():
+    """
+    duration - not-num-dur-moment => exception
+    """
+    pytest.debug_func()
+    d = D(hours=3)
+    x = [1,2,3]
+    with pytest.raises(TypeError) as err:
+        # payload
+        assert d - x
+    msg = ("unsupported operand type(s): '{}' and '{}'"
+           .format(d.__class__, x.__class__))
+    assert msg in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_dur_repr_str():
+    """
+    Verify duration.__repr__, duration.__str__
+    """
+    d = nldt.duration(years=1, weeks=2, days=3,
+                      hours=4, minutes=5, seconds=6)
+    # payload
+    assert eval(repr(d)) == d
+    # payload
+    assert str(d) == '382.04:05:06'
+
+
+

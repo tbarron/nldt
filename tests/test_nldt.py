@@ -24,47 +24,6 @@ def test_indexable_abc():
 
 
 # -----------------------------------------------------------------------------
-def test_dur_add():
-    """
-    duration + moment-parseable => moment
-    """
-    d = D(hours=3)
-    assert d + "2018-01-01" == M("2018-01-01 03:00:00")
-    msg = ("unsupported operand type(s) for +: "
-           "'<class 'nldt.moment'>' and '<class 'list'>'")
-    with pytest.raises(TypeError) as err:
-        M("2018-02-01") + [1,2,3]
-    assert msg in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_dur_sub_exc():
-    """
-    duration - not-num-dur-moment => exception
-    """
-    pytest.debug_func()
-    d = D(hours=3)
-    x = [1,2,3]
-    with pytest.raises(TypeError) as err:
-        assert d - x
-    msg = ("unsupported operand type(s): '{}' and '{}'"
-           .format(d.__class__, x.__class__))
-    assert msg in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_dur_repr_str():
-    """
-    Verify duration.__repr__
-    """
-    d = nldt.duration(years=1, weeks=2, days=3,
-                      hours=4, minutes=5, seconds=6)
-    assert eval(repr(d)) == d
-    assert str(d) == '382.04:05:06'
-
-
-
-# -----------------------------------------------------------------------------
 def test_duration_plus():
     """
     duration + moment should produce another moment
