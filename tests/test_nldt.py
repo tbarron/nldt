@@ -16,6 +16,7 @@ def test_indexable_abc():
     msg = "This is an abstract base class -- don't instantiate it."
     with pytest.raises(TypeError) as err:
         _ = nldt.Indexable()
+        assert isinstance(_, nldt.Indexable)
     assert msg in str(err)
 
 
