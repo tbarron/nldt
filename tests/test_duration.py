@@ -331,4 +331,52 @@ def test_dur_repr_str():
     assert str(d) == '382.04:05:06'
 
 
+# -----------------------------------------------------------------------------
+def test_duration_dhms():
+    """
+    duration.dhms() reports the duration length in days.hh:mm:ss format
+    """
+    assert D(years=1).dhms() == '365.00:00:00'
+    assert D(weeks=2).dhms() == '14.00:00:00'
+    assert D(days=3).dhms() == '3.00:00:00'
+    assert D(hours=4).dhms() == '0.04:00:00'
+    assert D(minutes=5).dhms() == '0.00:05:00'
+    assert D(seconds=6).dhms() == '0.00:00:06'
 
+
+# -----------------------------------------------------------------------------
+def test_duration_minus():
+    """
+    duration - moment should produce exception
+    """
+    pytest.debug_func()
+    assert D(hours=1) - D(minutes=30) == D(seconds=1800)
+    assert D(minutes=10) - 150 == D(seconds=450)
+    with pytest.raises(TypeError) as err:
+        assert D(seconds=25) - M("2018-02-01")
+    assert "unsupported operand type(s): try 'moment' - 'duration'" in str(err)
+
+
+# -----------------------------------------------------------------------------
+def test_duration_plus():
+    """
+    duration + moment should produce another moment
+    duration + number-of-seconds should produce another duration
+    """
+    pytest.debug_func()
+    assert D(seconds=60) + M("2018-02-01 05:00:00") == M("2018-02-01 05:01:00")
+    assert D(hours=1) + D(minutes=5) == D(seconds=3900)
+    assert D(hours=3) + 75 == D(hours=3, minutes=1, seconds=15)
+
+
+# -----------------------------------------------------------------------------
+def test_duration_seconds():
+    """
+    duration.seconds() reports the total seconds in the duration
+    """
+    assert D(years=1).seconds == 365*24*3600
+    assert D(weeks=2).seconds == 14*24*3600
+    assert D(days=3).seconds == 3*24*3600
+    assert D(hours=4).seconds == 4*3600
+    assert D(minutes=5).seconds == 300
+    assert D(seconds=6).seconds == 6
