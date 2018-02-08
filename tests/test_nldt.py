@@ -341,20 +341,6 @@ def test_dur_repr_str():
 
 
 # -----------------------------------------------------------------------------
-def test_moment_plus():
-    """
-    moment + duration should produce another moment
-    moment + number-of-seconds should produce another moment
-    """
-    pytest.debug_func()
-    base = M("2018-02-01")
-    assert base + D(hours=3) == M("2018-02-01 03:00:00")
-    assert base + 23*3600 == M("2018-02-01 23:00:00")
-    with pytest.raises(TypeError) as err:
-        assert base + M("2018-03-01") != M("2018-04-01")
-    assert "sum of moments is not defined" in str(err)
-
-# -----------------------------------------------------------------------------
 def test_duration_plus():
     """
     duration + moment should produce another moment
