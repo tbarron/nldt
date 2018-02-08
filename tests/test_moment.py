@@ -143,6 +143,48 @@ def test_intuit(inp, fmt, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_moment_ceiling():
+    """
+    moment().ceiling(*unit*) should return the time index at the top of the
+    containing *unit*. Eg., for unit 'day', the second returned should be time
+    23:59:59 on the day that contains the starting moment.
+    """
+
+    def expected_ceiling(unit, now):
+        if unit in ['second', 'minute', 'hour', 'day']:
+            mag = tu.magnitude(unit)
+            exp = now + mag - (now % mag) - 1
+        elif unit == 'week':
+            tm = time.gmtime(now)
+            delta = wk.forediff(tm.tm_wday, 'mon')
+            nflr = nldt.timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
+                           0, 0, 0, 0, 0, 0))
+            exp = nflr - 1
+        elif unit == 'month':
+            tm = time.gmtime(now)
+            nflr = nldt.timegm((tm.tm_year, tm.tm_mon+1, 1, 0, 0, 0, 0, 0, 0))
+            exp = nflr - 1
+        elif unit == 'year':
+            tm = time.gmtime(now)
+            nflr = nldt.timegm((tm.tm_year+1, 1, 1, 0, 0, 0, 0, 0, 0))
+            exp = nflr - 1
+        return nldt.moment(exp)
+
+    tu = nldt.time_units()
+    wk = nldt.week()
+    now = time.time()
+    mug = nldt.moment(now)
+    for unit in tu.unit_list():
+        # payload
+        assert mug.ceiling(unit) == expected_ceiling(unit, now)
+
+    with pytest.raises(ValueError) as err:
+        # payload
+        mug.ceiling('frumpy')
+    assert "'frumpy' is not a time unit" in str(err)
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment

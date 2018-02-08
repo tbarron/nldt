@@ -1167,44 +1167,6 @@ def test_moment_localtime():
 
 
 # -----------------------------------------------------------------------------
-def test_moment_ceiling():
-    """
-    Test in moment().ceiling()
-    """
-
-    def expected_ceiling(unit, now):
-        if unit in ['second', 'minute', 'hour', 'day']:
-            mag = tu.magnitude(unit)
-            exp = now + mag - (now % mag) - 1
-        elif unit == 'week':
-            tm = time.gmtime(now)
-            delta = wk.forediff(tm.tm_wday, 'mon')
-            nflr = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
-                           0, 0, 0, 0, 0, 0))
-            exp = nflr - 1
-        elif unit == 'month':
-            tm = time.gmtime(now)
-            nflr = timegm((tm.tm_year, tm.tm_mon+1, 1, 0, 0, 0, 0, 0, 0))
-            exp = nflr - 1
-        elif unit == 'year':
-            tm = time.gmtime(now)
-            nflr = timegm((tm.tm_year+1, 1, 1, 0, 0, 0, 0, 0, 0))
-            exp = nflr - 1
-        return nldt.moment(exp)
-
-    tu = nldt.time_units()
-    wk = nldt.week()
-    now = time.time()
-    mug = nldt.moment(now)
-    for unit in tu.unit_list():
-        assert mug.ceiling(unit) == expected_ceiling(unit, now)
-
-    with pytest.raises(ValueError) as err:
-        mug.ceiling('frumpy')
-    assert "'frumpy' is not a time unit" in str(err)
-
-
-# -----------------------------------------------------------------------------
 def test_moment_floor():
     """
     Test in moment().floor()
