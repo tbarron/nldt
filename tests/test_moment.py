@@ -242,6 +242,18 @@ def test_moment_init_except():
 
 
 # -----------------------------------------------------------------------------
+def test_moment_init_tm():
+    """
+    Verify instantiating a moment based on a tm tuple
+    """
+    foo = time.time()
+    # payload
+    from_tm = nldt.moment(time.gmtime(foo))
+    from_epoch = nldt.moment(foo)
+    assert from_tm == from_epoch
+
+
+# -----------------------------------------------------------------------------
 def test_moment_localtime():
     """
     Test moment().localtime()

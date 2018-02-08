@@ -1129,17 +1129,6 @@ def test_unit_list():
 
 
 # -----------------------------------------------------------------------------
-def test_moment_init_tm():
-    """
-    Verify instantiating a moment based on a tm tuple
-    """
-    foo = time.time()
-    from_tm = nldt.moment(time.gmtime(foo))
-    from_epoch = nldt.moment(foo)
-    assert from_tm == from_epoch
-
-
-# -----------------------------------------------------------------------------
 def test_parser_research():
     """
     """
