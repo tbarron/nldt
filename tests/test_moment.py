@@ -67,6 +67,20 @@ def test_display():
 
 
 # -----------------------------------------------------------------------------
+def test_display_formatted():
+    """
+    Calling an nldt object with a format should make it report itself in that
+    format
+    """
+    pytest.debug_func()
+    fmt = "%H:%M %p on %B %d, %Y"
+    now = time.time()
+    exp = time.strftime(fmt, time.gmtime(now))
+    wobj = nldt.moment(now)
+    assert wobj(fmt) == exp
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment
