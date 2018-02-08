@@ -6,6 +6,8 @@ import re
 import tbx
 import time
 import nldt
+from nldt import moment as M
+from nldt import duration as D
 
 
 # -----------------------------------------------------------------------------
