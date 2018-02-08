@@ -1167,42 +1167,6 @@ def test_moment_localtime():
 
 
 # -----------------------------------------------------------------------------
-def test_moment_floor():
-    """
-    Test in moment().floor()
-    """
-
-    def expected_floor(unit, now):
-        if unit in ['second', 'minute', 'hour', 'day']:
-            mag = tu.magnitude(unit)
-            exp = now - (now % mag)
-        elif unit == 'week':
-            tm = time.gmtime(now)
-            delta = wk.backdiff(tm.tm_wday, 'mon') % 7
-            exp = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
-                          0, 0, 0, 0, 0, 0))
-        elif unit == 'month':
-            tm = time.gmtime(now)
-            exp = timegm((tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0))
-        elif unit == 'year':
-            tm = time.gmtime(now)
-            exp = timegm((tm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0))
-        return nldt.moment(exp)
-
-    pytest.debug_func()
-    tu = nldt.time_units()
-    wk = nldt.week()
-    now = time.time()
-    mug = nldt.moment(now)
-    for unit in tu.unit_list():
-        assert mug.floor(unit) == expected_floor(unit, now)
-
-    with pytest.raises(ValueError) as err:
-        mug.floor('frumpy')
-    assert "'frumpy' is not a time unit" in str(err)
-
-
-# -----------------------------------------------------------------------------
 def test_parser_research():
     """
     """
