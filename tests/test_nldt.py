@@ -546,6 +546,7 @@ def test_dst_list():
 # -----------------------------------------------------------------------------
 def test_parse_now():
     """
+    Testing nldt.Parser()
     """
     prs = nldt.Parser()
     q = M()
@@ -572,7 +573,7 @@ def test_parse_tomorrow():
 # -----------------------------------------------------------------------------
 def test_parse_yesterday():
     """
-    Asking an object to parse 'yesterday' moves it bacward on the calendar
+    Parsing 'yesterday' relative to a moment goes bacward on the calendar
     """
     pytest.debug_func()
     eoy = nldt.moment("2007-12-01")
@@ -650,9 +651,10 @@ def test_timezone():
 # -----------------------------------------------------------------------------
 def nl_oracle(spec):
     """
-    This function uses a simple-minded approach to find the target day. If it
-    sees 'next', it counts foward to the target day. If it sees 'last', it
-    counts backward, without trying to do any fancy arithmetic.
+    This function provides an oracle for tests of nldt.Parser. In this
+    function, we use a simple-minded approach to find the target day. If we see
+    'next', we count foward to the target day. If we see 'last', we count
+    backward, without trying to do any fancy arithmetic.
     """
     wk = nldt.week()
     tu = nldt.time_units()
