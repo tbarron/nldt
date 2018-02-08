@@ -475,19 +475,6 @@ def test_utc_offset():
 
 
 # -----------------------------------------------------------------------------
-def test_display():
-    """
-    Simply calling an nldt object should make it report itself in ISO format
-    but without a time component
-    """
-    pytest.debug_func()
-    now = time.time()
-    exp = time.strftime("%Y-%m-%d", time.gmtime(now))
-    wobj = nldt.moment(now)
-    assert wobj() == exp
-
-
-# -----------------------------------------------------------------------------
 def test_display_formatted():
     """
     Calling an nldt object with a format should make it report itself in that
