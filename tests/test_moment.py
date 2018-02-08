@@ -225,6 +225,23 @@ def test_moment_floor():
 
 
 # -----------------------------------------------------------------------------
+def test_moment_init_except():
+    """
+    Verify that trying to instantiate a moment based on a tuple with too many
+    or not enough elements, raises an exception
+    """
+    msg = "need at least 6 values, no more than 9"
+    with pytest.raises(ValueError) as err:
+        # payload
+        blah = nldt.moment((1, 2, 3, 4, 5))
+    assert msg in str(err)
+    with pytest.raises(ValueError) as err:
+        # payload
+        blah = nldt.moment((1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    assert msg in str(err)
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment
