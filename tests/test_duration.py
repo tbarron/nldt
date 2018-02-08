@@ -345,6 +345,38 @@ def test_duration_dhms():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("dur, fmt, exp", [
+    (D(hours=2, minutes=10, seconds=24), "%H:%M:%S", "02:10:24"),
+    (D(start="2018-01-01", end="2018-01-03"), "%d.%H:%M:%S", "2.00:00:00"),
+    (D(seconds=93784), "%d.%H:%M:%S", "1.02:03:04"),
+    (D(seconds=26700), "%H%M", "0725"),
+    (D(start="2018-02-26", end="2018-02-25 13:00:00"), "%H%M", "-1100"),
+    (D(seconds=47277), "%d.%H:%M:%S", "0.13:07:57"),
+    ])
+def test_duration_format(dur, fmt, exp):
+    """
+    duration.format() -- strftime-style specifiers (where they make sense)
+      %Y  Years in the time interval
+      %m  not supported
+      %d  days in the interval
+      %H  hours in the interval
+      %M  minutes in the interval
+      %S  seconds in the interval
+      %z  not supported
+      %a  not supported
+      %A  not supported
+      %b  not supported
+      %B  not supported
+      %c  not supported
+      %I  not supported
+      %p  not supported
+      %D  not supported
+    """
+    pytest.debug_func()
+    assert dur.format(fmt) == exp
+
+
+# -----------------------------------------------------------------------------
 def test_duration_minus():
     """
     duration - moment should produce exception
