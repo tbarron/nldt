@@ -1,14 +1,10 @@
 import numberize
 import numbers
-import pydoc
 import pytest
 import re
-import tbx
 import time
 import nldt
 from nldt import moment as M
-from nldt import duration as D
-from calendar import timegm
 
 
 # -----------------------------------------------------------------------------
@@ -21,31 +17,6 @@ def test_indexable_abc():
     with pytest.raises(TypeError) as err:
         _ = nldt.Indexable()
     assert msg in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_duration_plus():
-    """
-    duration + moment should produce another moment
-    duration + number-of-seconds should produce another duration
-    """
-    pytest.debug_func()
-    assert D(seconds=60) + M("2018-02-01 05:00:00") == M("2018-02-01 05:01:00")
-    assert D(hours=1) + D(minutes=5) == D(seconds=3900)
-    assert D(hours=3) + 75 == D(hours=3, minutes=1, seconds=15)
-
-
-# -----------------------------------------------------------------------------
-def test_duration_minus():
-    """
-    duration - moment should produce exception
-    """
-    pytest.debug_func()
-    assert D(hours=1) - D(minutes=30) == D(seconds=1800)
-    assert D(minutes=10) - 150 == D(seconds=450)
-    with pytest.raises(TypeError) as err:
-        assert D(seconds=25) - M("2018-02-01")
-    assert "unsupported operand type(s): try 'moment' - 'duration'" in str(err)
 
 
 # -----------------------------------------------------------------------------
