@@ -1140,18 +1140,6 @@ def test_moment_init_tm():
 
 
 # -----------------------------------------------------------------------------
-def test_moment_localtime():
-    """
-    Test moment().localtime()
-    """
-    now = time.time()
-    foo = nldt.moment(now)
-    expected = time.localtime(now)
-    actual = foo.localtime()
-    assert actual == expected
-
-
-# -----------------------------------------------------------------------------
 def test_parser_research():
     """
     """

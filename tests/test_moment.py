@@ -242,6 +242,19 @@ def test_moment_init_except():
 
 
 # -----------------------------------------------------------------------------
+def test_moment_localtime():
+    """
+    Test moment().localtime()
+    """
+    now = time.time()
+    foo = nldt.moment(now)
+    expected = time.localtime(now)
+    # payload
+    actual = foo.localtime()
+    assert actual == expected
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment
