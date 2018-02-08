@@ -1042,6 +1042,7 @@ def test_week_day_number():
     sun = nldt.moment("2000-01-02")
 
     assert w.day_number(sat.epoch()) == 5
+    assert w.day_number(sat) == 5
 
     with pytest.raises(TypeError) as err:
         w.day_number("the other day") == 14
