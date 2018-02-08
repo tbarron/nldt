@@ -273,14 +273,20 @@ def test_moment_plus():
     """
     moment + duration should produce another moment
     moment + number-of-seconds should produce another moment
+    moment + list is not defined
     """
     pytest.debug_func()
     base = M("2018-02-01")
+    # payload
     assert base + D(hours=3) == M("2018-02-01 03:00:00")
+    # payload
     assert base + 23*3600 == M("2018-02-01 23:00:00")
     with pytest.raises(TypeError) as err:
+        # payload
         assert base + M("2018-03-01") != M("2018-04-01")
     assert "sum of moments is not defined" in str(err)
+    msg = ("unsupported operand type(s) for +: "
+           "'<class 'nldt.moment'>' and '<class 'list'>'")
     with pytest.raises(TypeError) as err:
         # payload
         M("2018-02-01") + [1,2,3]
