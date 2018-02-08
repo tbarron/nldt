@@ -9,6 +9,21 @@ import nldt
 
 
 # -----------------------------------------------------------------------------
+def test_ambig():
+    """
+    For ambiguous dates like '01-02-03' (could be Jan 2, 2003 (US order), 1 Feb
+    2003 (European order), or 2001-Feb-3 (ISO order)), ISO order will be the
+    default but a parse format can always be specified.
+    """
+    pytest.debug_func()
+    iso = nldt.moment('01-02-03')
+    assert iso() == '2001-02-03'
+    uso = nldt.moment('01-02-03', '%m-%d-%y')
+    assert uso() == '2003-01-02'
+    euro = nldt.moment('01-02-03', '%d-%m-%y')
+    assert euro() == '2003-02-01'
+
+
 # -----------------------------------------------------------------------------
 def test_moment_plus():
     """
