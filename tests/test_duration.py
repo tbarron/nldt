@@ -300,10 +300,6 @@ def test_dur_add():
     assert d + "2018-01-01" == M("2018-01-01 03:00:00")
     msg = ("unsupported operand type(s) for +: "
            "'<class 'nldt.moment'>' and '<class 'list'>'")
-    with pytest.raises(TypeError) as err:
-        # payload
-        M("2018-02-01") + [1,2,3]
-    assert msg in str(err)
 
 
 # -----------------------------------------------------------------------------

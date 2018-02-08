@@ -281,6 +281,10 @@ def test_moment_plus():
     with pytest.raises(TypeError) as err:
         assert base + M("2018-03-01") != M("2018-04-01")
     assert "sum of moments is not defined" in str(err)
+    with pytest.raises(TypeError) as err:
+        # payload
+        M("2018-02-01") + [1,2,3]
+    assert msg in str(err)
 
 
 # -----------------------------------------------------------------------------
