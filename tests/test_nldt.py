@@ -652,18 +652,6 @@ def test_epoch():
 
 
 # -----------------------------------------------------------------------------
-def test_with_format():
-    """
-    If a format is specified, the spec must match
-    """
-    pytest.debug_func()
-    wobj = nldt.moment('Dec 29, 2016', '%b %d, %Y')
-    assert wobj() == '2016-12-29'
-    with pytest.raises(ValueError):
-        wobj = nldt.moment('Dec 29 2016', '%b %m, %Y')
-
-
-# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, fmt, exp",
       [('Dec 29 2016', None, '2016-12-29'),   # noqa
        ('Dec 17, 1975 03:17', '%Y-%m-%d %H:%M', '1975-12-17 03:17'),

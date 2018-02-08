@@ -92,6 +92,18 @@ def test_str():
 
 
 # -----------------------------------------------------------------------------
+def test_with_format():
+    """
+    If a format is specified, the spec must match
+    """
+    pytest.debug_func()
+    wobj = nldt.moment('Dec 29, 2016', '%b %d, %Y')
+    assert wobj() == '2016-12-29'
+    with pytest.raises(ValueError):
+        wobj = nldt.moment('Dec 29 2016', '%b %m, %Y')
+
+
+# -----------------------------------------------------------------------------
 def test_with_tz():
     """
     <moment>(tz='foo') to report itself as the local time in zone 'foo'. Want
