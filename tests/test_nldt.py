@@ -223,6 +223,9 @@ def test_parse_tomorrow():
     prs = nldt.Parser()
     result = prs('tomorrow', start=eoy)
     assert result() == '2008-01-01'
+    feb28 = nldt.moment("2012-03-28")
+    result = prs('tomorrow', start=feb28)
+    assert result() == '2012-02-29'
 
 
 # -----------------------------------------------------------------------------
@@ -236,6 +239,9 @@ def test_parse_yesterday():
     prs = nldt.Parser()
     result = prs('yesterday', start=eoy)
     assert result() == '2007-11-30'
+    mar1 = nldt.moment("2008-03-01")
+    result = prs('yesterday', start=mar1)
+    assert result() == "2008-02-29"
 
 
 # -----------------------------------------------------------------------------
