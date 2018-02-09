@@ -118,7 +118,8 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __repr__(self):
         """
-        class duration: return the object's repr suitable to be processed by
+        class duration
+        return the object's repr suitable to be processed by
         eval()
         """
         return "{}.{}(seconds={})".format(self.__module__,
@@ -193,6 +194,7 @@ class duration(object):
     # -------------------------------------------------------------------------
     def dhms(self):
         """
+        class duration
         This method reports a duration as <days>.HH:MM:SS in a string
         """
         secs = self.seconds
