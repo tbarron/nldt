@@ -1,4 +1,14 @@
-## 0.0.3 ...
+## 0.0.4 ...
+
+ * Add tests and support for duration.format()
+ * Add tests and support for duration.dhms()
+ * Wrap calendar.timegm() in nldt.timegm() so that nldt consumers don't
+   have to import calendar.timegm() for themselves
+ * Isolated moment-related tests in test_moment.py
+ * Isolated duration-related tests from test_nldt.py to test_duration.py
+ * Ensure test_early.py runs first by rename it test_0early.py
+
+## 0.0.3 ... 2018.0207 14:34:58
 
  * 100% test coverage
  * Class tag all the object methods
@@ -17,7 +27,7 @@
  * Fixed a bug where on Mondays floor('week') returned the base of last
    week, not floor('day') which it should be
 
-## 0.0.2 ... 2018.0304 14:04:08
+## 0.0.2 ... 2018.0204 14:04:08
 
  * Docstring improvements
  * When year is not specified, month.isleap() and month.days() should
