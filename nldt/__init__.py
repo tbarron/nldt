@@ -886,10 +886,8 @@ class Parser(object):
             rval = self.parse_mon_name(expr, start)
         elif expr == 'today' or expr == 'now':
             rval = start or moment()
-        elif expr == 'tomorrow':
-            rval = moment(start.epoch() + self.tu.magnitude('day'))
-        elif expr == 'yesterday':
-            rval = moment(start.epoch() - self.tu.magnitude('day'))
+        elif expr in ['yesterday', 'today', 'tomorrow']:
+            rval = self.parse_yestermorrow(expr, start)
         elif 'ago' in expr:
             rval = self.parse_ago(expr, start)
         elif 'from now' in expr:
@@ -1049,6 +1047,24 @@ class Parser(object):
             swd = start('%A').lower()
             delta = self.wk.backdiff(swd, wday) or 7
             rval = moment(start.epoch() - delta * self.tu.magnitude('day'))
+        return rval
+
+    # -------------------------------------------------------------------------
+    def parse_yestermorrow(self, expr, start):
+        """
+        class Parser:
+        Handle 'yesterday', 'today', 'tomorrow'. Decided that 'today' should
+        return the same as 'now' and that 'yesterday' and 'tomorrow' are offset
+        from now by a day's magnitude in opposite directions. The other option
+        would be to have each of these resolve to the floor of a day. If floor
+        is what is desired, we can always do m = <parser>('today').floor().
+        """
+        if expr == 'yesterday':
+            rval = moment(start.epoch() - self.tu.magnitude('day'))
+        elif expr == 'today':
+            rval = start
+        elif expr == 'tomorrow':
+            rval = moment(start.epoch() + self.tu.magnitude('day'))
         return rval
 
     # -------------------------------------------------------------------------
