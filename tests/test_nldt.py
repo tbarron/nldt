@@ -787,7 +787,7 @@ def test_prep_are_in():
     pytest.debug_func()
     prp = nldt.prepositions()
     assert prp.are_in("preposition in this phrase")
-    assert not prp.are_in("no prepositions here")
+    assert not prp.are_in("no prepositions here sin doff")
 
 
 # -----------------------------------------------------------------------------
