@@ -1,3 +1,4 @@
+from fixtures import fx_calls_debug
 import nldt
 from nldt import moment as M
 from nldt import duration as D
