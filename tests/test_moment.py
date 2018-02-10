@@ -482,8 +482,10 @@ def test_with_format():
     pytest.debug_func()
     wobj = nldt.moment('Dec 29, 2016', '%b %d, %Y')
     assert wobj() == '2016-12-29'
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as err:
         wobj = nldt.moment('Dec 29 2016', '%b %m, %Y')
+    msg = "time data 'Dec 29 2016' does not match format '%b %m, %Y'"
+    assert msg in str(err)
 
 
 # -----------------------------------------------------------------------------
