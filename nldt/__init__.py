@@ -570,7 +570,7 @@ class moment(object):
             >>> a == b
             True
         """
-        return self.moment == other.moment
+        return self.epoch() == other.epoch()
 
     # -------------------------------------------------------------------------
     def __sub__(self, other):
