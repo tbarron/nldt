@@ -18,10 +18,13 @@ def test_ambig():
     default but a parse format can always be specified.
     """
     pytest.debug_func()
+    # payload
     iso = nldt.moment('01-02-03')
     assert iso() == '2001-02-03'
+    # payload
     uso = nldt.moment('01-02-03', '%m-%d-%y')
     assert uso() == '2003-01-02'
+    # payload
     euro = nldt.moment('01-02-03', '%d-%m-%y')
     assert euro() == '2003-02-01'
 
@@ -34,6 +37,7 @@ def test_arg_tomorrow():
     pytest.debug_func()
     assert not hasattr(nldt, 'tomorrow')
     with pytest.raises(ValueError) as err:
+        # payload
         argl = nldt.moment('tomorrow')
     errmsg = "ValueError: Valid ways of calling nldt.moment():"
     assert errmsg in str(err)
@@ -50,6 +54,7 @@ def test_arg_yesterday():
     pytest.debug_func()
     assert not hasattr(nldt, 'yesterday')
     with pytest.raises(ValueError) as err:
+        # payload
         then = nldt.moment("yesterday")
     errmsg = "ValueError: Valid ways of calling nldt.moment():"
     assert errmsg in str(err)
@@ -65,6 +70,7 @@ def test_display():
     now = time.time()
     exp = time.strftime("%Y-%m-%d", time.gmtime(now))
     wobj = nldt.moment(now)
+    # payload
     assert wobj() == exp
 
 
@@ -79,6 +85,7 @@ def test_display_formatted():
     now = time.time()
     exp = time.strftime(fmt, time.gmtime(now))
     wobj = nldt.moment(now)
+    # payload
     assert wobj(fmt) == exp
 
 
@@ -92,8 +99,11 @@ def test_epoch():
     yesterday = nldt.moment(now - (24*3600))
     tomorrow = nldt.moment(now + (24*3600))
     wobj = nldt.moment(now)
+    # payload
     assert wobj.epoch() == int(now)
+    # payload
     assert yesterday.epoch() == int(now - (24*3600))
+    # payload
     assert tomorrow.epoch() == int(now + (24*3600))
 
 
@@ -141,6 +151,7 @@ def test_intuit(inp, fmt, exp):
     """
     pytest.debug_func()
     later = nldt.moment(inp)
+    # payload
     assert later(fmt) == exp
 
 
@@ -265,13 +276,16 @@ def test_moment_init(dspec, fmt, tz, expoch):
     """
     pytest.debug_func()
     if expoch == "now":
+        # payload
         actual = nldt.moment(dspec, fmt, tz)
         assert actual.epoch() == int(time.time())
     elif isinstance(expoch, Exception):
         with pytest.raises(type(expoch)) as err:
+            # payload
             actual = nldt.moment(dspec, fmt, tz)
         assert str(expoch) in str(err.value)
     else:
+        # payload
         actual = nldt.moment(dspec, fmt, tz)
         assert actual.epoch() == expoch
 
@@ -423,6 +437,7 @@ def test_repr():
     """
     pytest.debug_func()
     c = nldt.moment()
+    # payload
     assert eval(repr(c)) == c
 
 
@@ -434,6 +449,7 @@ def test_notimezone():
     pytest.debug_func()
     c = nldt.moment()
     with pytest.raises(AttributeError) as err:
+        # payload
         c.timezone()
     assert "object has no attribute 'timezone'" in str(err)
 
@@ -446,6 +462,7 @@ def test_nodst():
     pytest.debug_func()
     c = nldt.moment()
     with pytest.raises(AttributeError) as err:
+        # payload
         c.dst()
     assert "object has no attribute 'dst'" in str(err)
 
@@ -459,6 +476,7 @@ def test_local():
     pytest.debug_func()
     c = nldt.moment()
     fmt = "%Y.%m%d %H:%M:%S"
+    # payload
     assert c(fmt, tz='local') == time.strftime(fmt)
 
 
@@ -471,6 +489,7 @@ def test_str():
     c = nldt.moment()
     fmt = "%Y-%m-%d %H:%M:%S"
     exp = time.strftime(fmt, time.gmtime(c.epoch()))
+    # payload
     assert str(c) == exp
 
 
@@ -483,6 +502,7 @@ def test_with_format():
     wobj = nldt.moment('Dec 29, 2016', '%b %d, %Y')
     assert wobj() == '2016-12-29'
     with pytest.raises(ValueError) as err:
+        # payload
         wobj = nldt.moment('Dec 29 2016', '%b %m, %Y')
     msg = "time data 'Dec 29 2016' does not match format '%b %m, %Y'"
     assert msg in str(err)
@@ -498,8 +518,13 @@ def test_with_tz():
     c = nldt.moment('2016-12-31 23:59:59')
     # assert c(tz='est') == '2016-12-31 18:59:59'
     fmt = "%Y-%m-%d %H:%M:%S"
+    # payload
     assert c(fmt, tz='US/Eastern') == '2016-12-31 18:59:59'
+    # payload
     assert c(fmt, tz='US/Central') == '2016-12-31 17:59:59'
+    # payload
     assert c(fmt, tz='US/Mountain') == '2016-12-31 16:59:59'
+    # payload
     assert c(fmt, tz='US/Pacific') == '2016-12-31 15:59:59'
+    # payload
     assert c(fmt, tz='US/Hawaii') == '2016-12-31 13:59:59'
