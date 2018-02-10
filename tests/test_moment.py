@@ -227,32 +227,53 @@ def test_moment_floor():
 
 
 # -----------------------------------------------------------------------------
-def test_moment_init_except():
+@pytest.mark.parametrize("dspec, fmt, tz, expoch", [
+    (None, None, None, "now"),
+    (None, "%F %T", None,
+     nldt.InitError('moment() cannot take format or tz without date spec')),
+    (None, None, "US/Eastern",
+     nldt.InitError('moment() cannot take format or tz without date spec')),
+    ("2018-01-01 00:00:00", "%F %T", "US/Eastern", 1514782800),
+    ("2018-01-01 00:00:00", "%F %T", None, 1514764800),
+    ("2018.0101 01:02:03", None, "Pacific/Truk", 1514732523),
+    ("2018.0704 09:23:57", None, None, 1530696237),
+    ((2017, 1, 1, 0, 0, 0), "%F %T", None,
+     nldt.InitError("moment() cannot take format when date is not "
+                    "of type str")),
+    (1530696573, None, 'America/Argentina/Mendoza', 1530707373),
+    (1530696573, None, None, 1530696573),
+    (time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
+     None, None, 1267335137),
+    (time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
+     None, 'Europe/Stockholm', 1267331537),
+    ((2012, 2, 29, 7, 47, 19), None, None, 1330501639),
+    ((2012, 2, 29, 7, 47, 19), None, 'Asia/Chongqing', 1330472839),
+    (M(14000000000), None, None, 14000000000),
+    (M(14000000000), None, 'America/Atikokan', 14000018000),
+    ([], None, None, ValueError('Valid ways of calling nldt.moment()')),
+    ([], None, 'Canada/Mountain',
+     ValueError('Valid ways of calling nldt.moment()')),
+    ((1,2,3,4,5), None, None,
+     ValueError('need at least 6 values, no more than 9')),
+    ((1,2,3,4,5,6,7,8,9,10), None, None,
+     ValueError('need at least 6 values, no more than 9')),
+    ])
+def test_moment_init(dspec, fmt, tz, expoch):
     """
-    Verify that trying to instantiate a moment based on a tuple with too many
-    or not enough elements, raises an exception
+    Various combinations of arguments to moment constructor
+     - no arguments => current time
     """
-    msg = "need at least 6 values, no more than 9"
-    with pytest.raises(ValueError) as err:
-        # payload
-        blah = nldt.moment((1, 2, 3, 4, 5))
-    assert msg in str(err)
-    with pytest.raises(ValueError) as err:
-        # payload
-        blah = nldt.moment((1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-    assert msg in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_moment_init_tm():
-    """
-    Verify instantiating a moment based on a tm tuple
-    """
-    foo = time.time()
-    # payload
-    from_tm = nldt.moment(time.gmtime(foo))
-    from_epoch = nldt.moment(foo)
-    assert from_tm == from_epoch
+    pytest.debug_func()
+    if expoch == "now":
+        actual = nldt.moment(dspec, fmt, tz)
+        assert actual.epoch() == int(time.time())
+    elif isinstance(expoch, Exception):
+        with pytest.raises(type(expoch)) as err:
+            actual = nldt.moment(dspec, fmt, tz)
+        assert str(expoch) in str(err.value)
+    else:
+        actual = nldt.moment(dspec, fmt, tz)
+        assert actual.epoch() == expoch
 
 
 # -----------------------------------------------------------------------------
