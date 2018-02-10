@@ -1,4 +1,16 @@
-## 0.0.4 ...
+## 0.0.5 ...
+
+ * Check tests for debuggability
+ * Compare moments for equality based on int epoch, not float moment
+ * Test 'yesterday', 'tomorrow' parsing around leap dates
+ * Timezones are supported on input and output. That is, the moment
+   constructor will accept a timezone and convert the input time to UTC.
+   The moment object __call__() method will accept a timezone to convert
+   the internal UTC to a local time for display.
+ * Tests for various combinations of inputs to the moment contructor
+ * Tests for a range of timezones around the world
+
+## 0.0.4 ... 2018.0208 22:25:57
 
  * Add tests and support for duration.format()
  * Add tests and support for duration.dhms()
