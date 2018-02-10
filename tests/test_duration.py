@@ -287,6 +287,7 @@ def test_dur_ywdhms(y, w, d, h, m, s, x):
     Durations can initialized by any combination of years, weeks, days, hours,
     minutes, and seconds
     """
+    pytest.debug_func()
     # payload
     assert D(years=y, weeks=w, days=d, hours=h, minutes=m, seconds=s) == x
 
@@ -296,6 +297,7 @@ def test_dur_add():
     """
     duration + moment-parseable => moment
     """
+    pytest.debug_func()
     d = D(hours=3)
     # payload
     assert d + "2018-01-01" == M("2018-01-01 03:00:00")
@@ -324,6 +326,7 @@ def test_dur_repr_str():
     """
     Verify duration.__repr__, duration.__str__
     """
+    pytest.debug_func()
     d = nldt.duration(years=1, weeks=2, days=3,
                       hours=4, minutes=5, seconds=6)
     # payload
@@ -337,6 +340,7 @@ def test_duration_dhms():
     """
     duration.dhms() reports the duration length in days.hh:mm:ss format
     """
+    pytest.debug_func()
     assert D(years=1).dhms() == '365.00:00:00'
     assert D(weeks=2).dhms() == '14.00:00:00'
     assert D(days=3).dhms() == '3.00:00:00'
@@ -407,6 +411,7 @@ def test_duration_seconds():
     """
     duration.seconds() reports the total seconds in the duration
     """
+    pytest.debug_func()
     assert D(years=1).seconds == 365*24*3600
     assert D(weeks=2).seconds == 14*24*3600
     assert D(days=3).seconds == 3*24*3600

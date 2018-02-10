@@ -184,6 +184,7 @@ def test_moment_ceiling():
             exp = nflr - 1
         return nldt.moment(exp)
 
+    pytest.debug_func()
     tu = nldt.time_units()
     wk = nldt.week()
     now = time.time()
@@ -296,6 +297,7 @@ def test_moment_localtime():
     """
     Test moment().localtime()
     """
+    pytest.debug_func()
     now = time.time()
     foo = nldt.moment(now)
     expected = time.localtime(now)

@@ -14,6 +14,7 @@ def test_indexable_abc():
     Indexable is an abstract base class that should not be instantiated
     directly.
     """
+    pytest.debug_func()
     msg = "This is an abstract base class -- don't instantiate it."
     with pytest.raises(TypeError) as err:
         _ = nldt.Indexable()
@@ -42,6 +43,7 @@ def test_month_index():
     nldt.month_index() takes a month name and returns its index. On bad input,
     it will raise a KeyError.
     """
+    pytest.debug_func()
     m = nldt.month()
     assert m.index('jan') == 1
     assert m.index('February') == 2
@@ -65,6 +67,7 @@ def test_month_names():
     """
     nldt.month_names() returns the list of month names in order
     """
+    pytest.debug_func()
     m = nldt.month()
     result = m.names()
     exp = ['january', 'february', 'march', 'april', 'may', 'june',
@@ -96,6 +99,7 @@ def test_weekday_names():
     """
     nldt.weekday_names() returns the list of weekday names in order
     """
+    pytest.debug_func()
     w = nldt.week()
     result = w.day_list()
     exp = ['monday', 'tuesday', 'wednesday', 'thursday',
@@ -109,6 +113,7 @@ def test_utc_offset():
     Check routine utc_offset() against some known timezones that don't change
     with dst
     """
+    pytest.debug_func()
     assert nldt.utc_offset(tz='Singapore') == 8 * 3600
 
     assert nldt.utc_offset(M("2001-01-01").moment,
@@ -182,6 +187,7 @@ def test_dst_elsewhere_off():
 def test_dst_list():
     """
     """
+    pytest.debug_func()
     with pytest.raises(TypeError) as err:
         nldt.dst(time.gmtime())
     assert "dst() when arg must be str, number, or moment" in str(err)
@@ -204,6 +210,7 @@ def test_parse_now():
     """
     Testing nldt.Parser()
     """
+    pytest.debug_func()
     prs = nldt.Parser()
     q = M()
     then = M(time.time() - 30)
@@ -550,6 +557,7 @@ def test_ago_except():
     """
     Cover the ValueError exception in parse_ago
     """
+    pytest.debug_func()
     prs = nldt.Parser()
     with pytest.raises(ValueError) as err:
         prs("no number no unit ago")
@@ -561,6 +569,7 @@ def test_from_now_except():
     """
     Cover the ValueError exception in parse_ago
     """
+    pytest.debug_func()
     prs = nldt.Parser()
     with pytest.raises(ValueError) as err:
         prs("no number no unit from now")
@@ -590,6 +599,7 @@ def test_month_days(month, year, exp):
     """
     Get the number of days in each month
     """
+    pytest.debug_func()
     m = nldt.month()
     if isinstance(exp, numbers.Number):
         # payload
@@ -606,6 +616,7 @@ def test_month_days_curyear():
     """
     Verify that month.days() for february this year does the right thing
     """
+    pytest.debug_func()
     mobj = nldt.month()
     now = nldt.moment()
     curyear = int(now('%Y'))
@@ -620,6 +631,7 @@ def test_isleap():
     When year is not given, isleap should return True if the current year is
     leap, else False
     """
+    pytest.debug_func()
     m = nldt.month()
     if m.days(2) == 29:
         # payload
@@ -634,6 +646,7 @@ def test_match_monthnames():
     """
     Verify the regex returned by month.match_monthnames
     """
+    pytest.debug_func()
     m = nldt.month()
     exp = "|".join(m.names())
     exp = "(" + exp + ")"
@@ -656,6 +669,7 @@ def test_find_day(inp, exp):
     """
     Coverage for week.find_day
     """
+    pytest.debug_func()
     w = nldt.week()
     assert w.find_day(inp) == exp
 
@@ -697,6 +711,7 @@ def test_week_fullname(inp, exp):
     """
     Test week.fullname
     """
+    pytest.debug_func()
     w = nldt.week()
     if exp == "except":
         with pytest.raises(ValueError) as err:
@@ -711,6 +726,7 @@ def test_week_day_number():
     """
     Test week.day_number()
     """
+    pytest.debug_func()
     w = nldt.week()
     sat = nldt.moment("2000-01-01")
     sun = nldt.moment("2000-01-02")
@@ -735,6 +751,7 @@ def test_prep_init():
     """
     Verify that class prepositions instantiates properly
     """
+    pytest.debug_func()
     prp = nldt.prepositions()
     assert prp.preps['of'] == 1
     assert prp.preps['in'] == 1
@@ -758,6 +775,7 @@ def test_prep_split(inp, exp):
     """
     Verify that prepositions.split() does what's expected
     """
+    pytest.debug_func()
     prp = nldt.prepositions()
     assert prp.split(inp) == exp
 
@@ -766,6 +784,7 @@ def test_prep_split(inp, exp):
 def test_prep_are_in():
     """
     """
+    pytest.debug_func()
     prp = nldt.prepositions()
     assert prp.are_in("preposition in this phrase")
     assert not prp.are_in("no prepositions here")
@@ -799,6 +818,7 @@ def test_unit_list():
     """
     Verify time_units().unit_list()
     """
+    pytest.debug_func()
     tu = nldt.time_units()
     exp = ["second", "minute", "hour", "day", "week", "month", "year"]
     assert list(tu.unit_list()) == exp
@@ -808,6 +828,7 @@ def test_unit_list():
 def test_parser_research():
     """
     """
+    pytest.debug_func()
     prs = nldt.Parser()
     frink = "this is a string"
     with pytest.raises(TypeError) as err:
@@ -822,6 +843,7 @@ def test_Stub():
     The Stub class raises an exception reporting the current function that
     needs attention
     """
+    pytest.debug_func()
     with pytest.raises(nldt.Stub) as err:
         raise nldt.Stub("extra text")
     msg = "test_Stub() is a stub -- please complete it. (extra text)"
@@ -833,6 +855,7 @@ def test_caller_name():
     """
     Test function caller_name()
     """
+    pytest.debug_func()
     def foobar():
         assert nldt.caller_name() == 'test_caller_name'
     foobar()

@@ -11,6 +11,7 @@ def test_flake():
     """
     Scan code for good formatting
     """
+    pytest.debug_func()
     result = tbx.run('flake8 test_nldt.py nldt')
     assert result == ''
 
