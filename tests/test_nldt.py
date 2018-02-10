@@ -186,6 +186,8 @@ def test_dst_elsewhere_off():
 # -----------------------------------------------------------------------------
 def test_dst_list():
     """
+    If function dst() gets an argument that is not str, number, or moment it
+    throws an exception
     """
     pytest.debug_func()
     with pytest.raises(TypeError) as err:
@@ -208,7 +210,7 @@ def test_dst_list():
 # -----------------------------------------------------------------------------
 def test_parse_now():
     """
-    Testing nldt.Parser()
+    Test for nldt.Parser() object parsing 'now'
     """
     pytest.debug_func()
     prs = nldt.Parser()
@@ -783,6 +785,8 @@ def test_prep_split(inp, exp):
 # -----------------------------------------------------------------------------
 def test_prep_are_in():
     """
+    Verify that method prepositions.are_in() accurately reports whether any
+    prepositions are present
     """
     pytest.debug_func()
     prp = nldt.prepositions()
@@ -827,6 +831,8 @@ def test_unit_list():
 # -----------------------------------------------------------------------------
 def test_parser_research():
     """
+    Parser research method throws an exception if its third argument is not a
+    list
     """
     pytest.debug_func()
     prs = nldt.Parser()
