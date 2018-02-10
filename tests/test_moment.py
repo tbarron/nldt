@@ -315,6 +315,34 @@ def test_moment_plus():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("zone", ["Africa/Freetown", "Africa/Khartoum",
+                                  "America/Anchorage", "America/Glace_Bay",
+                                  "Antarctica/McMurdo", "Arctic/Longyearbyen",
+                                  "Asia/Dili", "Asia/Dhaka", "Asia/Amman",
+                                  "Atlantic/Azores", "Atlantic/Canary",
+                                  "Australia/Perth", "Australia/Canberra",
+                                  "Europe/Belfast", "Europe/Moscow",
+                                  "Indian/Comoro", "Indian/Christmas",
+                                  "US/Eastern", "US/Pacific", "US/Central",
+                                  "US/Mountain",
+                                  ])
+def test_moment_tz(zone):
+    """
+    This test verifies that a tz argument to moment.__call__() causes the UTC
+    stored time to be adjusted to the time local to the passed timezone before
+    display. This test verifies that a moment object can apply a timezone on
+    output.
+    """
+    pytest.debug_func()
+    now = M()
+    adjusted = now.epoch() + nldt.utc_offset(tz=zone)
+    expected = time.strftime("%F %T", time.gmtime(adjusted))
+    # payload
+    actual = now("%F %T", tz=zone)
+    assert actual == expected
+
+
+# -----------------------------------------------------------------------------
 def test_repr():
     """
     The __repr__ method should provide enough info to rebuild the object
