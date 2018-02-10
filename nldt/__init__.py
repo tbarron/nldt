@@ -386,7 +386,7 @@ class moment(object):
                ]
 
     # -------------------------------------------------------------------------
-    def __init__(self, *args):
+    def __init__(self, dspec=None, fmt=None, tz=None):
         """
         class moment
 
@@ -420,31 +420,63 @@ class moment(object):
             '2016-12-29'
         """
         self.moment = None
-        if len(args) < 1:
-            self.moment = int(time.time())
-        elif len(args) < 2:
-            if isinstance(args[0], numbers.Number):
-                self.moment = int(args[0])
-            elif isinstance(args[0], time.struct_time):
-                self.moment = timegm(args[0])
-            elif isinstance(args[0], tuple):
-                if len(args[0]) < 6 or 9 < len(args[0]):
-                    raise ValueError('need at least 6 values, no more than 9')
-                self.moment = timegm(args[0])
-            elif isinstance(args[0], str):
-                self.moment = self._guess_format(args[0])
-            elif isinstance(args[0], moment):
-                self.moment = args[0].moment
-            if self.moment is None:
-                msg = "\n".join(["Valid ways of calling nldt.moment():",
-                                 "    nldt.moment()",
-                                 "    nldt.moment(<epoch-seconds>)",
-                                 "    nldt.moment('YYYY-mm-dd')",
-                                 "    nldt.moment(<date-str>[, <format>])"])
-                raise(ValueError(msg))
+        if dspec is None:
+            if tz or fmt:
+                msg = 'moment() cannot take format or tz without date spec'
+                raise InitError(msg)
+            else:
+                self.moment = int(time.time())
+        elif isinstance(dspec, str):
+            if fmt:
+                fmt = fmt.replace("%F", "%Y-%m-%d")
+                fmt = fmt.replace("%T", "%H:%M:%S")
+                tm = time.strptime(dspec, fmt)
+                when = int(timegm(tm))
+            else:
+                when = self._guess_format(dspec)
+                if when is None:
+                    msg = "\n".join(["Valid ways of calling nldt.moment():",
+                                     "    nldt.moment()",
+                                     "    nldt.moment(<epoch-seconds>)",
+                                     "    nldt.moment('YYYY-mm-dd')",
+                                     "    nldt.moment(<date-str>[, <format>])"]
+                                    )
+                    raise(ValueError(msg))
+
+            offset = utc_offset(epoch=when, tz=tz) if tz else 0
+            self.moment = when - offset
+        elif fmt:
+            msg = 'moment() cannot take format when date is not of type str'
+            raise InitError(msg)
         else:
-            tm = time.strptime(args[0], args[1])
-            self.moment = int(timegm(tm))
+            when = self._resolve_time(dspec)
+            offset = utc_offset(epoch=when, tz=tz) if tz else 0
+            self.moment = when - offset
+
+    # -------------------------------------------------------------------------
+    def _resolve_time(self, dspec):
+        """
+        class moment
+        resolve a non-string date/time specification to an epoch time
+        """
+        if isinstance(dspec, numbers.Number):
+            return dspec
+        elif isinstance(dspec, time.struct_time):
+            return timegm(dspec)
+        elif isinstance(dspec, tuple):
+            if 6 <= len(dspec) <= 9:
+                return timegm(dspec)
+            else:
+                raise ValueError('need at least 6 values, no more than 9')
+        elif isinstance(dspec, moment):
+            return dspec.epoch()
+        else:
+            msg = "\n".join(["Valid ways of calling nldt.moment():",
+                             "    nldt.moment()",
+                             "    nldt.moment(<epoch-seconds>)",
+                             "    nldt.moment('YYYY-mm-dd')",
+                             "    nldt.moment(<date-str>[, <format>])"])
+            raise(ValueError(msg))
 
     # -------------------------------------------------------------------------
     def __call__(self, format=None, tz=None):
