@@ -916,9 +916,7 @@ class Parser(object):
             rval = self.parse_of_in(expr, result[0].group(), start)
         elif expr.strip().lower() in self.mon.names():
             rval = self.parse_mon_name(expr, start)
-        elif expr == 'today' or expr == 'now':
-            rval = start or moment()
-        elif expr in ['yesterday', 'today', 'tomorrow']:
+        elif expr in ['yesterday', 'today', 'now', 'tomorrow']:
             rval = self.parse_yestermorrow(expr, start)
         elif 'ago' in expr:
             rval = self.parse_ago(expr, start)
@@ -1093,7 +1091,7 @@ class Parser(object):
         """
         if expr == 'yesterday':
             rval = moment(start.epoch() - self.tu.magnitude('day'))
-        elif expr == 'today':
+        elif expr in ['today', 'now']:
             rval = start
         elif expr == 'tomorrow':
             rval = moment(start.epoch() + self.tu.magnitude('day'))
