@@ -189,7 +189,7 @@ def test_dst_on():
     """
     pytest.debug_func()
     then = nldt.moment("2012-07-01", "%Y-%m-%d")
-    assert nldt.dst(then.epoch())
+    assert nldt.dst(then.epoch(), tz="US/Eastern")
 
 
 # -----------------------------------------------------------------------------
