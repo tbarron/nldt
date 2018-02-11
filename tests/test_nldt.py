@@ -198,11 +198,15 @@ def test_dst_elsewhere_off():
     """
     The dst function should return False for non local timezones that support
     DST during times of the year when DST is not in force.
+
+    NOTE: It seems that DST flags are reversed in the southern hemisphere (just
+    like the seasons, duh), so we expect New Zealand's flag to be off when most
+    others are on.
     """
     pytest.debug_func()
     then = nldt.moment("2012-01-01")
     assert not nldt.dst(then.epoch(), "US/Alaska")
-    assert not nldt.dst(then.epoch(), "NZ")
+    assert nldt.dst(then.epoch(), "NZ")
 
 
 # -----------------------------------------------------------------------------
