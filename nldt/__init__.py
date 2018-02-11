@@ -1397,7 +1397,7 @@ def dst(when=None, tz=None):
     if broke:
         rval = (zone._transition_info[idx-1][1].total_seconds() != 0)
     else:
-        rval = False
+        rval = (zone._transition_info[-1][1].total_seconds() != 0)
     return rval
 
 
