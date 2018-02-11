@@ -1434,13 +1434,13 @@ def timezone():
     """
     Returns the locally configured timezone name
 
-    The timezone may vary with whether DST is in effect or not. The example
-    show a timezone of 'EST' for Eastern Standard Time. At times of the year
-    when DST is in effect, the timezone is EDT.
+    The timezone name may vary with whether DST is in effect or not. The
+    example shows a timezone of 'EST' for Eastern Standard Time. At times of
+    the year when DST is in effect, the timezone is EDT.
 
     Examples:
         >>> import nldt
-        >>> nldt.timezone
+        >>> nldt.timezone()
         EST
     """
     now = time.localtime()
