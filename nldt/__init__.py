@@ -514,11 +514,9 @@ class moment(object):
         elif tz == 'UTC':
             tm = time.gmtime(self.moment)
         else:
-            zone = pytz.timezone(tz)
-            dt = datetime.fromtimestamp(self.moment)
-            offset = zone.utcoffset(dt).total_seconds()
+            offset = utc_offset(self.moment, tz)
             tm = time.gmtime(self.moment + offset)
-            format = format.replace('%Z', zone.tzname(dt))
+            format = format.replace('%Z', tzname(tz=tz, epoch=self.moment))
             format = format.replace('%z', hhmm(offset))
         rval = time.strftime(format, tm)
         return rval
@@ -1446,6 +1444,17 @@ def timezone():
     now = time.localtime()
     rval = time.tzname[now.tm_isdst]
     return rval
+
+
+# -----------------------------------------------------------------------------
+def tzname(tz=None, epoch=None):
+    """
+    Returns the name of the timezone indicated by *tz*, or the local timezone
+    if *tz* is None.
+    """
+    zone = pytz.timezone(tz) if tz else get_localzone()
+    epoch = epoch or moment()
+    return zone.tzname(datetime.fromtimestamp(epoch))
 
 
 # -----------------------------------------------------------------------------
