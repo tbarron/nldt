@@ -26,11 +26,16 @@ def test_pydoc():
                'dst',
                'epoch',
                'localtime',
+               'class duration',
+               'class Indexable',
                'class moment',
                'class month',
                'class week',
                'class Parser',
-               'class duration'
+               'class prepositions',
+               'class time_units',
+               'class Stub',
+               'class InitError',
                ]
 
     absent = ['_DAY', '_end_of_day', '_end_of_month', '_end_of_week',
