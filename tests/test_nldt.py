@@ -240,6 +240,20 @@ def test_dst_elsewhere_on():
 
 
 # -----------------------------------------------------------------------------
+def test_dst_utc():
+    """
+    For UTC, dst should always be off
+    """
+    pytest.debug_func()
+    now = nldt.moment()
+    curyear = int(now("%Y"))
+    for year in range(curyear-5, curyear+6):
+        for pitstr in ["{}-01-01".format(year), "{}-07-01".format(year)]:
+            pit = nldt.moment(pitstr)
+            assert not nldt.dst(pit.epoch(), "UTC")
+
+
+# -----------------------------------------------------------------------------
 def test_parse_now():
     """
     Test for nldt.Parser() object parsing 'now'
