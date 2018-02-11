@@ -1,4 +1,8 @@
-## 0.0.6 ...
+## 0.0.7 ...
+
+ * Debugging Travis support -- flake8 has to be installed
+
+## 0.0.6 ... 2018.0211 10:49:56
 
  * Extended flake8 coverage to all the python files
  * Add travis support
