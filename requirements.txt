@@ -1,0 +1,6 @@
+pytest
+pytest-cov
+coverage
+pytz
+tzlocal
+git+git://github.com/tbarron/tbx.git#egg=tbx
