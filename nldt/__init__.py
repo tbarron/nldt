@@ -1382,12 +1382,23 @@ def dst(when=None, tz=None):
         raise TypeError("dst() when arg must be str, number, or moment")
 
     tz = tz or 'local'
-    if tz == 'local':
-        tm = time.localtime(when.moment)
-    else:
-        tm = time.gmtime(when.moment + utc_offset(when.moment, tz))
+    zone = get_localzone() if tz == 'local' else pytz.timezone(tz)
+    broke = False
+    for idx, tdx in enumerate(zone._utc_transition_times):
+        try:
+            transition_time = zone._utc_transition_times[idx].timestamp()
+        except ValueError:
+            continue
 
-    return tm.tm_isdst == 1
+        if when.epoch() < transition_time:
+            broke = True
+            break
+
+    if broke:
+        rval = (zone._transition_info[idx-1][1].total_seconds() != 0)
+    else:
+        rval = False
+    return rval
 
 
 # -----------------------------------------------------------------------------
