@@ -12,7 +12,8 @@ def test_flake():
     Scan code for good formatting
     """
     pytest.debug_func()
-    result = tbx.run('flake8 test_nldt.py nldt')
+    flake_cmd = "flake8 {}".format(" ".join(pyfiles()))
+    result = tbx.run(flake_cmd)
     assert result == ''
 
 
@@ -52,3 +53,16 @@ def test_pydoc():
     for item in absent:
         pattern = "\W" + item + "\W"
         assert not re.search(pattern, result)
+
+
+# -----------------------------------------------------------------------------
+def pyfiles():
+    """
+    Returns a list of .py files for this project
+    """
+    rval = []
+    for root in ['nldt', 'tests']:
+        tmpl = [os.path.join(root, x) for x in os.listdir(root)
+                if x.endswith('.py')]
+        rval.extend(tmpl)
+    return rval
