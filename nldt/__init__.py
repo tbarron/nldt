@@ -1370,6 +1370,9 @@ def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
 
+    NOTE: If pytz timezone object doesn't have a _utc_transition_times table
+    (e.g., the UTC zone), dst is always off.
+
     Examples:
         >>> import nldt
         >>> nldt.dst()
@@ -1383,22 +1386,25 @@ def dst(when=None, tz=None):
 
     tz = tz or 'local'
     zone = get_localzone() if tz == 'local' else pytz.timezone(tz)
-    broke = False
-    for idx, tdx in enumerate(zone._utc_transition_times):
-        try:
-            transition_time = zone._utc_transition_times[idx].timestamp()
-        except ValueError:
-            continue
+    try:
+        broke = False
+        for idx, tdx in enumerate(zone._utc_transition_times):
+            try:
+                transition_time = zone._utc_transition_times[idx].timestamp()
+            except ValueError:
+                continue
 
-        if when.epoch() < transition_time:
-            broke = True
-            break
+            if when.epoch() < transition_time:
+                broke = True
+                break
 
-    if broke:
-        rval = (zone._transition_info[idx-1][1].total_seconds() != 0)
-    else:
-        rval = (zone._transition_info[-1][1].total_seconds() != 0)
-    return rval
+        if broke:
+            rval = (zone._transition_info[idx-1][1].total_seconds() != 0)
+        else:
+            rval = (zone._transition_info[-1][1].total_seconds() != 0)
+        return rval
+    except AttributeError:
+        return False
 
 
 # -----------------------------------------------------------------------------
