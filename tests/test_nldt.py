@@ -1,4 +1,4 @@
-from fixtures import fx_calls_debug
+from fixtures import fx_calls_debug    # noqa
 import numberize
 import numbers
 import pytest
@@ -862,6 +862,8 @@ def test_caller_name():
     Test function caller_name()
     """
     pytest.debug_func()
+
     def foobar():
         assert nldt.caller_name() == 'test_caller_name'
+
     foobar()

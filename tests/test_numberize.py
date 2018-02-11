@@ -1,6 +1,7 @@
-from fixtures import fx_calls_debug
+from fixtures import fx_calls_debug    # noqa
 import numberize as num
 import pytest
+
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp",
@@ -59,26 +60,21 @@ def test_digits(inp, exp):
     """
     pytest.debug_func()
     assert num.scan(inp) == exp
-    
+
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp, exp", [('only three weeks from now',
-                                       ['only', 3, 'weeks from now']),
-                                      ('seventy-five',
-                                       [75]),
-                                      ('seventy-six trombones led the big parade',
-                                       [76, 'trombones led the big parade']),
-                                      ("ten o'clock on june third",
-                                       [10, "o'clock on june", 3]),
-                                      ('three weeks before the fifth of may '
-                                       'seven years ago',
-                                       [3, 'weeks before the', 5, 'of may',
-                                        7, 'years ago']),
-                                      ])
+@pytest.mark.parametrize("inp, exp", [
+    ('only three weeks from now', ['only', 3, 'weeks from now']),
+    ('seventy-five', [75]),
+    ('seventy-six trombones led the big parade',
+     [76, 'trombones led the big parade']),
+    ("ten o'clock on june third", [10, "o'clock on june", 3]),
+    ('three weeks before the fifth of may seven years ago',
+     [3, 'weeks before the', 5, 'of may', 7, 'years ago']),
+    ])
 def test_time_expr(inp, exp):
     """
     time expressions
     """
     pytest.debug_func()
     assert num.scan(inp) == exp
-    

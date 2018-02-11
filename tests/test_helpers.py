@@ -1,4 +1,4 @@
-from fixtures import fx_calls_debug
+from fixtures import fx_calls_debug     # noqa
 import nldt
 import pytest
 

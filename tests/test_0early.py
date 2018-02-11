@@ -1,8 +1,9 @@
-from fixtures import fx_calls_debug
+from fixtures import fx_calls_debug       # noqa
 import nldt
-import re
+import os
 import pydoc
 import pytest
+import re
 import tbx
 
 

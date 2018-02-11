@@ -1,10 +1,5 @@
-from fixtures import fx_calls_debug
-import numberize
-import numbers
-import pydoc
+from fixtures import fx_calls_debug    # noqa
 import pytest
-import re
-import tbx
 import time
 import nldt
 from nldt import moment as M
@@ -39,7 +34,7 @@ def test_arg_tomorrow():
     assert not hasattr(nldt, 'tomorrow')
     with pytest.raises(ValueError) as err:
         # payload
-        argl = nldt.moment('tomorrow')
+        nldt.moment('tomorrow')
     errmsg = "ValueError: Valid ways of calling nldt.moment():"
     assert errmsg in str(err)
     obj = nldt.moment()
@@ -56,7 +51,7 @@ def test_arg_yesterday():
     assert not hasattr(nldt, 'yesterday')
     with pytest.raises(ValueError) as err:
         # payload
-        then = nldt.moment("yesterday")
+        nldt.moment("yesterday")
     errmsg = "ValueError: Valid ways of calling nldt.moment():"
     assert errmsg in str(err)
 
@@ -172,7 +167,7 @@ def test_moment_ceiling():
             tm = time.gmtime(now)
             delta = wk.forediff(tm.tm_wday, 'mon')
             nflr = nldt.timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
-                           0, 0, 0, 0, 0, 0))
+                                0, 0, 0, 0, 0, 0))
             exp = nflr - 1
         elif unit == 'month':
             tm = time.gmtime(now)
@@ -215,7 +210,7 @@ def test_moment_floor():
             tm = time.gmtime(now)
             delta = wk.backdiff(tm.tm_wday, 'mon') % 7
             exp = nldt.timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
-                          0, 0, 0, 0, 0, 0))
+                               0, 0, 0, 0, 0, 0))
         elif unit == 'month':
             tm = time.gmtime(now)
             exp = nldt.timegm((tm.tm_year, tm.tm_mon, 1, 0, 0, 0, 0, 0, 0))
@@ -266,9 +261,9 @@ def test_moment_floor():
     ([], None, None, ValueError('Valid ways of calling nldt.moment()')),
     ([], None, 'Canada/Mountain',
      ValueError('Valid ways of calling nldt.moment()')),
-    ((1,2,3,4,5), None, None,
+    ((1, 2, 3, 4, 5), None, None,
      ValueError('need at least 6 values, no more than 9')),
-    ((1,2,3,4,5,6,7,8,9,10), None, None,
+    ((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), None, None,
      ValueError('need at least 6 values, no more than 9')),
     ])
 def test_moment_init(dspec, fmt, tz, expoch):
@@ -327,7 +322,7 @@ def test_moment_plus():
            "'<class 'nldt.moment'>' and '<class 'list'>'")
     with pytest.raises(TypeError) as err:
         # payload
-        M("2018-02-01") + [1,2,3]
+        M("2018-02-01") + [1, 2, 3]
     assert msg in str(err)
 
 
