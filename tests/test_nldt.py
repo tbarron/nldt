@@ -176,7 +176,6 @@ def test_dst_off():
     """
     pytest.debug_func()
     then = nldt.moment("2010-12-31", "%Y-%m-%d")
-    assert not hasattr(then, 'dst')
     assert not nldt.dst(then.epoch())
 
 

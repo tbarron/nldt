@@ -37,8 +37,6 @@ def test_arg_tomorrow():
         nldt.moment('tomorrow')
     errmsg = "ValueError: Valid ways of calling nldt.moment():"
     assert errmsg in str(err)
-    obj = nldt.moment()
-    assert not hasattr(obj, 'parse')
 
 
 # -----------------------------------------------------------------------------
@@ -149,6 +147,20 @@ def test_intuit(inp, fmt, exp):
     later = nldt.moment(inp)
     # payload
     assert later(fmt) == exp
+
+
+# -----------------------------------------------------------------------------
+def test_moment_badattrs():
+    """
+    Verify that a freshly baked moment object does not have any attributes it
+    should not.
+    """
+    pytest.debug_func()
+    mobj = nldt.moment()
+    assert not hasattr(mobj, 'dst')                   # payload
+    assert not hasattr(mobj, 'parse')                 # payload
+    assert not hasattr(mobj, 'timezone')              # payload
+    assert not hasattr(mobj, 'today')                 # payload
 
 
 # -----------------------------------------------------------------------------
