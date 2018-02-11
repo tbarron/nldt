@@ -22,6 +22,22 @@ def test_deployable():
     msg = "There are uncommitted updates, staged or unstaged"
     assert not re.findall("\n?(MM|MA|AM|AA|A |M | A| M)", result), msg
 
+    # determine the current branch
+    result = tbx.run("git branch")
+    for candy in result.split("\n"):
+        if '*' in candy:
+            curb = candy.split()[1]
+            break
+
+    # If the current branch is not 'master', the only requirement for pushing
+    # is that everything be committed.
+    if curb != 'master':
+        return True
+
+    # If the current branch is 'master', the version and latest tag must match
+    # and the latest tag must point at HEAD for the project to be deployable
+    # (i.e., releasable, since a push on master IS a release!)
+
     # check the current version against the most recent tag
     result = tbx.run("git --no-pager tag")
     tag_l = result.strip().split("\n")
