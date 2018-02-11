@@ -202,10 +202,16 @@ def test_dst_elsewhere_off():
     NOTE: It seems that DST flags are reversed in the southern hemisphere (just
     like the seasons, duh), so we expect New Zealand's flag to be off when most
     others are on.
+
+    NOTE: The pytz table indicates that the last transition time for the
+    Africa/Addis_Ababa timezone was in 1959 and that the last time segment has
+    a dst offset of 0, so we're using that as an example of DST being
+    permanently off.
     """
     pytest.debug_func()
     then = nldt.moment("2012-01-01")
     assert not nldt.dst(then.epoch(), "US/Alaska")
+    assert not nldt.dst(then.epoch(), "Africa/Addis_Ababa")
     assert nldt.dst(then.epoch(), "NZ")
 
 
