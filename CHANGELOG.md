@@ -1,4 +1,9 @@
-## 0.0.5 ...
+## 0.0.6 ...
+
+ * Extended flake8 coverage to all the python files
+ * Add travis support
+
+## 0.0.5 ... 2018.0210 13:12:53
 
  * Check tests for debuggability
  * Compare moments for equality based on int epoch, not float moment
