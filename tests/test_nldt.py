@@ -216,15 +216,15 @@ def test_dst_list():
 
 
 # -----------------------------------------------------------------------------
-# def test_dst_elsewhere_on():
-#     """
-#     The dst function should return True for non local timezones that support
-#     DST during times of the year when DST IS in force.
-#     """
-#     pytest.debug_func()
-#     then = nldt.moment("2012-07-01")
-#     assert nldt.dst(then.epoch(), "US/Alaska")
-#     assert nldt.dst(then.epoch(), "NZ")
+def test_dst_elsewhere_on():
+    """
+    The dst function should return True for non local timezones that support
+    DST during times of the year when DST IS in force.
+    """
+    pytest.debug_func()
+    then = nldt.moment("2012-07-01")
+    assert nldt.dst(then.epoch(), "US/Alaska")
+    assert not nldt.dst(then.epoch(), "NZ")
 
 
 # -----------------------------------------------------------------------------
