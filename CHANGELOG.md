@@ -1,4 +1,13 @@
-## 0.0.7 ...
+## 0.0.8 ...
+
+ * Make nldt.dst() work for timezones that don't have a transition table in
+   the pytz tzinfo object.
+ * Travis testing apparently takes place in the UTC timezone.
+ * nldt.dst() now looks through the pytz _utc_transition_times table to
+   decide whether the DST flag should be on or off for a given timezone at
+   a specified moment in time.
+
+## 0.0.7 ... 2018.0211 11:07:35
 
  * Debugging Travis support -- flake8 has to be installed
 
