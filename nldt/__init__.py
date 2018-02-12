@@ -68,6 +68,7 @@ from tzlocal import get_localzone
 import pytz
 import re
 import time
+from nldt import verinfo
 
 
 # -----------------------------------------------------------------------------
@@ -1523,3 +1524,11 @@ def caller_name():
     Returns the name of the caller of the caller of this function
     """
     return inspect.stack()[2].function
+
+
+# -----------------------------------------------------------------------------
+def version():
+    """
+    Returns the current project version
+    """
+    return verinfo._version
