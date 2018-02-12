@@ -1,4 +1,11 @@
-## 0.0.8 ...
+## 0.0.9 ...
+
+ * Move the authoritative project version from ~/version.py to
+   ~/nldt/verinfo.py. Add function nldt.version() which returns the current
+   project version. Test test_version() matches this against the latest git
+   tag.
+
+## 0.0.8 ... 2018.0211 18:05:56
 
  * Make nldt.dst() work for timezones that don't have a transition table in
    the pytz tzinfo object.
