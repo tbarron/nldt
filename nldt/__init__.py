@@ -161,6 +161,21 @@ class duration(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def __call__(self, fmtstr):
+        """
+        class duration
+        This function reports the stored interval according to *fmtstr*
+        """
+        interval = self._deconstruct()
+        result = fmtstr
+        sfmt = "{}"
+        for foo in ["Y", "d", "H", "M", "S"]:
+            result = re.sub("%"+foo, sfmt.format(interval[foo]), result)
+            if foo == "d":
+                sfmt = "{:02d}"
+        return result
+
+    # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
         class duration: Assess whether this object is equal to the *other*
@@ -207,21 +222,6 @@ class duration(object):
         secs -= minutes * 60
         rval = "{}.{:02d}:{:02d}:{:02d}".format(days, hours, minutes, secs)
         return rval
-
-    # -------------------------------------------------------------------------
-    def format(self, fmtstr):
-        """
-        class duration
-        This function reports the stored interval according to *fmtstr*
-        """
-        interval = self._deconstruct()
-        result = fmtstr
-        sfmt = "{}"
-        for foo in ["Y", "d", "H", "M", "S"]:
-            result = re.sub("%"+foo, sfmt.format(interval[foo]), result)
-            if foo == "d":
-                sfmt = "{:02d}"
-        return result
 
     # -------------------------------------------------------------------------
     def _deconstruct(self):
