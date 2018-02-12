@@ -3,7 +3,10 @@
  * Move the authoritative project version from ~/version.py to
    ~/nldt/verinfo.py. Add function nldt.version() which returns the current
    project version. Test test_version() matches this against the latest git
-   tag.
+   tag. The version info is also used in test_deployable().
+ * Make duration objects callable with an optional format, like moment
+   objects. Remove obsoleted nldt.hhmm(), test_helpers.py,
+   duration.format().
 
 ## 0.0.8 ... 2018.0211 18:05:56
 
