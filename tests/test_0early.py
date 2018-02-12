@@ -1,5 +1,4 @@
 from fixtures import fx_calls_debug       # noqa
-from fixtures import fx_git_last_tag      # noqa
 import nldt
 import os
 import pydoc
@@ -58,12 +57,15 @@ def test_pydoc():
 
 
 # -----------------------------------------------------------------------------
-def test_version(fx_git_last_tag):     # noqa
+def test_version():
     """
-    Verify that nldt.version() returns the correct version string
+    Verify that nldt.version() returns a valid version string.
+    test_deployable() late in the test sequence will verify the correctness of
+    the version returned. This test just makes sure the version string is
+    reasonable (i.e., matches regexp '\d+\.\d+\.\d+').
     """
     pytest.debug_func()
-    assert nldt.version() == fx_git_last_tag
+    assert re.match("\d+\.\d+\.\d+", nldt.version())
 
 
 # -----------------------------------------------------------------------------
