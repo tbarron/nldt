@@ -1,12 +1,11 @@
 from fixtures import fx_calls_debug       # noqa
-from fixtures import fx_git_last_tag
+from fixtures import fx_git_last_tag      # noqa
 import nldt
 import os
 import pydoc
 import pytest
 import re
 import tbx
-from nldt import verinfo
 
 
 # -----------------------------------------------------------------------------
@@ -59,7 +58,7 @@ def test_pydoc():
 
 
 # -----------------------------------------------------------------------------
-def test_version(fx_git_last_tag):
+def test_version(fx_git_last_tag):     # noqa
     """
     Verify that nldt.version() returns the correct version string
     """

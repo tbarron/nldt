@@ -1,5 +1,5 @@
 from fixtures import fx_calls_debug    # noqa
-from fixtures import fx_git_last_tag
+from fixtures import fx_git_last_tag   # noqa
 import nldt
 import pytest
 import re
@@ -7,7 +7,7 @@ import tbx
 
 
 # -----------------------------------------------------------------------------
-def test_deployable(fx_git_last_tag):
+def test_deployable(fx_git_last_tag):   # noqa
     """
     Check version against last git tag and check for untracked files or
     outstanding updates.
@@ -44,6 +44,6 @@ def test_deployable(fx_git_last_tag):
 
     # verify that the most recent tag points at HEAD
     cmd = "git --no-pager log -1 --format=format:\"%H\""
-    tag_hash = tbx.run(cmd + " {}".format(latest_tag))
+    tag_hash = tbx.run(cmd + " {}".format(fx_git_last_tag))
     head_hash = tbx.run(cmd)
     assert head_hash == tag_hash, "Tag != HEAD"

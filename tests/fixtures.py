@@ -23,4 +23,3 @@ def fx_git_last_tag():
     tag_l = result.strip().split("\n")
     latest_tag = tag_l[-1] if 0 < len(tag_l) else ""
     return latest_tag
-
