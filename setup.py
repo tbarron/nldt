@@ -1,8 +1,8 @@
 from setuptools import setup
-import version
+from nldt import verinfo
 
 setup(name='nldt',
-      version=version._version,
+      version=verinfo._version,
       description="Natural Language Dates and Times",
       author="Tom Barron",
       author_email='tusculum@gmail.com',
