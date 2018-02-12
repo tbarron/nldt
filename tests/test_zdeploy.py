@@ -40,7 +40,9 @@ def test_deployable(fx_git_last_tag):   # noqa
     # (i.e., releasable, since a push on master IS a release!)
 
     # check the current version against the most recent tag
-    assert nldt.version() == fx_git_last_tag, "Version does not match tag"
+    msg = "Version ({}) does not match tag ({})".format(nldt.version(),
+                                                        fx_git_last_tag)
+    assert nldt.version() == fx_git_last_tag, msg
 
     # verify that the most recent tag points at HEAD
     cmd = "git --no-pager log -1 --format=format:\"%H\""
