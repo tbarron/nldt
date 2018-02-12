@@ -1,10 +1,12 @@
 from fixtures import fx_calls_debug       # noqa
+from fixtures import fx_git_last_tag
 import nldt
 import os
 import pydoc
 import pytest
 import re
 import tbx
+from nldt import verinfo
 
 
 # -----------------------------------------------------------------------------
@@ -54,6 +56,15 @@ def test_pydoc():
     for item in absent:
         pattern = "\W" + item + "\W"
         assert not re.search(pattern, result)
+
+
+# -----------------------------------------------------------------------------
+def test_version(fx_git_last_tag):
+    """
+    Verify that nldt.version() returns the correct version string
+    """
+    pytest.debug_func()
+    assert nldt.version() == fx_git_last_tag
 
 
 # -----------------------------------------------------------------------------
