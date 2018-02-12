@@ -238,7 +238,7 @@ class duration(object):
         secs -= rval["H"] * 3600
         rval["M"] = int(secs / 60)
         secs -= rval["M"] * 60
-        rval["S"] = secs
+        rval["S"] = int(secs)
         return rval
 
     # -------------------------------------------------------------------------
@@ -515,10 +515,10 @@ class moment(object):
         elif tz == 'UTC':
             tm = time.gmtime(self.moment)
         else:
-            offset = utc_offset(self.moment, tz)
-            tm = time.gmtime(self.moment + offset)
+            offset = duration(seconds=utc_offset(self.moment, tz))
+            tm = time.gmtime(self.moment + offset.seconds)
             format = format.replace('%Z', tzname(tz=tz, epoch=self.moment))
-            format = format.replace('%z', hhmm(offset))
+            format = format.replace('%z', offset("%H%M"))
         rval = time.strftime(format, tm)
         return rval
 
