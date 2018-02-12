@@ -1,12 +1,12 @@
 from fixtures import fx_calls_debug    # noqa
+import nldt
 import pytest
 import re
 import tbx
-from version import _version
 
 
 # -----------------------------------------------------------------------------
-def test_deployable():
+def test_deployable(fx_git_last_tag):
     """
     Check version against last git tag and check for untracked files or
     outstanding updates.
@@ -39,14 +39,7 @@ def test_deployable():
     # (i.e., releasable, since a push on master IS a release!)
 
     # check the current version against the most recent tag
-    result = tbx.run("git --no-pager tag")
-    tag_l = result.strip().split("\n")
-    if 0 < len(tag_l):
-        latest_tag = tag_l[-1]
-    else:
-        latest_tag = ""
-
-    assert latest_tag == _version, "Version does not match tag"
+    assert fx_git_last_tag == nldt.version(), "Version does not match tag"
 
     # verify that the most recent tag points at HEAD
     cmd = "git --no-pager log -1 --format=format:\"%H\""
