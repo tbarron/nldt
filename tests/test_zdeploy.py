@@ -1,4 +1,5 @@
 from fixtures import fx_calls_debug    # noqa
+from fixtures import fx_git_last_tag
 import nldt
 import pytest
 import re
