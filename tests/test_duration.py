@@ -366,7 +366,7 @@ def test_duration_dhms():
     ])
 def test_duration_format(dur, fmt, exp):
     """
-    <duration>.format() -- strftime-style specifiers (where they make sense)
+    <duration>() -- strftime-style specifiers (where they make sense)
       %Y  Years in the time interval
       %m  not supported
       %d  days in the interval
@@ -385,7 +385,7 @@ def test_duration_format(dur, fmt, exp):
     """
     pytest.debug_func()
     # payload
-    assert dur.format(fmt) == exp
+    assert dur(fmt) == exp
 
 
 # -----------------------------------------------------------------------------
