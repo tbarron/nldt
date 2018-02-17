@@ -929,6 +929,10 @@ class Parser(object):
             rval = self.parse_year(expr, start)
         elif self.research(self.wkday_rgx, expr, result):
             rval = self.parse_weekday(expr, result, start)
+        else:
+            msg = ("Failure parsing '{}'".format(expr)
+                   + " -- not recognized as a time expression")
+            raise ParseError(msg)
         return rval
 
     # -------------------------------------------------------------------------
