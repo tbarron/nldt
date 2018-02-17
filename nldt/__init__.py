@@ -1504,6 +1504,14 @@ class InitError(Exception):
 
 
 # -----------------------------------------------------------------------------
+class ParseError(Exception):
+    """
+    This exception is for calling out problems in initializing objects
+    """
+    pass
+
+
+# -----------------------------------------------------------------------------
 def caller_name():
     """
     Returns the name of the caller of the caller of this function
