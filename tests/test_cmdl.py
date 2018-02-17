@@ -1,5 +1,6 @@
 import nldt
 from fixtures import ftime
+import pexpect
 import pytest
 import tbx
 import time
@@ -41,3 +42,14 @@ def test_cmdline(cmd, exp):
     pytest.debug_func()
     result = tbx.run(cmd)
     assert result.strip() == exp
+
+
+# -----------------------------------------------------------------------------
+def test_debug():
+    """
+    Cover the line where we fire up the debugger
+    """
+    proc = pexpect.spawn('nldt -d today')
+    proc.expect('(Pdb)')
+    proc.sendline('c')
+    proc.expect(pexpect.EOF)
