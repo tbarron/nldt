@@ -1,5 +1,5 @@
 .cache
-.coverage
+.coverage*
 .env
 .pytest_cache
 .startup
