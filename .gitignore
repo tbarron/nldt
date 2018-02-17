@@ -5,6 +5,7 @@
 .startup
 dev.py
 DODO.txt
+nldt.egg-info
 __pycache__
 pytest.ini
 TAGS
