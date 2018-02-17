@@ -18,13 +18,19 @@ import time
 
     ('nldt -f "%Y.%m%d %H:%M" today', ftime('%Y.%m%d %H:%M')),
 
-    ('nldt -z local -w "2000.1231 09:07:43" today', '2000-12-31'),
+    ('nldt -z local -w "2000.1231 09:07:43" today',
+     ftime('%Y-%m-%d', local=True, anchor='2000.1231 09:07:43')),
 
     ('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 today',
      '2000.1231 09:07:43'),
 
     ('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
-     '2000.1231 10:07:43'),
+     ftime('%Y.%m%d %H:%M:%S', local=True, anchor='2000.1231 15:07:43')),
+
+    ('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
+     '2000.1231 07:07:43'),
+
+    ('nldt tomorrow', ftime("%Y-%m-%d", anchor=time.time()+24*3600)),
     ])
 def test_cmdline(cmd, exp):
     """
