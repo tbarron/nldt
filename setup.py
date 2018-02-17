@@ -8,5 +8,5 @@ setup(name='nldt',
       author_email='tusculum@gmail.com',
       url='https://github.com/tbarron/nldt',
       packages=['nldt'],
-      entry_points={'console_scripts': ['nldt = cmdl:main']}
+      entry_points={'console_scripts': ['nldt = nldt.cmdl:main']}
       )
