@@ -254,6 +254,20 @@ def test_dst_utc():
 
 
 # -----------------------------------------------------------------------------
+def test_parse_unbound_local():
+    """
+    An unparseable input is causing a traceback
+    """
+    pytest.debug_func()
+    prs = nldt.Parser()
+    with pytest.raises(nldt.ParseError) as err:
+        prs("one two")
+    msg = "Failure parsing 'one two' -- not recognized as a time expression"
+    assert msg in str(err)
+    assert "UnboundLocalError" not in str(err)
+
+
+# -----------------------------------------------------------------------------
 def test_parse_now():
     """
     Test for nldt.Parser() object parsing 'now'
