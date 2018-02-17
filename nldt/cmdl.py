@@ -44,6 +44,6 @@ def main():
         zone = None
     prs = nldt.Parser()
     when = nldt.moment(opts['--when'])
-    if expr in ['today']:
+    if expr in ['today', 'tomorrow']:
         ref = prs(expr, start=when)
         print(ref(fmt, tz=zone))

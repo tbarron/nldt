@@ -1,4 +1,3 @@
-import nldt
 from fixtures import ftime
 import pexpect
 import pytest
