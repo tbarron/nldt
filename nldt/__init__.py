@@ -428,7 +428,9 @@ class moment(object):
             else:
                 self.moment = int(time.time())
         elif isinstance(dspec, str):
-            if fmt:
+            if dspec.isdigit():
+                when = int(dspec)
+            elif fmt:
                 fmt = fmt.replace("%F", "%Y-%m-%d")
                 fmt = fmt.replace("%T", "%H:%M:%S")
                 tm = time.strptime(dspec, fmt)
