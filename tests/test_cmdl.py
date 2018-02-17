@@ -1,21 +1,8 @@
 import nldt
+from fixtures import ftime
 import pytest
 import tbx
 import time
-
-
-# -----------------------------------------------------------------------------
-def ftime(fmt, local=False, anchor=None):
-    """
-    Provide an oracle for test_cmdline
-    """
-    point = nldt.moment(anchor)
-    if local:
-        tm = time.localtime(point.epoch())
-    else:
-        tm = time.gmtime(point.epoch())
-    rval = time.strftime(fmt, tm)
-    return rval
 
 
 # -----------------------------------------------------------------------------
