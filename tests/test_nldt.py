@@ -11,6 +11,18 @@ from nldt import moment as M
 
 
 # -----------------------------------------------------------------------------
+def test_bug_pctsec():
+    """
+    given
+        x = moment()
+    x.moment should be equal to int(x("%s"))
+    """
+    pytest.debug_func()
+    now = nldt.moment()
+    assert now.epoch() == int(now("%s"))
+
+
+# -----------------------------------------------------------------------------
 def test_indexable_abc():
     """
     Indexable is an abstract base class that should not be instantiated
