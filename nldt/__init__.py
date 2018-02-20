@@ -61,10 +61,10 @@ epoch.
 # from calendar import timegm
 import calendar
 from datetime import datetime
+from tzlocal import get_localzone
 import inspect
 import numberize
 import numbers
-from tzlocal import get_localzone
 import pytz
 import re
 import time
