@@ -119,15 +119,12 @@ def test_unanchored_noarg():
 def test_cmdline(cmd, exp):
     """
     Test nldt on the command line
-    LOC ANC FMT
-     0   0   0     nldt    today
-     0   0   1     nldt -f '%c' today
-     0   1   0     nldt -w '2005.0302' today
-     0   1   1     nldt -w '2005.0302' -f '%c' today
-     1   0   0     nldt -L today
-     1   0   1     nldt -L -f '%c' today
-     1   1   0     nldt -L -w '2006.0420' today
-     1   1   1     nldt -L -w '2006.0420' -f '%c' today
+
+    Note that the unanchored tests (i.e., those with no -w/--when on the nldt
+    command) are liable to fail if the test suite is run within 15 seconds or
+    so of the change of an hour. If this is a problem, reduce the resolution to
+    the day level. This risk cannot be completely eliminated without anchoring
+    the time reference, which would defeat the purpose of these tests.
     """
     pytest.debug_func()
     result = tbx.run(cmd)
