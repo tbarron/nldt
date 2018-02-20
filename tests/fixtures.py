@@ -35,7 +35,7 @@ def fx_git_last_tag():
     """
     Determine and return the latest git tag
     """
-    result = tbx.run("git --no-pager tag")
+    result = tbx.run("git --no-pager --sort=taggerdate tag")
     tag_l = result.strip().split("\n")
     latest_tag = tag_l[-1] if 0 < len(tag_l) else ""
     return latest_tag
