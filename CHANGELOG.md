@@ -1,4 +1,15 @@
-## 0.0.9 ...
+## 0.0.10 ...
+
+ * Add nldt command line program, handle 'now', 'today', 'tomorrow',
+   'yesterday'
+ * Adjust command line argument handling to interpret no arguments as 'now'
+ * Fix bug where time.mktime() assumes its input tuple is local time by
+   calling tzset() to adjust the local timezone when necessary
+ * Fix bug where moment was not initializing itself from a numeric string
+ * Fix a bug where no parse branch matches the input
+ * In tests, avoid the assumption that 'local' always means 'US/Eastern'
+
+## 0.0.9 ... 2018.0212 10:08:35
 
  * Move the authoritative project version from ~/version.py to
    ~/nldt/verinfo.py. Add function nldt.version() which returns the current
