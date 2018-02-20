@@ -1,3 +1,4 @@
+from fixtures import fx_calls_debug      # noqa
 from fixtures import ftime
 import pexpect
 import pytest
