@@ -40,15 +40,16 @@ def test_unanchored_noarg():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("cmd, exp", [
+    # today
     ('nldt today', ftime('%Y-%m-%d')),
 
     ('nldt -z local today', ftime('%Y-%m-%d', local=True)),
 
     ('nldt -w "2000.1231 09:07:43" today', '2000-12-31'),
 
-    ('nldt -z local -f "%Y.%m%d %H:%M" today', ftime('%Y.%m%d %H:%M', True)),
+    ('nldt -z local -f "%Y.%m%d %H" today', ftime('%Y.%m%d %H', True)),
 
-    ('nldt -f "%Y.%m%d %H:%M" today', ftime('%Y.%m%d %H:%M')),
+    ('nldt -f "%Y.%m%d %H" today', ftime('%Y.%m%d %H')),
 
     ('nldt -z local -w "2000.1231 09:07:43" today',
      ftime('%Y-%m-%d', local=True, anchor='2000.1231 09:07:43')),
