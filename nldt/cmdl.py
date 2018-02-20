@@ -39,6 +39,13 @@ def main():
     zone = opts['--zone']
     prs = nldt.Parser()
     when = nldt.moment(opts['--when'])
-    if expr in ['today', 'tomorrow']:
-        ref = prs(expr, start=when)
+    ref = prs(expr, start=when)
+    if expr in ['today', 'tomorrow', 'yesterday']:
         print(ref(fmt, tz=zone))
+    elif expr in ['now']:
+        if fmt:
+            print(ref(fmt, tz=zone))
+        elif zone:
+            print(ref("%Y-%m-%d %H:%M:%S", tz=zone))
+        else:
+            print(ref)
