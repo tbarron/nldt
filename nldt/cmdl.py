@@ -36,12 +36,7 @@ def main():
         pdb.set_trace()
     expr = " ".join(opts['DATE_TIME_EXPR']) or 'now'
     fmt = opts['--format']
-    if opts['--zone'] == 'local':
-        zone = 'local'
-    elif opts['--zone']:
-        zone = opts['--zone']
-    else:
-        zone = None
+    zone = opts['--zone']
     prs = nldt.Parser()
     when = nldt.moment(opts['--when'])
     if expr in ['today', 'tomorrow']:
