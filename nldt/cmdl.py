@@ -1,6 +1,6 @@
 """
 Usage:
-    nldt [-d] [-f=<fmt>] [-w=<anchor>] [-z=<timezone>] DATE_TIME_EXPR ...
+    nldt [-d] [-f=<fmt>] [-w=<anchor>] [-z=<timezone>] [DATE_TIME_EXPR ...]
 
 Options:
     -d, --debug            run the debugger
@@ -34,7 +34,7 @@ def main():
     opts = docopt.docopt(__doc__)
     if opts['--debug']:
         pdb.set_trace()
-    expr = " ".join(opts['DATE_TIME_EXPR'])
+    expr = " ".join(opts['DATE_TIME_EXPR']) or 'now'
     fmt = opts['--format']
     if opts['--zone'] == 'local':
         zone = 'local'
