@@ -6,6 +6,38 @@ import time
 
 
 # -----------------------------------------------------------------------------
+def test_unanchored_now():
+    """
+    'nldt now' should give the current UTC time. By including %s in the output
+    format, we can get the time index to verify against.
+    """
+    pytest.debug_func()
+    # payload
+    result = tbx.run('nldt now -f "%s %F %T"')
+    epoch, ymd = result.split(" ", 1)
+    epoch = int(epoch)
+    now = time.time()
+    assert abs(int(now) - epoch) < 2
+    assert ymd.strip() == time.strftime("%F %T", time.gmtime(epoch))
+
+
+# -----------------------------------------------------------------------------
+def test_unanchored_noarg():
+    """
+    'nldt' with no arguments should behave like 'nldt now' (like dt(1)). We do
+    set the format (-f '...') but provide no date/time expression
+    """
+    pytest.debug_func()
+    # payload
+    result = tbx.run('nldt -f "%s %F %T"')
+    epoch, ymd = result.split(" ", 1)
+    epoch = int(epoch)
+    now = time.time()
+    assert abs(int(now) - epoch) < 2
+    assert ymd.strip() == time.strftime("%F %T", time.gmtime(epoch))
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("cmd, exp", [
     ('nldt today', ftime('%Y-%m-%d')),
 
