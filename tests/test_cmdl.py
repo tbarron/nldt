@@ -89,6 +89,32 @@ def test_unanchored_noarg():
     ('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 tomorrow',
      '2001.0101 07:07:43'),
 
+    # yesterday
+    ('nldt yesterday', ftime("%Y-%m-%d", anchor=time.time()-24*3600)),
+
+    ('nldt -z local yesterday',
+     ftime('%Y-%m-%d', local=True, anchor=time.time()-24*3600)),
+
+    ('nldt -w "2000.1231 09:07:43" yesterday', '2000-12-30'),
+
+    ('nldt -z local -f "%Y.%m%d %H" yesterday',
+     ftime('%Y.%m%d %H', True, anchor=time.time()-24*3600)),
+
+    ('nldt -f "%Y.%m%d %H" yesterday',
+     ftime('%Y.%m%d %H', anchor=time.time()-24*3600)),
+
+    ('nldt -z local -w "2000.1231 09:07:43" yesterday',
+     ftime('%Y-%m-%d', local=True, anchor='2000.1230 09:07:43')),
+
+    ('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 yesterday',
+     '2000.1230 09:07:43'),
+
+    ('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 yesterday',
+     ftime('%Y.%m%d %H:%M:%S', local=True, anchor='2000.1230 15:07:43')),
+
+    ('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 yesterday',
+     '2000.1230 07:07:43'),
+
     ])
 def test_cmdline(cmd, exp):
     """
