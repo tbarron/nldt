@@ -139,6 +139,7 @@ def test_debug():
     """
     Cover the line where we fire up the debugger
     """
+    pytest.debug_func()
     proc = pexpect.spawn('nldt -d today')
     proc.expect('(Pdb)')
     proc.sendline('c')
