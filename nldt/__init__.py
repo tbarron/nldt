@@ -65,6 +65,7 @@ from tzlocal import get_localzone
 import inspect
 import numberize
 import numbers
+import os
 import pytz
 import re
 import time
@@ -514,7 +515,8 @@ class moment(object):
         tz = tz or 'UTC'
         if tz == 'local':
             tm = time.localtime(self.moment)
-        elif tz == 'UTC':
+        elif tz == 'UTC' or tz is None:
+            tzset('UTC+00UTC+00')
             tm = time.gmtime(self.moment)
         else:
             offset = duration(seconds=utc_offset(self.moment, tz))
@@ -522,6 +524,7 @@ class moment(object):
             format = format.replace('%Z', tzname(tz=tz, epoch=self.moment))
             format = format.replace('%z', offset("%H%M"))
         rval = time.strftime(format, tm)
+        tzset(None)
         return rval
 
     # -------------------------------------------------------------------------
@@ -1464,6 +1467,18 @@ def tzname(tz=None, epoch=None):
     zone = pytz.timezone(tz) if tz else get_localzone()
     epoch = epoch or moment()
     return zone.tzname(datetime.fromtimestamp(epoch))
+
+
+# -----------------------------------------------------------------------------
+def tzset(zone=None):
+    """
+    Set os.environ['TZ'] and call time.tzset() to influence time calculations
+    """
+    if zone:
+        os.environ['TZ'] = zone
+    elif 'TZ' in os.environ:
+        del os.environ['TZ']
+    time.tzset()
 
 
 # -----------------------------------------------------------------------------
