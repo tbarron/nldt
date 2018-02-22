@@ -65,7 +65,6 @@ The better solution is to import and use calendar.timegm() because it provides
 the desired functionality, converting a UTC tm struct to the corresponding UTC
 epoch.
 """
-# from calendar import timegm
 import calendar
 from datetime import datetime
 from tzlocal import get_localzone
@@ -324,6 +323,43 @@ class Indexable(object):
         if rval is None:
             raise ValueError("Could not indexify '{}'".format(name_or_idx))
         return rval
+
+
+# -----------------------------------------------------------------------------
+class local(object):
+    """
+    This object will provide the same info as time.timezone, time.altzone,
+    time.daylight, and time.tzname. Note that the time items are variables but
+    the nldt.local items are methods and should be called with parentheses.
+    """
+
+    # -------------------------------------------------------------------------
+    def timezone(self):
+        """
+        Return the UTC offset for the local standard time
+        """
+        return time.timezone
+
+    # -------------------------------------------------------------------------
+    def altzone(self):
+        """
+        Return the UTC offset for the local time during DST
+        """
+        return time.altzone
+
+    # -------------------------------------------------------------------------
+    def daylight(self):
+        """
+        Return 1 if DST info is defined for the local timezone
+        """
+        return time.daylight
+
+    # -------------------------------------------------------------------------
+    def tzname(self):
+        """
+        Return tuple of standard and DST timezone abbreviation
+        """
+        return time.tzname
 
 
 # -----------------------------------------------------------------------------
