@@ -10,6 +10,7 @@ from tzlocal import get_localzone
 from datetime import datetime
 import numberize
 import numbers
+import os
 import pytest
 import re
 import time
@@ -41,6 +42,29 @@ def test_indexable_abc():
         _ = nldt.Indexable()
         assert isinstance(_, nldt.Indexable)
     assert msg in str(err)
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("zname, std, soff, dst, doff", [
+    ('US/Eastern', 'EST', 18000, 'EDT', 14400),
+    ('US/Central', 'CST', 21600, 'CDT', 18000),
+    ('US/Mountain', 'MST', 25200, 'MDT', 21600),
+    ('US/Pacific', 'PST', 28800, 'PDT', 25200),
+    ])
+def test_local(zname, std, soff, dst, doff):
+    """
+    nldt.local.timezone() should return the same value as time.timezone() for
+    the currently configured local timezone
+    """
+    pytest.debug_func()
+    seed = "{}{}{}{}".format(std, int(soff/3600), dst, int(doff/3600))
+    os.environ['TZ'] = seed
+    time.tzset()
+    lz = nldt.local()
+    assert time.timezone == lz.timezone()
+    assert time.altzone == lz.altzone()
+    assert time.daylight == lz.daylight()
+    assert time.tzname == lz.tzname()
 
 
 # -----------------------------------------------------------------------------
