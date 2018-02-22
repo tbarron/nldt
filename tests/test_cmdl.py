@@ -1,9 +1,40 @@
+"""
+nldt - Natural Language Date/Time support
+Copyright (c) 2017 - <the end of time>  Tom Barron
+See file LICENSING for details
+
+This file contains code for testing nldt functionality.
+"""
 from fixtures import fx_calls_debug      # noqa
 from fixtures import ftime
 import pexpect
 import pytest
 import tbx
 import time
+
+
+# -----------------------------------------------------------------------------
+def test_now_nofmt_nozone():
+    """
+    'nldt now' (no zone, no format) should produce the current UTC time in
+    default format (ISO).
+    """
+    pytest.debug_func()
+    # payload
+    result = tbx.run('nldt now')
+    assert result.strip() == time.strftime("%F %T", time.gmtime())
+
+
+# -----------------------------------------------------------------------------
+def test_now_nofmt_zone():
+    """
+    'nldt -z local now' (with zone local, no format) should produce the current
+    local time in default format (ISO).
+    """
+    pytest.debug_func()
+    # payload
+    result = tbx.run('nldt now -z local')
+    assert result.strip() == time.strftime("%F %T")
 
 
 # -----------------------------------------------------------------------------

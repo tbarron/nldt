@@ -1,4 +1,11 @@
 """
+nldt - Natural Language Date/Time support
+Copyright (c) 2017 - <the end of time>  Tom Barron
+See file LICENSING for details
+
+This file contains code for testing nldt functionality.
+-------------------------------------------------------------------------------
+
 Natural Language Date and Time package
 
 This module provides a simple natural language interfaace to Python's time and
