@@ -254,6 +254,19 @@ def test_moment_floor():
 
 
 # -----------------------------------------------------------------------------
+def test_moment_gmtime():
+    """
+    nldt.moment.gmtime() should return the tm_struct tuple for moment.epoch()
+    """
+    pytest.debug_func()
+    now = nldt.moment()
+    exp = time.gmtime(now.epoch())
+    # payload
+    result = now.gmtime()
+    assert result == exp
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("dspec, fmt, tz, expoch", [
     (None, None, None, "now"),
     (None, "%F %T", None,
