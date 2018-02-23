@@ -1496,17 +1496,8 @@ def dst(when=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-def word_before(item, text):
     """
-    Parse out the word that occurs before *item* in *text* and return it
     """
-    next = False
-    for word in reversed(text.split()):
-        if next:
-            return word
-        if word == item:
-            next = True
-    return None
 
 
 # -----------------------------------------------------------------------------
@@ -1588,7 +1579,16 @@ def utc_offset(epoch=None, tz=None):
 
 # -----------------------------------------------------------------------------
 def version():
+def word_before(item, text):
     """
     Returns the current project version
+    Parse out the word that occurs before *item* in *text* and return it
     """
     return verinfo._version
+    next = False
+    for word in reversed(text.split()):
+        if next:
+            return word
+        if word == item:
+            next = True
+    return None
