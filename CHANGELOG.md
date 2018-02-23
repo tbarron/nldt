@@ -1,6 +1,7 @@
 ## 0.0.12
 
  * Update requirements.txt to include pexpect
+ * Move numberize.py into nldt to make travis happy
 
 ## 0.0.11
 
