@@ -70,7 +70,7 @@ import contextlib
 from datetime import datetime
 from tzlocal import get_localzone
 import inspect
-import numberize
+from nldt import numberize
 import numbers
 import os
 import pytz

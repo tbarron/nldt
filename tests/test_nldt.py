@@ -8,7 +8,7 @@ This file contains code for testing nldt functionality.
 from fixtures import fx_calls_debug    # noqa
 from tzlocal import get_localzone
 from datetime import datetime
-import numberize
+from nldt import numberize
 import numbers
 import os
 import pytest

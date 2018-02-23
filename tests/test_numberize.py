@@ -6,7 +6,7 @@ See file LICENSING for details
 This file contains code for testing nldt functionality.
 """
 from fixtures import fx_calls_debug    # noqa
-import numberize as num
+from nldt import numberize as num
 import pytest
 
 
