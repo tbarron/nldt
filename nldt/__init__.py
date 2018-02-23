@@ -277,6 +277,14 @@ class duration(object):
             rval = moment(start_end_value)
         return rval
 
+    # -------------------------------------------------------------------------
+    def sleep(self):
+        """
+        class duration
+        sleep for the duration period
+        """
+        time.sleep(self.seconds)
+
 
 # -----------------------------------------------------------------------------
 class Indexable(object):
@@ -808,10 +816,13 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def time(self):
         """
         class moment
 
+        Alias for self.epoch()
         """
+        return self.epoch()
 
     # -------------------------------------------------------------------------
     def week_floor(self):
@@ -1460,6 +1471,14 @@ def caller_name():
     Returns the name of the caller of the caller of this function
     """
     return inspect.stack()[2].function
+
+
+# -----------------------------------------------------------------------------
+def clock():
+    """
+    Alias for time.clock()
+    """
+    return time.clock()
 
 
 # -----------------------------------------------------------------------------
