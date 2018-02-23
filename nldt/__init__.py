@@ -66,6 +66,7 @@ the desired functionality, converting a UTC tm struct to the corresponding UTC
 epoch.
 """
 import calendar
+import contextlib
 from datetime import datetime
 from tzlocal import get_localzone
 import inspect
@@ -1453,6 +1454,8 @@ def caller_name():
     Returns the name of the caller of the caller of this function
     """
     return inspect.stack()[2].function
+
+
 # -----------------------------------------------------------------------------
 def dst(when=None, tz=None):
     """
@@ -1523,9 +1526,34 @@ def timegm(*args):
 
 
 # -----------------------------------------------------------------------------
+@contextlib.contextmanager
+def timezone(zone=None):
     """
+    This context manager sets the local timezone to *zone* during the yield and
+    back to the original setting afterward
+    """
+    tzorig = os.getenv('TZ')
+    if zone:
+        zone = pytz.timezone(zone)
+    else:
+        zone = get_localzone()
 
+    sdt = datetime(2011, 1, 1)
+    soff = -1 * int(zone.utcoffset(sdt).total_seconds()/3600)
+    ddt = datetime(2011, 7, 1)
+    doff = -1 * int(zone.utcoffset(ddt).total_seconds()/3600)
+    tzstr = "{}{}{}{}".format(zone.tzname(sdt), soff,
+                              zone.tzname(ddt), doff)
+    os.environ['TZ'] = tzstr
+    time.tzset()
 
+    yield
+
+    if tzorig:
+        os.environ['TZ'] = tzorig
+    else:
+        del os.environ['TZ']
+    time.tzset()
 
 
 # -----------------------------------------------------------------------------
