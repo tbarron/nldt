@@ -31,6 +31,27 @@ def test_bug_pctsec():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("zname, std, soff, dst, doff", [
+    ('US/Eastern', 'EST', 18000, 'EDT', 14400),
+    ('US/Central', 'CST', 21600, 'CDT', 18000),
+    ('US/Mountain', 'MST', 25200, 'MDT', 21600),
+    ('US/Pacific', 'PST', 28800, 'PDT', 25200),
+    ('Asia/Jakarta', 'WIB', -25200, 'WIB', -25200),
+    ])
+def test_tz_context(zname, std, soff, dst, doff):
+    """
+    Verify that 'with nldt.timezone(FOOBAR)' creates a context with FOOBAR as
+    the local timezone.
+    """
+    pytest.debug_func()
+    with nldt.timezone(zname):
+        assert time.timezone == soff
+        assert time.altzone == doff
+        assert time.daylight == (soff != doff)
+        assert time.tzname == (std, dst)
+
+
+# -----------------------------------------------------------------------------
 def test_indexable_abc():
     """
     Indexable is an abstract base class that should not be instantiated
