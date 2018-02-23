@@ -1,3 +1,12 @@
+## 0.0.11
+
+ * Add tests for 'nldt now' with and without -z and -f
+ * Add copyright/licensing information
+ * Add object nldt.object and a test for it
+ * Add 'with nldt.timezone(TZNAME)' context manager (had to rename previous
+   nldt.timezone function to nldt.localzone)
+ * Reordered source code to make it easier to find stuff
+
 ## 0.0.10 ...
 
  * Add nldt command line program, handle 'now', 'today', 'tomorrow',
