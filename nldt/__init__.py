@@ -1496,20 +1496,7 @@ def dst(when=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-    """
-    """
-
-
-# -----------------------------------------------------------------------------
-def timegm(*args):
-    """
-    This is a wrapper for calendar.timegm
-    """
-    return calendar.timegm(*args)
-
-
-# -----------------------------------------------------------------------------
-def timezone():
+def localzone():
     """
     Returns the locally configured timezone name
 
@@ -1525,6 +1512,20 @@ def timezone():
     now = time.localtime()
     rval = time.tzname[now.tm_isdst]
     return rval
+
+
+# -----------------------------------------------------------------------------
+def timegm(*args):
+    """
+    This is a wrapper for calendar.timegm
+    """
+    return calendar.timegm(*args)
+
+
+# -----------------------------------------------------------------------------
+    """
+
+
 
 
 # -----------------------------------------------------------------------------
