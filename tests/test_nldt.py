@@ -417,9 +417,9 @@ def test_timezone():
     """
     pytest.debug_func()
     if nldt.dst():
-        assert nldt.timezone() == time.tzname[1]
+        assert nldt.localzone() == time.tzname[1]
     else:
-        assert nldt.timezone() == time.tzname[0]
+        assert nldt.localzone() == time.tzname[0]
 
 
 # -----------------------------------------------------------------------------
