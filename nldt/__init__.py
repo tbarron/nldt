@@ -1573,18 +1573,18 @@ def utc_offset(epoch=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
+def version():
     """
+    Returns the current project version
     """
+    return verinfo._version
 
 
 # -----------------------------------------------------------------------------
-def version():
 def word_before(item, text):
     """
-    Returns the current project version
     Parse out the word that occurs before *item* in *text* and return it
     """
-    return verinfo._version
     next = False
     for word in reversed(text.split()):
         if next:
