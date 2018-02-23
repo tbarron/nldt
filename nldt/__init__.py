@@ -1448,6 +1448,12 @@ class ParseError(Exception):
 
 
 # -----------------------------------------------------------------------------
+def caller_name():
+    """
+    Returns the name of the caller of the caller of this function
+    """
+    return inspect.stack()[2].function
+# -----------------------------------------------------------------------------
 def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
@@ -1576,12 +1582,8 @@ def utc_offset(epoch=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-def caller_name():
     """
-    Returns the name of the caller of the caller of this function
     """
-    return inspect.stack()[2].function
 
 
 # -----------------------------------------------------------------------------
