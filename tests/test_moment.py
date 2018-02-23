@@ -448,6 +448,16 @@ def test_moment_init_tz(inp, zone, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_moment_time():
+    """
+    test.moment.time() should be an alias for test.moment.epoch()
+    """
+    pytest.debug_func()
+    now = M()
+    assert now.time() == now.epoch()
+
+
+# -----------------------------------------------------------------------------
 def test_repr():
     """
     The __repr__ method should provide enough info to rebuild the object

@@ -31,6 +31,15 @@ def test_bug_pctsec():
 
 
 # -----------------------------------------------------------------------------
+def test_clock():
+    """
+    nldt.clock() is an alias for time.clock()
+    """
+    pytest.debug_func()
+    assert abs(nldt.clock() - time.clock()) < 0.00001
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
     ('US/Eastern', 'EST', 18000, 'EDT', 14400),
     ('US/Central', 'CST', 21600, 'CDT', 18000),

@@ -447,3 +447,17 @@ def test_duration_seconds():
     assert duration(minutes=5).seconds == 300
     # payload
     assert duration(seconds=6).seconds == 6
+
+
+# -----------------------------------------------------------------------------
+def test_duration_sleep():
+    """
+    Test duration.sleep()
+    """
+    pytest.debug_func()
+    nub = duration(seconds=1)
+    before = time.time()
+    # payload
+    nub.sleep()
+    diff = time.time() - before
+    assert abs(1.0 - diff) < 0.01
