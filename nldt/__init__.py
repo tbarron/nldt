@@ -1440,6 +1440,14 @@ class InitError(Exception):
 
 
 # -----------------------------------------------------------------------------
+class ParseError(Exception):
+    """
+    This exception is for calling out problems in initializing objects
+    """
+    pass
+
+
+# -----------------------------------------------------------------------------
 def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
@@ -1568,14 +1576,6 @@ def utc_offset(epoch=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-class ParseError(Exception):
-    """
-    This exception is for calling out problems in initializing objects
-    """
-    pass
-
-
 # -----------------------------------------------------------------------------
 def caller_name():
     """
