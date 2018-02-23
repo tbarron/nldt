@@ -502,31 +502,6 @@ class moment(object):
             self.moment = when - offset
 
     # -------------------------------------------------------------------------
-    def _resolve_time(self, dspec):
-        """
-        class moment
-        resolve a non-string date/time specification to an epoch time
-        """
-        if isinstance(dspec, numbers.Number):
-            return dspec
-        elif isinstance(dspec, time.struct_time):
-            return timegm(dspec)
-        elif isinstance(dspec, tuple):
-            if 6 <= len(dspec) <= 9:
-                return timegm(dspec)
-            else:
-                raise ValueError('need at least 6 values, no more than 9')
-        elif isinstance(dspec, moment):
-            return dspec.epoch()
-        else:
-            msg = "\n".join(["Valid ways of calling nldt.moment():",
-                             "    nldt.moment()",
-                             "    nldt.moment(<epoch-seconds>)",
-                             "    nldt.moment('YYYY-mm-dd')",
-                             "    nldt.moment(<date-str>[, <format>])"])
-            raise(ValueError(msg))
-
-    # -------------------------------------------------------------------------
     def __call__(self, format=None, tz=None):
         """
         class moment
@@ -663,6 +638,53 @@ class moment(object):
         return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(self.moment))
 
     # -------------------------------------------------------------------------
+    def _guess_format(self, spec):
+        """
+        class moment
+
+        Tries each of the parse formats in the list until one works or the list
+        is exhausted. Returns the UTC epoch (or None if we don't find a
+        matching format).
+        """
+        tm = None
+        for fmt in self.formats:
+            try:
+                tm = time.strptime(spec, fmt)
+                break
+            except ValueError:
+                pass
+
+        if tm:
+            return timegm(tm)
+        else:
+            return None
+
+    # -------------------------------------------------------------------------
+    def _resolve_time(self, dspec):
+        """
+        class moment
+        resolve a non-string date/time specification to an epoch time
+        """
+        if isinstance(dspec, numbers.Number):
+            return dspec
+        elif isinstance(dspec, time.struct_time):
+            return timegm(dspec)
+        elif isinstance(dspec, tuple):
+            if 6 <= len(dspec) <= 9:
+                return timegm(dspec)
+            else:
+                raise ValueError('need at least 6 values, no more than 9')
+        elif isinstance(dspec, moment):
+            return dspec.epoch()
+        else:
+            msg = "\n".join(["Valid ways of calling nldt.moment():",
+                             "    nldt.moment()",
+                             "    nldt.moment(<epoch-seconds>)",
+                             "    nldt.moment('YYYY-mm-dd')",
+                             "    nldt.moment(<date-str>[, <format>])"])
+            raise(ValueError(msg))
+
+    # -------------------------------------------------------------------------
     def epoch(self):
         """
         class moment
@@ -786,6 +808,12 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
+        """
+        class moment
+
+        """
+
+    # -------------------------------------------------------------------------
     def week_floor(self):
         """
         class moment
@@ -794,28 +822,6 @@ class moment(object):
         return a new moment object that stores that point in time.
         """
         return self.floor('week')
-
-    # -------------------------------------------------------------------------
-    def _guess_format(self, spec):
-        """
-        class moment
-
-        Tries each of the parse formats in the list until one works or the list
-        is exhausted. Returns the UTC epoch (or None if we don't find a
-        matching format).
-        """
-        tm = None
-        for fmt in self.formats:
-            try:
-                tm = time.strptime(spec, fmt)
-                break
-            except ValueError:
-                pass
-
-        if tm:
-            return timegm(tm)
-        else:
-            return None
 
 
 # -----------------------------------------------------------------------------
