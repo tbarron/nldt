@@ -59,10 +59,9 @@ def subscan(textnum, numwords=None):
             subscan._numwords = set_numwords()
             numwords = subscan._numwords
 
-    ordinal_words = {'first':1, 'second':2, 'third':3, 'fifth':5, 'eighth':8, 'ninth':9,
-                     'twelfth':12}
+    ordinal_words = {'first': 1, 'second': 2, 'third': 3, 'fifth': 5,
+                     'eighth': 8, 'ninth': 9, 'twelfth': 12}
     ordinal_endings = [('ieth', 'y'), ('th', '')]
-
 
     textnum = textnum.replace('-', ' ')
 
@@ -91,6 +90,7 @@ def subscan(textnum, numwords=None):
 
     return result + current, word, rest
 
+
 # -----------------------------------------------------------------------------
 def set_numwords():
     """
@@ -109,11 +109,15 @@ def set_numwords():
     scales = ["hundred", "thousand", "million", "billion", "trillion"]
 
     numwords["and"] = (1, 0)
-    for idx, word in enumerate(units):  numwords[word] = (1, idx)
-    for idx, word in enumerate(tens):       numwords[word] = (1, idx * 10)
-    for idx, word in enumerate(scales): numwords[word] = (10 ** (idx * 3 or 2), 0)
+    for idx, word in enumerate(units):
+        numwords[word] = (1, idx)
+    for idx, word in enumerate(tens):
+        numwords[word] = (1, idx * 10)
+    for idx, word in enumerate(scales):
+        numwords[word] = (10 ** (idx * 3 or 2), 0)
 
     return numwords
+
 
 # -----------------------------------------------------------------------------
 def tokenize(text):
