@@ -1419,6 +1419,19 @@ class week(Indexable):
 
 
 # -----------------------------------------------------------------------------
+class Stub(Exception):
+    """
+    To be raised in stub functions
+    """
+    # -------------------------------------------------------------------------
+    def __init__(self, msg=None):
+        fullmsg = "{}() is a stub -- please complete it.".format(caller_name())
+        if msg:
+            fullmsg += " ({})".format(msg)
+        super().__init__(fullmsg)
+
+
+# -----------------------------------------------------------------------------
 def dst(when=None, tz=None):
     """
     Return True or False - daylight savings time is in force or not
@@ -1547,18 +1560,6 @@ def utc_offset(epoch=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-class Stub(Exception):
-    """
-    To be raised in stub functions
-    """
-    # -------------------------------------------------------------------------
-    def __init__(self, msg=None):
-        fullmsg = "{}() is a stub -- please complete it.".format(caller_name())
-        if msg:
-            fullmsg += " ({})".format(msg)
-        super().__init__(fullmsg)
-
-
 # -----------------------------------------------------------------------------
 class InitError(Exception):
     """
