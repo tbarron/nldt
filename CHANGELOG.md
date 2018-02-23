@@ -1,3 +1,7 @@
+## 0.0.12
+
+ * Update requirements.txt to include pexpect
+
 ## 0.0.11
 
  * Add tests for 'nldt now' with and without -z and -f

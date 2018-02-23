@@ -1,5 +1,6 @@
 docopt
 flake8
+pexpect
 pytest
 pytest-cov
 coverage
