@@ -1,3 +1,10 @@
+## 0.0.13
+
+ * Add moment.time() as an alias for alias moment.epoch() (to parallel
+   time.time())
+ * Add nldt.clock() as an alias for time.clock()
+ * Add nldt.duration.sleep() as an alias for time.sleep()
+
 ## 0.0.12
 
  * Update requirements.txt to include pexpect
