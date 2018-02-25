@@ -1,3 +1,9 @@
+## 0.0.14
+
+ * Add test for methods ctime(), asctime() and code to satisfy the test
+ * Expand test for nldt.localtime() and update code to satisfy it
+ * Shorten test names to fit 80 column line
+
 ## 0.0.13
 
  * Add moment.time() as an alias for alias moment.epoch() (to parallel
