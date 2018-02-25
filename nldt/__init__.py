@@ -724,7 +724,7 @@ class moment(object):
         return time.gmtime(self.moment)
 
     # -------------------------------------------------------------------------
-    def localtime(self):
+    def localtime(self, tz=None):
         """
         class moment
 
@@ -737,7 +737,9 @@ class moment(object):
             time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
             tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
         """
-        return time.localtime(self.moment)
+        with timezone(tz):
+            rval = time.localtime(self.moment)
+        return rval
 
     # -------------------------------------------------------------------------
     def ceiling(self, unit):
