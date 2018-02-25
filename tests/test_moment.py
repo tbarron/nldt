@@ -320,17 +320,25 @@ def test_moment_init(dspec, fmt, tz, expoch):
 
 
 # -----------------------------------------------------------------------------
-def test_moment_localtime():
+@pytest.mark.parametrize("inp_time, inp_tz, out_tz, out_time", [
+    ('2011-01-01 00:00:00', None, 'UTC', '2011-01-01 00:00:00'),
+    ('2011-01-01 10:00:00', 'US/Mountain', 'US/Eastern',
+     '2011-01-01 12:00:00'),
+    ('2011-01-01 10:00:00', 'US/Pacific', 'US/Central', '2011-01-01 12:00:00'),
+    ('2011-01-01 17:00:00', 'Turkey', 'US/Eastern', '2011-01-01 10:00:00'),
+    ('2004-02-28 20:00:00', 'Europe/Paris', 'Asia/Tokyo',
+     '2004-02-29 04:00:00'),
+    ])
+def test_moment_localtime(inp_time, inp_tz, out_tz, out_time):
     """
     Test moment().localtime()
     """
     pytest.debug_func()
-    now = time.time()
-    foo = nldt.moment(now)
-    expected = time.localtime(now)
+    expected = time.strptime(out_time, '%Y-%m-%d %H:%M:%S')
     # payload
-    actual = foo.localtime()
-    assert actual == expected
+    utc = nldt.moment(inp_time, tz=inp_tz)
+    actual = utc.localtime(tz=out_tz)
+    assert nldt.timegm(actual) == nldt.timegm(expected)
 
 
 # -----------------------------------------------------------------------------
