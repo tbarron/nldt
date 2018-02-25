@@ -76,79 +76,111 @@ def test_unanchored_noarg():
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("cmd, exp", [
     # today
-    ('nldt today', ftime('%Y-%m-%d')),
+    pytest.param('nldt today', ftime('%Y-%m-%d'), id='today_TZ_FMT_ANCHOR'),
 
-    ('nldt -z local today', ftime('%Y-%m-%d', local=True)),
+    pytest.param('nldt -z local today', ftime('%Y-%m-%d', local=True),
+                 id='today_local_FMT_ANCHOR'),
 
-    ('nldt -w "2000.1231 09:07:43" today', '2000-12-31'),
+    pytest.param('nldt -w "2000.1231 09:07:43" today', '2000-12-31',
+                 id='today_TZ_FMT_anchor'),
 
-    ('nldt -z local -f "%Y.%m%d %H" today', ftime('%Y.%m%d %H', True)),
+    pytest.param('nldt -z local -f "%Y.%m%d %H" today',
+                 ftime('%Y.%m%d %H', True),
+                 id='today_local_fmt_ANCHOR'),
 
-    ('nldt -f "%Y.%m%d %H" today', ftime('%Y.%m%d %H')),
+    pytest.param('nldt -f "%Y.%m%d %H" today', ftime('%Y.%m%d %H'),
+                 id='today_TZ_fmt_ANCHOR'),
 
-    ('nldt -z local -w "2000.1231 09:07:43" today',
-     ftime('%Y-%m-%d', local=True, anchor='2000.1231 09:07:43')),
+    pytest.param('nldt -z local -w "2000.1231 09:07:43" today',
+                 ftime('%Y-%m-%d', local=True, anchor='2000.1231 09:07:43'),
+                 id='today_local_FMT_anchor'),
 
-    ('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 today',
-     '2000.1231 09:07:43'),
+    pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 today',
+                 '2000.1231 09:07:43',
+                 id='today_TZ_fmt_anchor'),
 
-    ('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
-     ftime('%Y.%m%d %H:%M:%S', local=True, anchor='2000.1231 15:07:43')),
+    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
+                 ftime('%Y.%m%d %H:%M:%S', local=True,
+                       anchor='2000.1231 15:07:43'),
+                 id='today_local_fmt_anchor'),
 
-    ('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
-     '2000.1231 07:07:43'),
+    pytest.param('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
+                 '2000.1231 07:07:43',
+                 id='today_tz_fmt_anchor'),
 
     # tomorrow
-    ('nldt tomorrow', ftime("%Y-%m-%d", anchor=time.time()+24*3600)),
+    pytest.param('nldt tomorrow',
+                 ftime("%Y-%m-%d", anchor=time.time()+24*3600),
+                 id='tomorrow_TZ_FMT_ANCHOR'),
 
-    ('nldt -z local tomorrow',
-     ftime('%Y-%m-%d', local=True, anchor=time.time()+24*3600)),
+    pytest.param('nldt -z local tomorrow',
+                 ftime('%Y-%m-%d', local=True, anchor=time.time()+24*3600),
+                 id='tomorrow_local_FMT_ANCHOR'),
 
-    ('nldt -w "2000.1231 09:07:43" tomorrow', '2001-01-01'),
+    pytest.param('nldt -w "2000.1231 09:07:43" tomorrow', '2001-01-01',
+                 id='tomorrow_TZ_FMT_anchor'),
 
-    ('nldt -z local -f "%Y.%m%d %H" tomorrow',
-     ftime('%Y.%m%d %H', True, anchor=time.time()+24*3600)),
+    pytest.param('nldt -z local -f "%Y.%m%d %H" tomorrow',
+                 ftime('%Y.%m%d %H', True, anchor=time.time()+24*3600),
+                 id='tomorrow_local_fmt_ANCHOR'),
 
-    ('nldt -f "%Y.%m%d %H" tomorrow',
-     ftime('%Y.%m%d %H', anchor=time.time()+24*3600)),
+    pytest.param('nldt -f "%Y.%m%d %H" tomorrow',
+                 ftime('%Y.%m%d %H', anchor=time.time()+24*3600),
+                 id='tomorrow_TZ_fmt_ANCHOR'),
 
-    ('nldt -z local -w "2000.1231 09:07:43" tomorrow',
-     ftime('%Y-%m-%d', local=True, anchor='2001.0101 09:07:43')),
+    pytest.param('nldt -z local -w "2000.1231 09:07:43" tomorrow',
+                 ftime('%Y-%m-%d', local=True, anchor='2001.0101 09:07:43'),
+                 id='tomorrow_local_FMT_anchor'),
 
-    ('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 tomorrow',
-     '2001.0101 09:07:43'),
+    pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 tomorrow',
+                 '2001.0101 09:07:43',
+                 id='tomorrow_TZ_fmt_anchor'),
 
-    ('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 tomorrow',
-     ftime('%Y.%m%d %H:%M:%S', local=True, anchor='2001.0101 15:07:43')),
+    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 tomorrow',
+                 ftime('%Y.%m%d %H:%M:%S', local=True,
+                       anchor='2001.0101 15:07:43'),
+                 id='tomorrow_local_fmt_anchor'),
 
-    ('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 tomorrow',
-     '2001.0101 07:07:43'),
+    pytest.param('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" '
+                 '-w 978275263 tomorrow',
+                 '2001.0101 07:07:43',
+                 id='tomorrow_tz_fmt_anchor'),
 
     # yesterday
-    ('nldt yesterday', ftime("%Y-%m-%d", anchor=time.time()-24*3600)),
+    pytest.param('nldt yesterday',
+                 ftime("%Y-%m-%d", anchor=time.time()-24*3600),
+                 id='yesterday_TZ_FMT_ANCHOR'),
 
-    ('nldt -z local yesterday',
-     ftime('%Y-%m-%d', local=True, anchor=time.time()-24*3600)),
+    pytest.param('nldt -z local yesterday',
+                 ftime('%Y-%m-%d', local=True, anchor=time.time()-24*3600),
+                 id='yesterday_local_FMT_ANCHOR'),
 
-    ('nldt -w "2000.1231 09:07:43" yesterday', '2000-12-30'),
+    pytest.param('nldt -w "2000.1231 09:07:43" yesterday', '2000-12-30',
+                 id='yesterday_TZ_FMT_anchor'),
 
-    ('nldt -z local -f "%Y.%m%d %H" yesterday',
-     ftime('%Y.%m%d %H', True, anchor=time.time()-24*3600)),
+    pytest.param('nldt -z local -f "%Y.%m%d %H" yesterday',
+                 ftime('%Y.%m%d %H', True, anchor=time.time()-24*3600),
+                 id='yesterday_local_fmt_ANCHOR'),
 
-    ('nldt -f "%Y.%m%d %H" yesterday',
-     ftime('%Y.%m%d %H', anchor=time.time()-24*3600)),
+    pytest.param('nldt -f "%Y.%m%d %H" yesterday',
+                 ftime('%Y.%m%d %H', anchor=time.time()-24*3600),
+                 id='yesterday_TZ_fmt_ANCHOR'),
 
-    ('nldt -z local -w "2000.1231 09:07:43" yesterday',
-     ftime('%Y-%m-%d', local=True, anchor='2000.1230 09:07:43')),
+    pytest.param('nldt -z local -w "2000.1231 09:07:43" yesterday',
+                 ftime('%Y-%m-%d', local=True, anchor='2000.1230 09:07:43'),
+                 id='yesterday_local_FMT_anchor'),
 
-    ('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 yesterday',
-     '2000.1230 09:07:43'),
+    pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 yesterday',
+                 '2000.1230 09:07:43', id='yesterday_TZ_fmt_anchor'),
 
-    ('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 yesterday',
-     ftime('%Y.%m%d %H:%M:%S', local=True, anchor='2000.1230 15:07:43')),
+    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 yesterday',
+                 ftime('%Y.%m%d %H:%M:%S', local=True,
+                       anchor='2000.1230 15:07:43'),
+                 id='yesterday_local_fmt_anchor'),
 
-    ('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 yesterday',
-     '2000.1230 07:07:43'),
+    pytest.param('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" '
+                 '-w 978275263 yesterday',
+                 '2000.1230 07:07:43', id='yesterday_tz_fmt_anchor'),
 
     ])
 def test_cmdline(cmd, exp):

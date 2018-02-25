@@ -15,78 +15,92 @@ import time
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("start, end, exp", [
-    (1325242800, 1325246400, duration(seconds=3600)),
+    pytest.param(1325242800, 1325246400, duration(seconds=3600), id='001'),
 
-    (1325242801, (2011, 12, 30, 10, 0, 1), duration(seconds=-3600)),
-    (1325242802, (2011, 12, 30, 10, 0),
-     nldt.InitError('Invalid tm tuple')),
-    (1325242803, (2011, 12, 30, 10, 0, 0, 0, 0, 0, 0),
-     nldt.InitError('Invalid tm tuple')),
+    pytest.param(1325242801, (2011, 12, 30, 10, 0, 1),
+                 duration(seconds=-3600), id='002'),
+    pytest.param(1325242802, (2011, 12, 30, 10, 0),
+                 nldt.InitError('Invalid tm tuple'), id='004'),
+    pytest.param(1325242803, (2011, 12, 30, 10, 0, 0, 0, 0, 0, 0),
+                 nldt.InitError('Invalid tm tuple'), id='006'),
 
-    (1325242804, time.struct_time((2011, 12, 29, 11, 0, 4, 0, 0, 0)),
-     duration(days=-1)),
+    pytest.param(1325242804,
+                 time.struct_time((2011, 12, 29, 11, 0, 4, 0, 0, 0)),
+                 duration(days=-1), id='007'),
 
-    (1325242805, moment('2011-12-30 11:59:59'),
-     duration(minutes=59, seconds=54)),
+    pytest.param(1325242805, moment('2011-12-30 11:59:59'),
+                 duration(minutes=59, seconds=54), id='008'),
 
-    (1325242806, '2011-12-31', duration(hours=12, minutes=59, seconds=54)),
-
-    # -------------------
-    ((2010, 1, 1, 0, 0, 0, 0, 0, 0), 1262323937,
-     duration(hours=5, minutes=32, seconds=17)),
-
-    ((2010, 1, 1, 0, 0, 1), (2010, 1, 2, 0, 0, 0),
-     duration(hours=23, minutes=59, seconds=59)),
-
-    ((2010, 1, 1, 0, 0, 2), time.struct_time((2010, 1, 2, 0, 0, 0, 0, 0, 0)),
-     duration(hours=23, minutes=59, seconds=58)),
-
-    ((2010, 1, 1, 0, 0, 3), moment("2010-01-04 00:00:00"),
-     duration(days=2, hours=23, minutes=59, seconds=57)),
-
-    ((2010, 1, 1, 0, 0, 4), "2010-01-01 00:17:00",
-     duration(minutes=16, seconds=56)),
+    pytest.param(1325242806, '2011-12-31',
+                 duration(hours=12, minutes=59, seconds=54), id='009'),
 
     # -------------------
-    (time.struct_time((2012, 1, 1, 0, 0, 0, 0, 0, 0)), 1325395937,
-     duration(seconds=19937)),
+    pytest.param((2010, 1, 1, 0, 0, 0, 0, 0, 0), 1262323937,
+                 duration(hours=5, minutes=32, seconds=17), id='010'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 1, 0, 0, 0)),
-     (2012, 1, 3, 0, 0, 1), duration(days=2)),
+    pytest.param((2010, 1, 1, 0, 0, 1), (2010, 1, 2, 0, 0, 0),
+                 duration(hours=23, minutes=59, seconds=59), id='011'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 2, 0, 0, 0)),
-     time.struct_time((2012, 1, 4, 0, 0, 2, 0, 0, 0)), duration(days=3)),
+    pytest.param((2010, 1, 1, 0, 0, 2),
+                 time.struct_time((2010, 1, 2, 0, 0, 0, 0, 0, 0)),
+                 duration(hours=23, minutes=59, seconds=58), id='012'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 3, 0, 0, 0)),
-     moment("2012-02-01 00:00:03"), duration(days=31)),
+    pytest.param((2010, 1, 1, 0, 0, 3), moment("2010-01-04 00:00:00"),
+                 duration(days=2, hours=23, minutes=59, seconds=57), id='013'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 4, 0, 0, 0)),
-     "2012-01-02 07:37:42", duration(seconds=113858)),
-
-    # -------------------
-    (moment("2013-01-01"), 1357005600, duration(seconds=7200)),
-
-    (moment("2013-01-01"), (2013, 1, 1, 2, 0, 1), duration(seconds=7201)),
-
-    (moment("2013-01-01"), time.struct_time((2013, 1, 1, 2, 0, 2, 0, 0, 0)),
-     duration(seconds=7202)),
-
-    (moment("2013-01-01"), moment("2013-01-01 02:00:03"),
-     duration(seconds=7203)),
-
-    (moment("2013-01-01"), "2013-01-01 02:00:04", duration(seconds=7204)),
+    pytest.param((2010, 1, 1, 0, 0, 4), "2010-01-01 00:17:00",
+                 duration(minutes=16, seconds=56), id='014'),
 
     # -------------------
-    ("2014-01-01", 1388552400, duration(seconds=18000)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 0, 0, 0, 0)), 1325395937,
+                 duration(seconds=19937), id='015'),
 
-    ("2014-01-01", (2014, 1, 1, 5, 0, 1), duration(seconds=18001)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 1, 0, 0, 0)),
+                 (2012, 1, 3, 0, 0, 1), duration(days=2), id='016'),
 
-    ("2014-01-01", time.struct_time((2014, 1, 1, 5, 0, 2, 0, 0, 0)),
-     duration(seconds=18002)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 2, 0, 0, 0)),
+                 time.struct_time((2012, 1, 4, 0, 0, 2, 0, 0, 0)),
+                 duration(days=3), id='017'),
 
-    ("2014-01-01", moment("2014-01-01 05:00:03"), duration(seconds=18003)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 3, 0, 0, 0)),
+                 moment("2012-02-01 00:00:03"), duration(days=31), id='018'),
 
-    ("2014-01-01", "2014-01-01 05:00:04", duration(seconds=18004)), ])
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 4, 0, 0, 0)),
+                 "2012-01-02 07:37:42", duration(seconds=113858), id='019'),
+
+    # -------------------
+    pytest.param(moment("2013-01-01"), 1357005600, duration(seconds=7200),
+                 id='020'),
+
+    pytest.param(moment("2013-01-01"), (2013, 1, 1, 2, 0, 1),
+                 duration(seconds=7201), id='021'),
+
+    pytest.param(moment("2013-01-01"),
+                 time.struct_time((2013, 1, 1, 2, 0, 2, 0, 0, 0)),
+                 duration(seconds=7202), id='022'),
+
+    pytest.param(moment("2013-01-01"), moment("2013-01-01 02:00:03"),
+                 duration(seconds=7203), id='023'),
+
+    pytest.param(moment("2013-01-01"), "2013-01-01 02:00:04",
+                 duration(seconds=7204), id='024'),
+
+    # -------------------
+    pytest.param("2014-01-01", 1388552400, duration(seconds=18000), id='025'),
+
+    pytest.param("2014-01-01", (2014, 1, 1, 5, 0, 1), duration(seconds=18001),
+                 id='026'),
+
+    pytest.param("2014-01-01",
+                 time.struct_time((2014, 1, 1, 5, 0, 2, 0, 0, 0)),
+                 duration(seconds=18002), id='027'),
+
+    pytest.param("2014-01-01", moment("2014-01-01 05:00:03"),
+                 duration(seconds=18003), id='028'),
+
+    pytest.param("2014-01-01", "2014-01-01 05:00:04", duration(seconds=18004),
+                 id='029'),
+    ])
 def test_dur_start_end(start, end, exp):
     """
     Test creating a duration by difference of times in various formats (epoch,
@@ -107,78 +121,94 @@ def test_dur_start_end(start, end, exp):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("start, end, exp", [
-    (1325242800, 1325246400, duration(seconds=3600)),
+    pytest.param(1325242800, 1325246400, duration(seconds=3600), id='001'),
 
-    (1325242801, (2011, 12, 30, 10, 0, 1), duration(seconds=-3600)),
-    (1325242802, (2011, 12, 30, 10, 0),
-     ValueError('need at least 6 values, no more than 9')),
-    (1325242803, (2011, 12, 30, 10, 0, 0, 0, 0, 0, 0),
-     ValueError('need at least 6 values, no more than 9')),
+    pytest.param(1325242801, (2011, 12, 30, 10, 0, 1), duration(seconds=-3600),
+                 id='002'),
+    pytest.param(1325242802, (2011, 12, 30, 10, 0),
+                 ValueError('need at least 6 values, no more than 9'),
+                 id='003'),
+    pytest.param(1325242803, (2011, 12, 30, 10, 0, 0, 0, 0, 0, 0),
+                 ValueError('need at least 6 values, no more than 9'),
+                 id='004'),
 
-    (1325242804, time.struct_time((2011, 12, 29, 11, 0, 4, 0, 0, 0)),
-     duration(days=-1)),
+    pytest.param(1325242804,
+                 time.struct_time((2011, 12, 29, 11, 0, 4, 0, 0, 0)),
+                 duration(days=-1), id='005'),
 
-    (1325242805, moment('2011-12-30 11:59:59'),
-     duration(minutes=59, seconds=54)),
+    pytest.param(1325242805, moment('2011-12-30 11:59:59'),
+                 duration(minutes=59, seconds=54), id='006'),
 
-    (1325242806, '2011-12-31', duration(hours=12, minutes=59, seconds=54)),
-
-    # -------------------
-    ((2010, 1, 1, 0, 0, 0, 0, 0, 0), 1262323937,
-     duration(hours=5, minutes=32, seconds=17)),
-
-    ((2010, 1, 1, 0, 0, 1), (2010, 1, 2, 0, 0, 0),
-     duration(hours=23, minutes=59, seconds=59)),
-
-    ((2010, 1, 1, 0, 0, 2), time.struct_time((2010, 1, 2, 0, 0, 0, 0, 0, 0)),
-     duration(hours=23, minutes=59, seconds=58)),
-
-    ((2010, 1, 1, 0, 0, 3), moment("2010-01-04 00:00:00"),
-     duration(days=2, hours=23, minutes=59, seconds=57)),
-
-    ((2010, 1, 1, 0, 0, 4), "2010-01-01 00:17:00",
-     duration(minutes=16, seconds=56)),
+    pytest.param(1325242806, '2011-12-31',
+                 duration(hours=12, minutes=59, seconds=54), id='007'),
 
     # -------------------
-    (time.struct_time((2012, 1, 1, 0, 0, 0, 0, 0, 0)), 1325395937,
-     duration(seconds=19937)),
+    pytest.param((2010, 1, 1, 0, 0, 0, 0, 0, 0), 1262323937,
+                 duration(hours=5, minutes=32, seconds=17), id='008'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 1, 0, 0, 0)),
-     (2012, 1, 3, 0, 0, 1), duration(days=2)),
+    pytest.param((2010, 1, 1, 0, 0, 1), (2010, 1, 2, 0, 0, 0),
+                 duration(hours=23, minutes=59, seconds=59), id='009'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 2, 0, 0, 0)),
-     time.struct_time((2012, 1, 4, 0, 0, 2, 0, 0, 0)), duration(days=3)),
+    pytest.param((2010, 1, 1, 0, 0, 2),
+                 time.struct_time((2010, 1, 2, 0, 0, 0, 0, 0, 0)),
+                 duration(hours=23, minutes=59, seconds=58), id='010'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 3, 0, 0, 0)),
-     moment("2012-02-01 00:00:03"), duration(days=31)),
+    pytest.param((2010, 1, 1, 0, 0, 3), moment("2010-01-04 00:00:00"),
+                 duration(days=2, hours=23, minutes=59, seconds=57), id='011'),
 
-    (time.struct_time((2012, 1, 1, 0, 0, 4, 0, 0, 0)),
-     "2012-01-02 07:37:42", duration(seconds=113858)),
-
-    # -------------------
-    (moment("2013-01-01"), 1357005600, duration(seconds=7200)),
-
-    (moment("2013-01-01"), (2013, 1, 1, 2, 0, 1), duration(seconds=7201)),
-
-    (moment("2013-01-01"), time.struct_time((2013, 1, 1, 2, 0, 2, 0, 0, 0)),
-     duration(seconds=7202)),
-
-    (moment("2013-01-01"), moment("2013-01-01 02:00:03"),
-     duration(seconds=7203)),
-
-    (moment("2013-01-01"), "2013-01-01 02:00:04", duration(seconds=7204)),
+    pytest.param((2010, 1, 1, 0, 0, 4), "2010-01-01 00:17:00",
+                 duration(minutes=16, seconds=56), id='012'),
 
     # -------------------
-    ("2014-01-01", 1388552400, duration(seconds=18000)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 0, 0, 0, 0)), 1325395937,
+                 duration(seconds=19937), id='013'),
 
-    ("2014-01-01", (2014, 1, 1, 5, 0, 1), duration(seconds=18001)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 1, 0, 0, 0)),
+                 (2012, 1, 3, 0, 0, 1), duration(days=2), id='014'),
 
-    ("2014-01-01", time.struct_time((2014, 1, 1, 5, 0, 2, 0, 0, 0)),
-     duration(seconds=18002)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 2, 0, 0, 0)),
+                 time.struct_time((2012, 1, 4, 0, 0, 2, 0, 0, 0)),
+                 duration(days=3), id='015'),
 
-    ("2014-01-01", moment("2014-01-01 05:00:03"), duration(seconds=18003)),
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 3, 0, 0, 0)),
+                 moment("2012-02-01 00:00:03"), duration(days=31), id='016'),
 
-    ("2014-01-01", "2014-01-01 05:00:04", duration(seconds=18004)), ])
+    pytest.param(time.struct_time((2012, 1, 1, 0, 0, 4, 0, 0, 0)),
+                 "2012-01-02 07:37:42", duration(seconds=113858), id='017'),
+
+    # -------------------
+    pytest.param(moment("2013-01-01"), 1357005600, duration(seconds=7200),
+                 id='018'),
+
+    pytest.param(moment("2013-01-01"), (2013, 1, 1, 2, 0, 1),
+                 duration(seconds=7201), id='019'),
+
+    pytest.param(moment("2013-01-01"),
+                 time.struct_time((2013, 1, 1, 2, 0, 2, 0, 0, 0)),
+                 duration(seconds=7202), id='020'),
+
+    pytest.param(moment("2013-01-01"), moment("2013-01-01 02:00:03"),
+                 duration(seconds=7203), id='021'),
+
+    pytest.param(moment("2013-01-01"), "2013-01-01 02:00:04",
+                 duration(seconds=7204), id='022'),
+
+    # -------------------
+    pytest.param("2014-01-01", 1388552400, duration(seconds=18000), id='023'),
+
+    pytest.param("2014-01-01", (2014, 1, 1, 5, 0, 1), duration(seconds=18001),
+                 id='024'),
+
+    pytest.param("2014-01-01",
+                 time.struct_time((2014, 1, 1, 5, 0, 2, 0, 0, 0)),
+                 duration(seconds=18002), id='025'),
+
+    pytest.param("2014-01-01", moment("2014-01-01 05:00:03"),
+                 duration(seconds=18003), id='026'),
+
+    pytest.param("2014-01-01", "2014-01-01 05:00:04", duration(seconds=18004),
+                 id='027'),
+    ])
 def test_dur_moment_diff(start, end, exp):
     """
     Test creating a duration by difference of moments
@@ -363,13 +393,17 @@ def test_duration_dhms():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("dur, fmt, exp", [
-    (duration(hours=2, minutes=10, seconds=24), "%H:%M:%S", "02:10:24"),
-    (duration(start="2018-01-01", end="2018-01-03"), "%d.%H:%M:%S",
-     "2.00:00:00"),
-    (duration(seconds=93784), "%d.%H:%M:%S", "1.02:03:04"),
-    (duration(seconds=26700), "%H%M", "0725"),
-    (duration(start="2018-02-26", end="2018-02-25 13:00:00"), "%H%M", "-1100"),
-    (duration(seconds=47277), "%d.%H:%M:%S", "0.13:07:57"),
+    pytest.param(duration(hours=2, minutes=10, seconds=24), "%H:%M:%S",
+                 "02:10:24", id='001'),
+    pytest.param(duration(start="2018-01-01", end="2018-01-03"), "%d.%H:%M:%S",
+                 "2.00:00:00", id='002'),
+    pytest.param(duration(seconds=93784), "%d.%H:%M:%S", "1.02:03:04",
+                 id='003'),
+    pytest.param(duration(seconds=26700), "%H%M", "0725", id='004'),
+    pytest.param(duration(start="2018-02-26", end="2018-02-25 13:00:00"),
+                 "%H%M", "-1100", id='005'),
+    pytest.param(duration(seconds=47277), "%d.%H:%M:%S", "0.13:07:57",
+                 id='006'),
     ])
 def test_duration_format(dur, fmt, exp):
     """

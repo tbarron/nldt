@@ -41,11 +41,11 @@ def test_clock():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
-    ('US/Eastern', 'EST', 18000, 'EDT', 14400),
-    ('US/Central', 'CST', 21600, 'CDT', 18000),
-    ('US/Mountain', 'MST', 25200, 'MDT', 21600),
-    ('US/Pacific', 'PST', 28800, 'PDT', 25200),
-    ('Asia/Jakarta', 'WIB', -25200, 'WIB', -25200),
+    pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='US/Eastern'),
+    pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='US/Central'),
+    pytest.param('US/Mountain', 'MST', 25200, 'MDT', 21600, id='US/Mountain'),
+    pytest.param('US/Pacific', 'PST', 28800, 'PDT', 25200, id='US/Pacific'),
+    pytest.param('Asia/Jakarta', 'WIB', -25200, 'WIB', -25200, id='Jakarta'),
     ])
 def test_tz_context_explicit(zname, std, soff, dst, doff):
     """
@@ -750,24 +750,25 @@ def test_from_now_except():
 
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("month, year, exp", [(1, None, 31),
-                                              (2, 2017, 28),
-                                              (2, 2016, 29),
-                                              (2, 2000, 29),
-                                              (2, 1900, 28),
-                                              (3, 2018, 31),
-                                              (4, None, 30),
+@pytest.mark.parametrize("month, year, exp", [
+    (1, None, 31),
+    (2, 2017, 28),
+    (2, 2016, 29),
+    (2, 2000, 29),
+    (2, 1900, 28),
+    (3, 2018, 31),
+    (4, None, 30),
 
-                                              (5, None, 31),
-                                              (6, None, 30),
-                                              (7, None, 31),
-                                              (8, None, 31),
-                                              (9, None, 30),
-                                              (10, None, 31),
-                                              (11, None, 30),
-                                              (12, None, 31),
-                                              (19, None, "Could not indexify"),
-                                              ])
+    (5, None, 31),
+    (6, None, 30),
+    (7, None, 31),
+    (8, None, 31),
+    (9, None, 30),
+    (10, None, 31),
+    (11, None, 30),
+    (12, None, 31),
+    pytest.param(19, None, "Could not indexify", id='indexify_fail'),
+    ])
 def test_month_days(month, year, exp):
     """
     Get the number of days in each month
@@ -828,16 +829,17 @@ def test_match_monthnames():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
-                         ("No weekday name in this text", None),
-                         ("Can you find the wednesday?", "wednesday"),
-                         ("Here it is monday again", "monday"),
-                         ("tuesday is a fine day", "tuesday"),
-                         ("...Saturday we'll go to the store", 'saturday'),
-                         ("Which day precedes (Friday) and which follows?",
-                          'friday'),
-                         ("Still need a Thursday test", 'thursday'),
-                         ("On Sunday all the tests are finished", 'sunday'),
-                         ])
+    pytest.param("No weekday name in this text", None, id='none'),
+    pytest.param("Can you find the wednesday?", "wednesday", id='wed'),
+    pytest.param("Here it is monday again", "monday", id='mon'),
+    pytest.param("tuesday is a fine day", "tuesday", id='tue'),
+    pytest.param("...Saturday we'll go to the store", 'saturday', id='sat'),
+    pytest.param("Which day precedes (Friday) and which follows?",
+                 'friday',
+                 id='friday'),
+    pytest.param("Still need a Thursday test", 'thursday', id='thu'),
+    pytest.param("On Sunday all the tests are finished", 'sunday', id='sun'),
+    ])
 def test_find_day(inp, exp):
     """
     Coverage for week.find_day
@@ -935,14 +937,23 @@ def test_prep_init():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
-    ("first of thirteenth", ("of", ["first", "of", "thirteenth"])),
-    ("last week in January", ("in", ["last week", "in", "January"])),
-    ("three weeks from yesterday",
-     ("from", ["three weeks", "from", "yesterday"])),
-    ("five days after tomorrow",
-     ("after", ["five days", "after", "tomorrow"])),
-    ("day before tomorrow", ("before", ["day", "before", "tomorrow"])),
-    ("one two three four five", (None, ["one two three four five"])),
+    pytest.param("first of thirteenth", ("of", ["first", "of", "thirteenth"]),
+                 id='thirteenth'),
+    pytest.param("last week in January",
+                 ("in", ["last week", "in", "January"]),
+                 id='last-week-in'),
+    pytest.param("three weeks from yesterday",
+                 ("from", ["three weeks", "from", "yesterday"]),
+                 id='three-weeks'),
+    pytest.param("five days after tomorrow",
+                 ("after", ["five days", "after", "tomorrow"]),
+                 id='five-days'),
+    pytest.param("day before tomorrow",
+                 ("before", ["day", "before", "tomorrow"]),
+                 id='day-before'),
+    pytest.param("one two three four five",
+                 (None, ["one two three four five"]),
+                 id='ordinals'),
     ])
 def test_prep_split(inp, exp):
     """

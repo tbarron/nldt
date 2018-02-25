@@ -11,13 +11,14 @@ import pytest
 
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp, exp",
-                         [('   Twas brillig and the slithe toves   ',
-                           ('Twas', 'brillig and the slithe toves')),
-                          ('  humpty     ', ('humpty', None)),
-                          ('     ', (None, None)),
-                          (['not a string'], (['not a string'], None)),
-                          ])
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param('   Twas brillig and the slithe toves   ',
+                 ('Twas', 'brillig and the slithe toves'),
+                 id='twas_brillig'),
+    pytest.param('  humpty     ', ('humpty', None), id='humpty'),
+    pytest.param('     ', (None, None), id='empty'),
+    (['not a string'], (['not a string'], None)),
+    ])
 def test_tokenize(inp, exp):
     """
     test tokenizing
@@ -71,13 +72,18 @@ def test_digits(inp, exp):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
-    ('only three weeks from now', ['only', 3, 'weeks from now']),
+    pytest.param('only three weeks from now',
+                 ['only', 3, 'weeks from now'],
+                 id='three_weeks'),
     ('seventy-five', [75]),
-    ('seventy-six trombones led the big parade',
-     [76, 'trombones led the big parade']),
-    ("ten o'clock on june third", [10, "o'clock on june", 3]),
-    ('three weeks before the fifth of may seven years ago',
-     [3, 'weeks before the', 5, 'of may', 7, 'years ago']),
+    pytest.param('seventy-six trombones led the big parade',
+                 [76, 'trombones led the big parade'],
+                 id='trombones'),
+    pytest.param("ten o'clock on june third", [10, "o'clock on june", 3],
+                 id='ten-oclock'),
+    pytest.param('three weeks before the fifth of may seven years ago',
+                 [3, 'weeks before the', 5, 'of may', 7, 'years ago'],
+                 id='three_weeks'),
     ])
 def test_time_expr(inp, exp):
     """
