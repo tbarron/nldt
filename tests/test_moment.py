@@ -157,6 +157,43 @@ def test_intuit(inp, fmt, exp):
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, loc, exp", [
+    ('2015.0703 12:00:00', 'Pacific/Pago_Pago', 'Fri Jul  3 01:00:00 2015'),
+    ('2015.0703 12:00:00', 'Pacific/Norfolk', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Universal', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Africa/Lusaka', 'Fri Jul  3 14:00:00 2015'),
+    ('2015.0703 12:00:00', 'America/Adak', 'Fri Jul  3 03:00:00 2015'),
+    ('2015.0703 12:00:00', 'America/Boise', 'Fri Jul  3 06:00:00 2015'),
+    ('2015.0703 12:00:00', 'Antarctica/Palmer', 'Sun Jul  5 08:00:00 2015'),
+    ('2015.0703 12:00:00', 'Arctic/Longyearbyen', 'Fri Jul  3 14:00:00 2015'),
+    ('2015.0703 12:00:00', 'Asia/Anadyr', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Asia/Kamchatka', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Atlantic/Stanley', 'Sat Jul  4 21:00:00 2015'),
+    ('2015.0703 12:00:00', 'Australia/Perth', 'Fri Jul  3 20:00:00 2015'),
+    ('2015.0703 12:00:00', 'Brazil/West', 'Sun Jul  5 08:00:00 2015'),
+    ('2015.0703 12:00:00', 'Canada/Atlantic', 'Fri Jul  3 09:00:00 2015'),
+    ('2015.0703 12:00:00', 'Chile/EasterIsland', 'Mon Jul  6 06:00:00 2015'),
+    ('2015.0703 12:00:00', 'Europe/Zagreb', 'Fri Jul  3 14:00:00 2015'),
+    ('2015.0703 12:00:00', 'Indian/Cocos', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Indian/Reunion', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Kwajalein', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Pacific/Efate', 'Fri Jul  3 12:00:00 2015'),
+    ('2015.0703 12:00:00', 'Pacific/Marquesas', 'Fri Jul  3 12:00:00 2015'),
+    ])
+def test_moment_asctime(inp, loc, exp):
+    """
+    moment.ctime() (and its alias, moment.asctime()) are both expected to
+    return the utc moment in the format '%a %b %d %T %Y'. They both take the tz
+    argument, which can be used to generate the return value for a specific
+    timezone.
+    """
+    pytest.debug_func()
+    this = nldt.moment(inp)
+    assert this.asctime(tz=loc) == exp
+    assert this.ctime(tz=loc) == this.asctime(tz=loc)
+
+
+# -----------------------------------------------------------------------------
 def test_moment_badattrs():
     """
     Verify that a freshly baked moment object does not have any attributes it
