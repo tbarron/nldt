@@ -693,6 +693,26 @@ class moment(object):
             raise(ValueError(msg))
 
     # -------------------------------------------------------------------------
+    def asctime(self, tz=None):
+        """
+        class moment
+
+        Format the UTC time as '%a %b %d %T %Y'.
+        """
+        tz = tz or 'UTC'
+        rval = time.strftime('%c', self.localtime(tz=tz))
+        return rval
+
+    # -------------------------------------------------------------------------
+    def ctime(self, **kw):
+        """
+        class moment
+
+        This is an alias for self.asctime()
+        """
+        return self.asctime(**kw)
+
+    # -------------------------------------------------------------------------
     def epoch(self):
         """
         class moment
