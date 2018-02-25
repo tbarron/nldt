@@ -5,6 +5,7 @@ See file LICENSING for details
 
 This file contains code for testing nldt functionality.
 """
+from calendar import timegm
 from fixtures import fx_calls_debug      # noqa
 from fixtures import ftime
 import pexpect
@@ -20,9 +21,12 @@ def test_now_nofmt_nozone():
     default format (ISO).
     """
     pytest.debug_func()
+    exp = time.time()
     # payload
     result = tbx.run('nldt now')
-    assert result.strip() == time.strftime("%F %T", time.gmtime())
+    repoch = timegm(time.strptime(result.strip(), "%Y-%m-%d %H:%M:%S"))
+    assert abs(repoch - exp) < 1.0
+    # assert result.strip() == time.strftime("%F %T", time.gmtime())
 
 
 # -----------------------------------------------------------------------------
