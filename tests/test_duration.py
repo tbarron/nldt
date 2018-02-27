@@ -222,16 +222,19 @@ def test_dur_moment_diff(start, end, exp):
     """
     Test creating a duration by difference of moments
     """
+    stz = 'utc' if moment.takes_tz(start) else None
+    etz = 'utc' if moment.takes_tz(end) else None
     pytest.debug_func()
-    if isinstance(exp, Exception):
-        with pytest.raises(type(exp)) as err:
+    with nldt.timezone('utc'):
+        if isinstance(exp, Exception):
+            with pytest.raises(type(exp)) as err:
+                # payload
+                moment(end, tz=etz) - moment(start, tz=stz)
+            assert str(exp) == str(err.value)
+        else:
             # payload
-            moment(end) - moment(start)
-        assert str(exp) == str(err.value)
-    else:
-        # payload
-        result = moment(end) - moment(start)
-        assert exp == result
+            result = moment(end, tz=etz) - moment(start, tz=stz)
+            assert exp == result
 
 
 # -----------------------------------------------------------------------------
