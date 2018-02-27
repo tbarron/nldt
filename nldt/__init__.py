@@ -440,6 +440,19 @@ class moment(object):
                ]
 
     # -------------------------------------------------------------------------
+    @classmethod
+    def takes_tz(cls, value):
+        """
+        class moment
+
+        Returns True if a tz arg can be passed to the moment constructor for
+        this *value* as a date/time specification.
+        """
+        return any([isinstance(value, time.struct_time),
+                    isinstance(value, tuple),
+                    isinstance(value, str) and not value.isdigit()])
+
+    # -------------------------------------------------------------------------
     def __init__(self, dspec=None, fmt=None, tz=None):
         """
         class moment
