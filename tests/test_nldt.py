@@ -36,7 +36,7 @@ def test_clock():
     nldt.clock() is an alias for time.clock()
     """
     pytest.debug_func()
-    assert abs(nldt.clock() - time.clock()) < 0.00001
+    assert abs(nldt.clock() - time.clock()) < 0.0001
 
 
 # -----------------------------------------------------------------------------
