@@ -501,7 +501,7 @@ def test_indexify_lowstr():
 
 
 # -----------------------------------------------------------------------------
-def test_timezone():
+def test_localzone():
     """
     Timezone should return the current timezone setting
     """
