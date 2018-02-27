@@ -26,7 +26,6 @@ def test_now_nofmt_nozone():
     result = tbx.run('nldt now')
     repoch = timegm(time.strptime(result.strip(), "%Y-%m-%d %H:%M:%S"))
     assert abs(repoch - exp) < 1.0
-    # assert result.strip() == time.strftime("%F %T", time.gmtime())
 
 
 # -----------------------------------------------------------------------------
@@ -36,9 +35,11 @@ def test_now_nofmt_zone():
     local time in default format (ISO).
     """
     pytest.debug_func()
+    exp = time.time()
     # payload
     result = tbx.run('nldt now -z local')
-    assert result.strip() == time.strftime("%F %T")
+    repoch = time.mktime(time.strptime(result.strip(), "%Y-%m-%d %H:%M:%S"))
+    assert abs(repoch - exp) < 1.0
 
 
 # -----------------------------------------------------------------------------
