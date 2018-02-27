@@ -464,6 +464,31 @@ def test_moment_localtime(inp_time, inp_tz, out_tz, out_time):
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("minuend, subtrahend, exp", [
+    pytest.param(M("2010-11-07"), D(days=3), M("2010-11-04"), id='001'),
+    pytest.param(M("2008-03-05"), 5*24*3600, M("2008-02-29"), id='002'),
+    pytest.param(M("2012-08-17"), M("2012-07-29"), D(days=19), id='003'),
+    pytest.param(M("2015-04-28"), [1, 2, 3],
+     ValueError("Invalid subtrahend for moment subtraction"), id='004'),
+    ])
+def test_moment_minus(minuend, subtrahend, exp):
+    """
+    moment - duration => moment
+    moment - number-of-seconds => moment
+    moment - moment => duration
+    moment - list => undefined
+    """
+    pytest.debug_func()
+    if isinstance(exp, ValueError):
+        with pytest.raises(ValueError) as err:
+            result = minuend - subtrahend
+        assert "Invalid subtrahend for moment subtraction" in str(err)
+    else:
+        result = minuend - subtrahend
+        assert result == exp
+
+
+# -----------------------------------------------------------------------------
 def test_moment_plus():
     """
     moment + duration should produce another moment
