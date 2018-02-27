@@ -1,4 +1,40 @@
 ---------------------------------------------------------------------------
+2018-02-26 08:00:23    Broken timezones
+
+  * Some of the timezone checks are failing on Travis. This appears to be
+    because of the way I'm building the string I put in the environment
+    before calling time.tzset(). For example, the offset info for zone
+    Antarctica/Palmer is
+
+        Antarctica/Palmer            -03     -10800     -03     -10800
+
+    However, in the context "with nldt.timezone('Antarctica/Palmer'):",
+    time.timezone has the value -118800, which is 33 hours. Note that the
+    environment string built for this zone will be
+
+        '-03' + '3' + '-03' + '3' => '-033-033'
+
+    Instead, it should be "XXX3XXX3".
+
+  * Let's add a test function in test_nldt.py that walks through all the
+    timezones, calls 'with nldt.timezone()' on each, and verifies a time
+    conversion based on the pytz.utcoffset() for the given zone and time.
+
+  * I think maybe what I need to do is work away from the time module and
+    base nldt on pytz and datetime instead. Let's work in that direction
+    and see how it goes.
+
+  * Should an epoch time ever be adjusted for timezone or dst? One way of
+    looking at it is that an epoch time is a count of seconds since the
+    epoch *as defined in UTC*. From this point of view, an epoch time is
+    what it is in all timezones and it always represents the same moment in
+    time, regardless of timezone.
+
+    So if a moment is initialized from a given epoch value, that's the UTC
+    value no matter what the timezone is.
+
+
+---------------------------------------------------------------------------
 2018-02-02 14:01:10: Rules
 
   * Remember the layer cake (the "layer cake" rule)
@@ -39,7 +75,7 @@
   * The moment class stores a UTC point in time. Calculations should be
     carried out in terms of UTC. Only translate to local time at the last
     minute before displaying the time to the user.
-   
+
 
 ---------------------------------------------------------------------------
 2018-02-02 08:53:17:
@@ -106,4 +142,3 @@ The base anchor is 'the month', which resolves (currently) to '2017.0401
 Taking this result as the anchor to the top level expression, we now count
 backward (based on the top level preposition, 'before') from the new anchor
 to '2017.0327 00:00:00'.
-
