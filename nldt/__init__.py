@@ -497,6 +497,8 @@ class moment(object):
                                  "    nldt.moment('YYYY-mm-dd')",
                                  "    nldt.moment(<date-str>[, <format>])"])
 
+        if not hasattr(self.__class__, 'deftz'):
+            self.__class__.deftz = 'local'
         self.moment = None
         if dspec is None:
             if tz or fmt:
