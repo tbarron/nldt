@@ -1,4 +1,23 @@
 ---------------------------------------------------------------------------
+2018-02-27 06:12:05    Rules
+
+  * When a moment is initialized, should the input time be interpreted as
+    UTC or local if no timezone spec is provided?
+
+      * Ordinarily, people think in terms of local time, so it might be
+        convenient to interpret them that way.
+
+      * However, epoch times are always considered UTC, so interpreting
+        them in the UTC context would be consistent with the way epoch
+        times are handled.
+
+      * A lot of the tests have input times that need to be interpreted in
+        UTC, so that's a reason for wanting UTC as the default
+
+      * A possible solution would be to provide the user a call that will
+        set the default timezone context.
+
+---------------------------------------------------------------------------
 2018-02-26 08:00:23    Broken timezones
 
   * Some of the timezone checks are failing on Travis. This appears to be
