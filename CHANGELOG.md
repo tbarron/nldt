@@ -1,3 +1,20 @@
+## 0.0.15
+
+ * For duration constructor, interpret moment values in the 'utc' timezone
+   context
+ * New moment class method takes_tz() to indicate whether a moment arg can
+   take a timezone argument or not
+ * Adjust tests to assess difference thresholds rather than strict equality
+   in some cases
+ * Adjust time anchors for correctness and easier maintenance of tests
+ * For now, we need explicit utc timezone context specification because we
+   don't (yet) have a way of specifying a default timezone context for
+   moment construction
+ * Update tests to use monotonically increasing numeric test ids
+ * Test and code to support moment subtraction
+ * Test and code for nldt.moment.default_tz() to set default timezone for
+   moment constructor input
+
 ## 0.0.14
 
  * Add test for methods ctime(), asctime() and code to satisfy the test
