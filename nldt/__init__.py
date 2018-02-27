@@ -216,22 +216,6 @@ class duration(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def dhms(self):
-        """
-        class duration
-        This method reports a duration as <days>.HH:MM:SS in a string
-        """
-        secs = self.seconds
-        days = int(secs / (24*3600))
-        secs -= days * 24 * 3600
-        hours = int(secs / 3600)
-        secs -= hours * 3600
-        minutes = int(secs / 60)
-        secs -= minutes * 60
-        rval = "{}.{:02d}:{:02d}:{:02d}".format(days, hours, minutes, secs)
-        return rval
-
-    # -------------------------------------------------------------------------
     def _deconstruct(self):
         """
         Allocate the seconds to a year, day, hour, min, sec dict
@@ -275,6 +259,20 @@ class duration(object):
             rval = start_end_value
         elif isinstance(start_end_value, str):
             rval = moment(start_end_value)
+    # -------------------------------------------------------------------------
+    def dhms(self):
+        """
+        class duration
+        This method reports a duration as <days>.HH:MM:SS in a string
+        """
+        secs = self.seconds
+        days = int(secs / (24*3600))
+        secs -= days * 24 * 3600
+        hours = int(secs / 3600)
+        secs -= hours * 3600
+        minutes = int(secs / 60)
+        secs -= minutes * 60
+        rval = "{}.{:02d}:{:02d}:{:02d}".format(days, hours, minutes, secs)
         return rval
 
     # -------------------------------------------------------------------------
