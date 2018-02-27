@@ -302,6 +302,18 @@ def test_moment_ceiling():
 
 
 # -----------------------------------------------------------------------------
+def test_moment_default_tz_pre():
+    """
+    Verify default tz in moment class is as expected
+    """
+    pytest.debug_func()
+    if hasattr(nldt.moment, 'deftz'):
+        del nldt.moment.deftz
+    lz = get_localzone()
+    assert lz.zone == nldt.moment.default_tz()
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("deftz, inp, exp", [
     pytest.param("US/Eastern", "2018-01-01 12:00:00", 1514826000, id='001'),
     pytest.param("US/Central", "2018-01-01 11:00:00", 1514826000, id='002'),
