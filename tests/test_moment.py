@@ -380,6 +380,11 @@ def test_moment_gmtime():
                  id='epoch-FMT-TZ'),
     pytest.param(time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
                  None, None, 1267335137, id='tm-FMT-TZ'),
+    pytest.param(time.struct_time((2010, 2, 28, 0, 32, 17, 0, 0, 0)),
+                 "%F %T", None,
+                 nldt.InitError('moment() cannot take format when date is not'
+                                ' of type str'),
+                 id='010.1'),
     pytest.param(time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
                  None, 'Europe/Stockholm', 1267331537, id='tm-FMT-tz'),
     pytest.param((2012, 2, 29, 7, 47, 19), None, None, 1330501639,
