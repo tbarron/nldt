@@ -22,7 +22,7 @@ def test_ambig():
     """
     pytest.debug_func()
     # payload
-    iso = nldt.moment('01-02-03')
+    iso = nldt.moment('01-02-03', tz='utc')
     assert iso() == '2001-02-03'
     # payload
     uso = nldt.moment('01-02-03', '%m-%d-%y')
@@ -179,7 +179,7 @@ def test_intuit(inp, fmt, exp):
     Try to guess popular time formats
     """
     pytest.debug_func()
-    later = nldt.moment(inp)
+    later = nldt.moment(inp, tz='utc')
     # payload
     assert later(fmt) == exp
 
@@ -237,7 +237,7 @@ def test_moment_asctime(inp, loc, exp):
     timezone.
     """
     pytest.debug_func()
-    this = nldt.moment(inp)
+    this = nldt.moment(inp, tz='utc')
     assert this.asctime(tz=loc) == exp
     assert this.ctime(tz=loc) == this.asctime(tz=loc)
 
@@ -363,13 +363,13 @@ def test_moment_gmtime():
                                 'date spec'), id='tz-no-date'),
     pytest.param("2018-01-01 00:00:00", "%F %T", "US/Eastern", 1514782800,
                  id='dspec-fmt-tz'),
-    pytest.param("2018-01-01 00:00:00", "%F %T", None, 1514764800,
-                 id='dspec-fmt-TZ'),
+    pytest.param("2018-01-01 00:00:00", "%F %T", 'utc', 1514764800,
+                 id='005'),
     pytest.param("2018.0101 01:02:03", None, "Pacific/Truk", 1514732523,
                  id='dspec-FMT-tz'),
-    pytest.param("2018.0704 09:23:57", None, None, 1530696237,
-                 id='dspec-FMT-TZ'),
-    pytest.param((2017, 1, 1, 0, 0, 0), "%F %T", None,
+    pytest.param("2018.0704 09:23:57", None, 'utc', 1530696237,
+                 id='007'),
+    pytest.param((2017, 1, 1, 0, 0, 0), "%F %T", 'utc',
                  nldt.InitError("moment() cannot take format when date is not "
                                 "of type str"), id='dtup-fmt-TZ'),
     pytest.param(1530696573, None, 'America/Argentina/Mendoza', 1530707373,
@@ -424,8 +424,8 @@ def test_moment_init(dspec, fmt, tz, expoch):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp_time, inp_tz, out_tz, out_time", [
-    pytest.param('2011-01-01 00:00:00', None, 'UTC', '2011-01-01 00:00:00',
-                 id='None-UTC'),
+    pytest.param('2011-01-01 00:00:00', 'utc', 'UTC', '2011-01-01 00:00:00',
+                 id='001'),
     pytest.param('2011-01-01 10:00:00', 'US/Mountain', 'US/Eastern',
                  '2011-01-01 12:00:00', id='Mountain-Eastern'),
     pytest.param('2011-01-01 10:00:00', 'US/Pacific', 'US/Central',
@@ -711,7 +711,7 @@ def test_with_tz():
     timezones to be case insensitive.
     """
     pytest.debug_func()
-    c = nldt.moment('2016-12-31 23:59:59')
+    c = nldt.moment('2016-12-31 23:59:59', tz='utc')
     # assert c(tz='est') == '2016-12-31 18:59:59'
     fmt = "%Y-%m-%d %H:%M:%S"
     # payload
