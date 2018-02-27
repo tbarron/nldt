@@ -6,11 +6,12 @@ See file LICENSING for details
 This file contains code for testing nldt functionality.
 """
 from fixtures import fx_calls_debug    # noqa
-import pytest
-import time
 import nldt
 from nldt import moment as M
 from nldt import duration as D
+import pytest
+import time
+from tzlocal import get_localzone
 
 
 # -----------------------------------------------------------------------------
