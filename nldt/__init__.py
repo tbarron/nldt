@@ -486,41 +486,54 @@ class moment(object):
             >>> then()
             '2016-12-29'
         """
+        # messages
+        no_args = 'moment() cannot take format or tz without date spec'
+        epc_no_fmt_tz = 'moment(epoch) does not take timezone or format'
+        fmt_str = 'moment() cannot take format when date is not of type str'
+        tuplen = 'need at least 6 values, no more than 9'
+        valid_calls = "\n".join(["Valid ways of calling nldt.moment():",
+                                 "    nldt.moment()",
+                                 "    nldt.moment(<epoch-seconds>)",
+                                 "    nldt.moment('YYYY-mm-dd')",
+                                 "    nldt.moment(<date-str>[, <format>])"])
+
         self.moment = None
         if dspec is None:
             if tz or fmt:
-                msg = 'moment() cannot take format or tz without date spec'
-                raise InitError(msg)
+                raise InitError(no_args)
             else:
                 self.moment = int(time.time())
+        elif any([isinstance(dspec, numbers.Number),
+                  isinstance(dspec, str) and dspec.isdigit(),
+                  isinstance(dspec, moment)
+                  ]):
+            if tz or fmt:
+                raise ValueError(epc_no_fmt_tz)
+            elif isinstance(dspec, moment):
+                self.moment = dspec.epoch()
+            else:
+                self.moment = int(dspec)
+        elif isinstance(dspec, time.struct_time):
+            if fmt:
+                raise InitError(fmt_str)
+            self.moment = self._normalize(timegm(dspec), tz=tz)
+        elif isinstance(dspec, tuple):
+            if fmt:
+                raise InitError(fmt_str)
+            if 6 <= len(dspec) <= 9:
+                self.moment = self._normalize(timegm(dspec), tz=tz)
+            else:
+                raise ValueError(tuplen)
         elif isinstance(dspec, str):
-            if dspec.isdigit():
-                when = int(dspec)
-            elif fmt:
+            if fmt:
                 fmt = fmt.replace("%F", "%Y-%m-%d")
                 fmt = fmt.replace("%T", "%H:%M:%S")
-                tm = time.strptime(dspec, fmt)
-                when = int(timegm(tm))
+                when = timegm(time.strptime(dspec, fmt))
+                self.moment = self._normalize(when, tz=tz)
             else:
-                when = self._guess_format(dspec)
-                if when is None:
-                    msg = "\n".join(["Valid ways of calling nldt.moment():",
-                                     "    nldt.moment()",
-                                     "    nldt.moment(<epoch-seconds>)",
-                                     "    nldt.moment('YYYY-mm-dd')",
-                                     "    nldt.moment(<date-str>[, <format>])"]
-                                    )
-                    raise(ValueError(msg))
-
-            offset = utc_offset(epoch=when, tz=tz) if tz else 0
-            self.moment = when - offset
-        elif fmt:
-            msg = 'moment() cannot take format when date is not of type str'
-            raise InitError(msg)
+                self.moment = self._normalize(self._guess_format(dspec), tz=tz)
         else:
-            when = self._resolve_time(dspec)
-            offset = utc_offset(epoch=when, tz=tz) if tz else 0
-            self.moment = when - offset
+            raise ValueError(valid_calls)
 
     # -------------------------------------------------------------------------
     def __call__(self, format=None, tz=None):
