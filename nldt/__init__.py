@@ -441,6 +441,26 @@ class moment(object):
 
     # -------------------------------------------------------------------------
     @classmethod
+    def default_tz(cls, value=None):
+        """
+        class moment
+
+        If *value* is None, return the currently set default timezone. If
+        *value* is not None, use it to set the default timezone for
+        interpreting inputs to the moment constructor (other than epoch values)
+        """
+        if hasattr(cls, 'deftz'):
+            rval = cls.deftz
+        else:
+            loc = get_localzone()
+            rval = loc.zone
+            cls.deftz = rval
+        if value:
+            cls.deftz = value
+        return rval
+
+    # -------------------------------------------------------------------------
+    @classmethod
     def takes_tz(cls, value):
         """
         class moment
