@@ -61,6 +61,28 @@ def test_tz_context_explicit(zname, std, soff, dst, doff):
 
 
 # -----------------------------------------------------------------------------
+# @pytest.mark.parametrize("zname", pytz.all_timezones)
+# def test_timezone(zname):
+#     """
+#     Verify that 'with timezone()' does the right thing for all timezones
+#     """
+#     pytest.debug_func()
+#     zone = pytz.timezone(zname)
+#     # now = datetime.now()
+#     # for idx, point in enumerate(zone._utc_transition_times):
+#     #     if now < point:
+#     #         when_idx = idx
+#     #         break
+#     # dt_std = zone._utc_transition_times[-1]
+#     exp_std = -1 * zone.utcoffset(datetime(2011, 1, 1)).total_seconds()
+#     exp_dst = -1 * zone.utcoffset(datetime(2011, 7, 1)).total_seconds()
+#     with nldt.timezone(zname):
+#         assert time.timezone == exp_std
+#         assert time.altzone == exp_dst
+#         assert time.daylight == (exp_std != exp_dst)
+
+
+# -----------------------------------------------------------------------------
 def test_tz_context_default():
     """
     Test default timezone context
