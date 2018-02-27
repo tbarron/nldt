@@ -42,7 +42,8 @@ def test_arg_tomorrow():
     with pytest.raises(ValueError) as err:
         # payload
         nldt.moment('tomorrow')
-    errmsg = "ValueError: Valid ways of calling nldt.moment():"
+    errmsg = ("ValueError: None of the common specifications match the "
+              "date/time string")
     assert errmsg in str(err)
 
 
@@ -57,7 +58,8 @@ def test_arg_yesterday():
     with pytest.raises(ValueError) as err:
         # payload
         nldt.moment("yesterday")
-    errmsg = "ValueError: Valid ways of calling nldt.moment():"
+    errmsg = ("ValueError: None of the common specifications match the "
+              "date/time string")
     assert errmsg in str(err)
 
 
@@ -386,8 +388,9 @@ def test_moment_gmtime():
                  id='dtup-FMT-tz'),
     pytest.param(M(14000000000), None, None, 14000000000,
                  id='epoch-FMT-TZ'),
-    pytest.param(M(14000000000), None, 'America/Atikokan', 14000018000,
-                 id='epoch-FMT-tz'),
+    pytest.param(M(14000000000), None, 'America/Atikokan',
+                 ValueError("moment(epoch) does not take timezone or format"),
+                 id='016'),
     pytest.param([], None, None,
                  ValueError('Valid ways of calling nldt.moment()'),
                  id='invalid-arg-fail'),
