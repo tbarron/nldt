@@ -100,7 +100,7 @@ def test_unanchored_noarg():
                  '2000.1231 09:07:43',
                  id='today_TZ_fmt_anchor'),
 
-    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
+    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978293263 today',
                  ftime('%Y.%m%d %H:%M:%S', local=True,
                        anchor='2000.1231 15:07:43'),
                  id='today_local_fmt_anchor'),
@@ -137,7 +137,8 @@ def test_unanchored_noarg():
                  '2001.0101 09:07:43',
                  id='tomorrow_TZ_fmt_anchor'),
 
-    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 tomorrow',
+    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w "2000.1231 15:07:43"'
+                 ' tomorrow',
                  ftime('%Y.%m%d %H:%M:%S', local=True,
                        anchor='2001.0101 15:07:43'),
                  id='tomorrow_local_fmt_anchor'),
@@ -174,7 +175,8 @@ def test_unanchored_noarg():
     pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 yesterday',
                  '2000.1230 09:07:43', id='yesterday_TZ_fmt_anchor'),
 
-    pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w 978275263 yesterday',
+    pytest.param('nldt yesterday -z local -f "%Y.%m%d %H:%M:%S" '
+                 '-w "2000.1231 15:07:43"',
                  ftime('%Y.%m%d %H:%M:%S', local=True,
                        anchor='2000.1230 15:07:43'),
                  id='yesterday_local_fmt_anchor'),
