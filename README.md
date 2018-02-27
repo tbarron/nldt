@@ -1,18 +1,75 @@
+# Natural Language Date/Time processing #
+
+## Some of the things you can do with nldt ##
+
+### Get the weekday of a given date
+
+    >>> import nldt
+    >>> date = nldt.moment("2005-08-04")
+    >>> date("%A")
+    'Thursday'
+
+### Find the first Sunday in a given month
+
+    >>> import nldt
+    >>> base = nldt.moment("2017-09-01")
+    >>> wday = int(base("%u"))
+    >>> delta = (6 - wday) * 24 * 3600
+    >>> target = base + delta
+    >>> target("%a %F")
+    'Sat 2017-09-02'
+
+### Find the date and weekday N days after or before Y
+
+    >>> import nldt
+    >>> Y = nldt.moment("1975-01-23")
+    >>> X = Y - 200 * 24 * 3600
+    >>> X("%a %F")
+    'Sun 1974-07-07'
+    >>> Z = Y + 75 * 24 * 3600
+    >>> Z("%a %F")
+    'Tue 1975-04-08'
+
+### Parse date and time related natural langugae expressions
+
+    >>> import nldt
+    >>> P = nldt.Parser()
+    >>> m = P('tomorrow')
+    >>> str(m)
+    '2018-02-28 20:58:01'
+    >>> str(P('three days ago'))
+    '2018-02-24 20:59:13'
+    >>> str(P('next week'))
+    '2018-03-05 00:00:00'
+    >>> str(P('seven days from now'))
+    '2018-03-06 21:18:07 Tue'
+
 ## Classes ##
 
 This module provides several classes intended to make date and time
 functionality easy to access and use.
 
+ * duration: Represents a length of time. Stored as a number of seconds.
+   Can be used to represent the offset between UTC and a given timezone.
+
+ * local: Holds information about the local timezone.
+
  * moment: Represents a point in time. Always stores its time reference in
    UTC. Can report its stored time in the format and/or timezone requested.
 
- * duration: Represents a length of time. Stored as a number of seconds.
-   Can be used to represent the offset between UTC and a given timezone.
+ * month: Holds information about months.
+
+ * Parser: A natural language parser that can convert natural language
+   expressions like "first week in January" or "last week" or "next year"
+   into moments or durations.
+
+### duration ###
 
  * The sum or difference of two durations is another duration. The sum of a
    moment and a duration is another moment. The difference of a moment and
    duration is another moment. The difference of two moments is a duration.
-   It makes no sense to sum two moments.
+   It is not clear what the meaning of a sum of two moments would be, so
+   that is undefined.
 
     * <duration> + <duration> -> <duration>
     * <duration> - <duration> -> <duration>
@@ -21,9 +78,21 @@ functionality easy to access and use.
     * <moment> - <moment> -> <duration>
     * <moment> + <moment> -> UNDEFINED
 
- * nldt: A natural language parser that can convert natural language
-   expressions like "first week in January" or "last week" or "next year"
-   into moments or durations.
+### local ###
+### moment ###
+
+The constructor for the moment class can take input times in several forms.
+Any input time that consists of a number or a string containing a number
+will be interpreted as an epoch time, which is always in the UTC context.
+That is, no timezone offset will be applied to such inputs.
+
+Input times represented as a time.struct_tm, a tuple of 6 to 9 numbers, or
+a date/time string will be interpreted in the default timezone unless an
+explicit timezone is provided at construction time.
+
+### month ###
+### Parser ###
+
 
 The module will also includes a command line script for command line access
 to the functionality provided by the library.
