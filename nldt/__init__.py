@@ -634,9 +634,22 @@ class moment(object):
         """
         class moment
 
-        Returns the difference of *self* and *other* as a duration
+        Returns the difference of *self* and *other*. The result type depends
+        on the type of the subtrahend:
+            moment - moment => duration
+            moment - duration => moment
+            moment - number-of-seconds => moment
+            moment - anything-else => undefined
         """
-        return duration(seconds=(self.epoch() - other.epoch()))
+        if isinstance(other, moment):
+            rval = duration(seconds=(self.epoch() - other.epoch()))
+        elif isinstance(other, numbers.Number):
+            rval = moment(self.epoch() - other)
+        elif isinstance(other, duration):
+            rval = moment(self.epoch() - other.seconds)
+        else:
+            raise ValueError("Invalid subtrahend for moment subtraction")
+        return rval
 
     # -------------------------------------------------------------------------
     def __repr__(self):
