@@ -241,7 +241,7 @@ def test_moment_asctime(inp, loc, exp):
     pytest.debug_func()
     this = nldt.moment(inp, tz='utc')
     assert this.asctime(tz=loc) == exp
-    assert this.ctime(tz=loc) == this.asctime(tz=loc)
+    assert this.ctime(tz=loc) == exp
 
 
 # -----------------------------------------------------------------------------
