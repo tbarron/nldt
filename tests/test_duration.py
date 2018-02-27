@@ -129,8 +129,8 @@ def test_dur_start_end(start, end, exp):
 @pytest.mark.parametrize("start, end, exp", [
     pytest.param(1325242800, 1325246400, duration(seconds=3600), id='001'),
 
-    pytest.param(1325242801, (2011, 12, 30, 10, 0, 1), duration(seconds=-3600),
-                 id='002'),
+    pytest.param(1325242801, (2011, 12, 30, 10, 0, 1),
+                 duration(seconds=-3600), id='002'),
     pytest.param(1325242802, (2011, 12, 30, 10, 0),
                  ValueError('need at least 6 values, no more than 9'),
                  id='003'),
