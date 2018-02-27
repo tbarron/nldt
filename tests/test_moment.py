@@ -387,7 +387,7 @@ def test_moment_gmtime():
                                 ' of type str'),
                  id='010.1'),
     pytest.param(time.struct_time((2010, 2, 28, 0, 32, 17, 0, 0, 0)),
-                 None, None, 1267335137,
+                 None, 'utc', 1267317137,
                  id='011'),
     pytest.param(time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
                  None, 'Europe/Stockholm', 1267331537, id='012'),
