@@ -302,6 +302,32 @@ def test_moment_ceiling():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("deftz, inp, exp", [
+    pytest.param("US/Eastern", "2018-01-01 12:00:00", 1514826000, id='001'),
+    pytest.param("US/Central", "2018-01-01 11:00:00", 1514826000, id='002'),
+    pytest.param("US/Mountain", "2018-01-01 10:00:00", 1514826000, id='003'),
+    pytest.param("US/Pacific", "2018-01-01 09:00:00", 1514826000, id='004'),
+    pytest.param("US/Hawaii",
+                 time.struct_time((2018, 1, 1, 7, 0, 0, 0, 0, 0)),
+                 1514826000, id='005'),
+    pytest.param("utc", "2018-01-01 17:00:00", 1514826000, id='006'),
+    pytest.param("US/Eastern", "2018-01-01 12:00:00", 1514826000, id='007'),
+    ])
+def test_moment_default_tz(deftz, inp, exp):
+    """
+    moment.default_tz() sets a default timezone to interpret input values for
+    the moment constructor
+    """
+    pytest.debug_func()
+    nldt.moment.default_tz(deftz)
+    result = M(inp)
+    assert result.epoch() == exp
+    mexp = M(exp)
+    assert result("%F %T", tz=deftz) == mexp("%F %T", tz=deftz)
+    assert nldt.moment.default_tz() == deftz
+
+
+# -----------------------------------------------------------------------------
 def test_moment_floor():
     """
     moment().floor(*unit*) should return the lowest second in the indicated
