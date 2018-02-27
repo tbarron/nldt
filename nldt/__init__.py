@@ -538,12 +538,20 @@ class moment(object):
         elif isinstance(dspec, time.struct_time):
             if fmt:
                 raise InitError(fmt_str)
-            self.moment = self._normalize(timegm(dspec), tz=tz)
+            if tz:
+                self.moment = self._normalize(timegm(dspec), tz=tz)
+            else:
+                self.moment = self._normalize(timegm(dspec),
+                                              tz=self.__class__.deftz)
         elif isinstance(dspec, tuple):
             if fmt:
                 raise InitError(fmt_str)
             if 6 <= len(dspec) <= 9:
-                self.moment = self._normalize(timegm(dspec), tz=tz)
+                if tz:
+                    self.moment = self._normalize(timegm(dspec), tz=tz)
+                else:
+                    self.moment = self._normalize(timegm(dspec),
+                                                  tz=self.__class__.deftz)
             else:
                 raise ValueError(tuplen)
         elif isinstance(dspec, str):
@@ -551,9 +559,17 @@ class moment(object):
                 fmt = fmt.replace("%F", "%Y-%m-%d")
                 fmt = fmt.replace("%T", "%H:%M:%S")
                 when = timegm(time.strptime(dspec, fmt))
-                self.moment = self._normalize(when, tz=tz)
+                if tz:
+                    self.moment = self._normalize(when, tz=tz)
+                else:
+                    self.moment = self._normalize(when,
+                                                  tz=self.__class__.deftz)
+            elif tz:
+                self.moment = self._normalize(self._guess_format(dspec),
+                                              tz=tz)
             else:
-                self.moment = self._normalize(self._guess_format(dspec), tz=tz)
+                self.moment = self._normalize(self._guess_format(dspec),
+                                              tz=self.__class__.deftz)
         else:
             raise ValueError(valid_calls)
 
