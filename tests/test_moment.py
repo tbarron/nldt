@@ -733,6 +733,26 @@ def test_str():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("marg, exp", [
+    (1234123243, False),
+    ('1234123243', False),
+    (M(1234123243), False),
+    (time.struct_time((2018, 1, 1, 0, 0, 0, 0, 0, 0)), True),
+    ((2018, 1, 1, 0, 0, 0, 0, 0, 0), True),
+    ((2018, 1, 1, 0, 0, 0, 0, 0), True),
+    ((2018, 1, 1, 0, 0, 0, 0), True),
+    ((2018, 1, 1, 0, 0, 0), True),
+    ("2018-01-01 00:00:00", True),
+    ])
+def test_takes_tz(marg, exp):
+    """
+    Verify that nldt.moment.takes_tz() behaves as expected
+    """
+    pytest.debug_func()
+    assert nldt.moment.takes_tz(marg) == exp
+
+
+# -----------------------------------------------------------------------------
 def test_with_format():
     """
     If a format is specified, the spec must match
