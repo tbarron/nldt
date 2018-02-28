@@ -40,6 +40,27 @@ def test_clock():
 
 
 # -----------------------------------------------------------------------------
+def test_tz_context_keyerr():
+    """
+    Test for 'with nldt.tz_context(ZONE)' when 'TZ' is not in os.environ (so
+    pre-fix, 'del os.environ['TZ']' throws a KeyError)
+    """
+    pytest.debug_func()
+    tzorig = None
+    if 'TZ' in os.environ:
+        tzorig = os.getenv('TZ')
+
+    with nldt.timezone('US/Pacific'):
+        then = M("2000-12-31 15:59:59", tz='US/Pacific')
+        assert then("%F %T") == "2000-12-31 23:59:59"
+
+    if tzorig:
+        os.environ['TZ'] = tzorig
+    elif 'TZ' in os.environ:
+        del os.environ['TZ']
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
     pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='US/Eastern'),
     pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='US/Central'),
