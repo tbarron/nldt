@@ -12,6 +12,8 @@ from nldt import duration
 import pytest
 import time
 
+moment.default_tz('utc')
+
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("start, end, exp", [
