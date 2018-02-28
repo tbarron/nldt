@@ -30,7 +30,7 @@ moment.default_tz('utc')
                  time.struct_time((2011, 12, 29, 11, 0, 4, 0, 0, 0)),
                  duration(days=-1), id='007'),
 
-    pytest.param(1325242805, moment('2011-12-30 11:59:59', tz='utc'),
+    pytest.param(1325242805, moment('2011-12-30 11:59:59'),
                  duration(minutes=59, seconds=54), id='008'),
 
     pytest.param(1325242806, '2011-12-31',
@@ -48,7 +48,7 @@ moment.default_tz('utc')
                  duration(hours=23, minutes=59, seconds=58), id='012'),
 
     pytest.param((2010, 1, 1, 0, 0, 3),
-                 moment("2010-01-04 00:00:00", tz='utc'),
+                 moment("2010-01-04 00:00:00"),
                  duration(days=2, hours=23, minutes=59, seconds=57),
                  id='013'),
 
@@ -67,7 +67,7 @@ moment.default_tz('utc')
                  duration(days=3), id='017'),
 
     pytest.param(time.struct_time((2012, 1, 1, 0, 0, 3, 0, 0, 0)),
-                 moment("2012-02-01 00:00:03", tz='utc'),
+                 moment("2012-02-01 00:00:03"),
                  duration(days=31),
                  id='018'),
 
@@ -75,22 +75,22 @@ moment.default_tz('utc')
                  "2012-01-02 07:37:42", duration(seconds=113858), id='019'),
 
     # -------------------
-    pytest.param(moment("2013-01-01", tz='utc'), 1357005600,
+    pytest.param(moment("2013-01-01"), 1357005600,
                  duration(seconds=7200), id='020'),
 
-    pytest.param(moment("2013-01-01", tz='utc'), (2013, 1, 1, 2, 0, 1),
+    pytest.param(moment("2013-01-01"), (2013, 1, 1, 2, 0, 1),
                  duration(seconds=7201), id='021'),
 
-    pytest.param(moment("2013-01-01", tz='utc'),
+    pytest.param(moment("2013-01-01"),
                  time.struct_time((2013, 1, 1, 2, 0, 2, 0, 0, 0)),
                  duration(seconds=7202), id='022'),
 
-    pytest.param(moment("2013-01-01", tz='utc'),
-                 moment("2013-01-01 02:00:03", tz='utc'),
+    pytest.param(moment("2013-01-01"),
+                 moment("2013-01-01 02:00:03"),
                  duration(seconds=7203),
                  id='023'),
 
-    pytest.param(moment("2013-01-01", tz='utc'), "2013-01-01 02:00:04",
+    pytest.param(moment("2013-01-01"), "2013-01-01 02:00:04",
                  duration(seconds=7204), id='024'),
 
     # -------------------
@@ -103,7 +103,7 @@ moment.default_tz('utc')
                  time.struct_time((2014, 1, 1, 5, 0, 2, 0, 0, 0)),
                  duration(seconds=18002), id='027'),
 
-    pytest.param("2014-01-01", moment("2014-01-01 05:00:03", tz='utc'),
+    pytest.param("2014-01-01", moment("2014-01-01 05:00:03"),
                  duration(seconds=18003), id='028'),
 
     pytest.param("2014-01-01", "2014-01-01 05:00:04", duration(seconds=18004),
@@ -144,7 +144,7 @@ def test_dur_start_end(start, end, exp):
                  time.struct_time((2011, 12, 29, 11, 0, 4, 0, 0, 0)),
                  duration(days=-1), id='005'),
 
-    pytest.param(1325242805, moment('2011-12-30 11:59:59', tz='utc'),
+    pytest.param(1325242805, moment('2011-12-30 11:59:59'),
                  duration(minutes=59, seconds=54), id='006'),
 
     pytest.param(1325242806, '2011-12-31',
@@ -162,7 +162,7 @@ def test_dur_start_end(start, end, exp):
                  duration(hours=23, minutes=59, seconds=58), id='010'),
 
     pytest.param((2010, 1, 1, 0, 0, 3),
-                 moment("2010-01-04 00:00:00", tz='utc'),
+                 moment("2010-01-04 00:00:00"),
                  duration(days=2, hours=23, minutes=59, seconds=57), id='011'),
 
     pytest.param((2010, 1, 1, 0, 0, 4), "2010-01-01 00:17:00",
@@ -180,28 +180,28 @@ def test_dur_start_end(start, end, exp):
                  duration(days=3), id='015'),
 
     pytest.param(time.struct_time((2012, 1, 1, 0, 0, 3, 0, 0, 0)),
-                 moment("2012-02-01 00:00:03", tz='utc'),
+                 moment("2012-02-01 00:00:03"),
                  duration(days=31), id='016'),
 
     pytest.param(time.struct_time((2012, 1, 1, 0, 0, 4, 0, 0, 0)),
                  "2012-01-02 07:37:42", duration(seconds=113858), id='017'),
 
     # -------------------
-    pytest.param(moment("2013-01-01", tz='utc'), 1357005600,
+    pytest.param(moment("2013-01-01"), 1357005600,
                  duration(seconds=7200), id='018'),
 
-    pytest.param(moment("2013-01-01", tz='utc'), (2013, 1, 1, 2, 0, 1),
+    pytest.param(moment("2013-01-01"), (2013, 1, 1, 2, 0, 1),
                  duration(seconds=7201), id='019'),
 
-    pytest.param(moment("2013-01-01", tz='utc'),
+    pytest.param(moment("2013-01-01"),
                  time.struct_time((2013, 1, 1, 2, 0, 2, 0, 0, 0)),
                  duration(seconds=7202), id='020'),
 
-    pytest.param(moment("2013-01-01", tz='utc'),
-                 moment("2013-01-01 02:00:03", tz='utc'),
+    pytest.param(moment("2013-01-01"),
+                 moment("2013-01-01 02:00:03"),
                  duration(seconds=7203), id='021'),
 
-    pytest.param(moment("2013-01-01", tz='utc'), "2013-01-01 02:00:04",
+    pytest.param(moment("2013-01-01"), "2013-01-01 02:00:04",
                  duration(seconds=7204), id='022'),
 
     # -------------------
@@ -214,7 +214,7 @@ def test_dur_start_end(start, end, exp):
                  time.struct_time((2014, 1, 1, 5, 0, 2, 0, 0, 0)),
                  duration(seconds=18002), id='025'),
 
-    pytest.param("2014-01-01", moment("2014-01-01 05:00:03", tz='utc'),
+    pytest.param("2014-01-01", moment("2014-01-01 05:00:03"),
                  duration(seconds=18003), id='026'),
 
     pytest.param("2014-01-01", "2014-01-01 05:00:04", duration(seconds=18004),
@@ -224,19 +224,16 @@ def test_dur_moment_diff(start, end, exp):
     """
     Test creating a duration by difference of moments
     """
-    stz = 'utc' if moment.takes_tz(start) else None
-    etz = 'utc' if moment.takes_tz(end) else None
     pytest.debug_func()
-    with nldt.timezone('utc'):
-        if isinstance(exp, Exception):
-            with pytest.raises(type(exp)) as err:
-                # payload
-                moment(end, tz=etz) - moment(start, tz=stz)
-            assert str(exp) == str(err.value)
-        else:
+    if isinstance(exp, Exception):
+        with pytest.raises(type(exp)) as err:
             # payload
-            result = moment(end, tz=etz) - moment(start, tz=stz)
-            assert exp == result
+            moment(end) - moment(start)
+        assert str(exp) == str(err.value)
+    else:
+        # payload
+        result = moment(end) - moment(start)
+        assert exp == result
 
 
 # -----------------------------------------------------------------------------

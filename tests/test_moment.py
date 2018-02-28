@@ -23,7 +23,7 @@ def test_ambig():
     """
     pytest.debug_func()
     # payload
-    iso = nldt.moment('01-02-03', tz='utc')
+    iso = nldt.moment('01-02-03')
     assert iso() == '2001-02-03'
     # payload
     uso = nldt.moment('01-02-03', '%m-%d-%y')
@@ -182,7 +182,7 @@ def test_intuit(inp, fmt, exp):
     Try to guess popular time formats
     """
     pytest.debug_func()
-    later = nldt.moment(inp, tz='utc')
+    later = nldt.moment(inp)
     # payload
     assert later(fmt) == exp
 
@@ -240,7 +240,7 @@ def test_moment_asctime(inp, loc, exp):
     timezone.
     """
     pytest.debug_func()
-    this = nldt.moment(inp, tz='utc')
+    this = nldt.moment(inp)
     assert this.asctime(tz=loc) == exp
     assert this.ctime(tz=loc) == exp
 
@@ -369,13 +369,13 @@ def test_moment_gmtime():
                  id='003'),
     pytest.param("2018-01-01 00:00:00", "%F %T", "US/Eastern", 1514782800,
                  id='004'),
-    pytest.param("2018-01-01 00:00:00", "%F %T", 'utc', 1514764800,
+    pytest.param("2018-01-01 00:00:00", "%F %T", None, 1514764800,
                  id='005'),
     pytest.param("2018.0101 01:02:03", None, "Pacific/Truk", 1514732523,
                  id='006'),
-    pytest.param("2018.0704 09:23:57", None, 'utc', 1530696237,
+    pytest.param("2018.0704 09:23:57", None, None, 1530696237,
                  id='007'),
-    pytest.param((2017, 1, 1, 0, 0, 0), "%F %T", 'utc',
+    pytest.param((2017, 1, 1, 0, 0, 0), "%F %T", None,
                  nldt.InitError("moment() cannot take format when date is not "
                                 "of type str"), id='008'),
     # pytest.param(1530696573, None, 'America/Argentina/Mendoza', 1530707373,
@@ -388,11 +388,11 @@ def test_moment_gmtime():
                                 ' of type str'),
                  id='010.1'),
     pytest.param(time.struct_time((2010, 2, 28, 0, 32, 17, 0, 0, 0)),
-                 None, 'utc', 1267317137,
+                 None, None, 1267317137,
                  id='011'),
     pytest.param(time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
                  None, 'Europe/Stockholm', 1267331537, id='012'),
-    pytest.param((2012, 2, 29, 2, 47, 19), None, None, 1330501639,
+    pytest.param((2012, 2, 29, 2, 47, 19), None, None, 1330483639,
                  id='013'),
     pytest.param((2012, 2, 29, 7, 47, 19), None, 'Asia/Chongqing', 1330472839,
                  id='014'),
