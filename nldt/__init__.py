@@ -1661,7 +1661,7 @@ def timezone(zone=None):
 
     if tzorig:
         os.environ['TZ'] = tzorig
-    else:
+    elif 'TZ' in os.environ:
         del os.environ['TZ']
     time.tzset()
 
