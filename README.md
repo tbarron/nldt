@@ -90,6 +90,65 @@ Input times represented as a time.struct_tm, a tuple of 6 to 9 numbers, or
 a date/time string will be interpreted in the default timezone unless an
 explicit timezone is provided at construction time.
 
+#### class moment
+
+##### __init__(self, dt=None, fmt=None, itz=None)
+
+The moment constructor takes the following (optional) arguments
+
+ * dt: A date/time specification, which may be in any of a number of forms:
+    * a number
+    * a string containing all numeric digits
+    * an already instantiated moment
+    * a time.struct_time structure
+    * a tuple containing between 6 and 9 numbers
+    * a string containing a date/time specification in a recognized format
+ * fmt: The format to use in interpreting a dt string
+ * itz: The timezone used in interpreting the input time in some cases (see
+   below)
+
+A moment's internal time is always stored in UTC. Epoch times defined as
+the number of seconds since the epoch always indicate a UTC time. If dt is
+None, the current UTC time will be stored in the moment.
+
+If dt is a number, a numeric string, or an already instantiated moment, the
+new moment will store the UTC epoch time represented by the number, the number
+represented by the string, or value from the already instantiated moment.
+In all these cases, no timezone adjustment is made.
+
+If dt is a time.struct_time, a tuple, or a date/time string, by default the
+indicated time will be interpreted in terms of the local time zone and
+adjusted to UTC before being stored in the moment. So, for example, if the
+input time is "2011-01-01 00:00:00" and the local timezone is US/Eastern,
+the moment will store 1293858000, which represents UTC time "2011-01-01
+05:00:00".
+
+The input timezone can be changed by passing the itz argument or by calling
+moment.default_tz() before object instantiation.
+
+##### default_tz(cls, itz=None)
+
+This class method (i.e., it must be called as 'nldt.moment.default_tz()',
+not as a method on an object) sets the default timezone for interpreting
+input times when instantianting moments.
+
+##### takes_tz(cls, dt)
+
+This class method returns True if a timezone argument is valid when passing
+dt to the moment constructor (i.e., dt is NOT a number, numeric string, or
+already instantiated moment).
+
+##### __call__(self, format=None, otz=None)
+
+This method is normally called by appending parentheses to an instantiated
+moment object. For example,
+
+    import nlde
+    q = nldt.moment()    # record the current time
+    q("%F %T")           # report current time as YYYY-mm-dd HH:MM:SS
+    q("%F %T", tz='US/Pacific')   # report current time for Pacific timezone
+
+
 ### month ###
 ### Parser ###
 
