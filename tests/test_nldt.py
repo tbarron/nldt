@@ -62,11 +62,11 @@ def test_tz_context_keyerr():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
-    pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='US/Eastern'),
-    pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='US/Central'),
-    pytest.param('US/Mountain', 'MST', 25200, 'MDT', 21600, id='US/Mountain'),
-    pytest.param('US/Pacific', 'PST', 28800, 'PDT', 25200, id='US/Pacific'),
-    pytest.param('Asia/Jakarta', 'WIB', -25200, 'WIB', -25200, id='Jakarta'),
+    pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='001'),
+    pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='002'),
+    pytest.param('US/Mountain', 'MST', 25200, 'MDT', 21600, id='003'),
+    pytest.param('US/Pacific', 'PST', 28800, 'PDT', 25200, id='004'),
+    pytest.param('Asia/Jakarta', 'WIB', -25200, 'WIB', -25200, id='005'),
     ])
 def test_tz_context_explicit(zname, std, soff, dst, doff):
     """
@@ -157,10 +157,10 @@ def test_indexable_abc():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
-    ('US/Eastern', 'EST', 18000, 'EDT', 14400),
-    ('US/Central', 'CST', 21600, 'CDT', 18000),
-    ('US/Mountain', 'MST', 25200, 'MDT', 21600),
-    ('US/Pacific', 'PST', 28800, 'PDT', 25200),
+    pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='001'),
+    pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='002'),
+    pytest.param('US/Mountain', 'MST', 25200, 'MDT', 21600, id='003'),
+    pytest.param('US/Pacific', 'PST', 28800, 'PDT', 25200, id='004'),
     ])
 def test_local(zname, std, soff, dst, doff):
     """
@@ -712,54 +712,53 @@ def nl_oracle(spec):
 
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp",
-                         [
-                          ('last week'),
-                          ('next year'),
-                          ('next monday'),
-                          ('next tuesday'),
-                          ('next wednesday'),
-                          ('next thursday'),
-                          ('next friday'),
-                          ('next saturday'),
-                          ('next sunday'),
-                          ('next week'),
-                          ('next month'),
-                          ('last monday'),
-                          ('last tuesday'),
-                          ('last wednesday'),
-                          ('last thursday'),
-                          ('last friday'),
-                          ('last saturday'),
-                          ('last sunday'),
-                          ('last month'),
-                          ('last year'),
-                          ('today'),
-                          ('tomorrow'),
-                          ('yesterday'),
-                          ('monday week'),
-                          ('tuesday week'),
-                          ('wednesday week'),
-                          ('thursday week'),
-                          ('friday week'),
-                          ('saturday week'),
-                          ('sunday week'),
-                          ('end of last week'),
-                          ('end of the week'),
-                          ('beginning of next week'),
-                          ('first week in January'),
-                          ('first week in June'),
-                          ('week after next'),
-                          ('week before last'),
-                          ('a week ago'),
-                          ('three weeks from now'),
-                          ('two weeks ago'),
-                          ('a week earlier'),
-                          ('a week later'),
-                          # ('fourth day of this week'),
-                          # ('fifth day of last week'),
-                          # ('beginning of this week'),
-                          ])
+@pytest.mark.parametrize("inp", [
+    pytest.param('last week', id='001'),
+    pytest.param('next year', id='002'),
+    pytest.param('next monday', id='003'),
+    pytest.param('next tuesday', id='004'),
+    pytest.param('next wednesday', id='005'),
+    pytest.param('next thursday', id='006'),
+    pytest.param('next friday', id='007'),
+    pytest.param('next saturday', id='008'),
+    pytest.param('next sunday', id='009'),
+    pytest.param('next week', id='010'),
+    pytest.param('next month', id='011'),
+    pytest.param('last monday', id='012'),
+    pytest.param('last tuesday', id='013'),
+    pytest.param('last wednesday', id='014'),
+    pytest.param('last thursday', id='015'),
+    pytest.param('last friday', id='016'),
+    pytest.param('last saturday', id='017'),
+    pytest.param('last sunday', id='018'),
+    pytest.param('last month', id='019'),
+    pytest.param('last year', id='020'),
+    pytest.param('today', id='021'),
+    pytest.param('tomorrow', id='022'),
+    pytest.param('yesterday', id='023'),
+    pytest.param('monday week', id='024'),
+    pytest.param('tuesday week', id='025'),
+    pytest.param('wednesday week', id='026'),
+    pytest.param('thursday week', id='027'),
+    pytest.param('friday week', id='028'),
+    pytest.param('saturday week', id='029'),
+    pytest.param('sunday week', id='030'),
+    pytest.param('end of last week', id='031'),
+    pytest.param('end of the week', id='032'),
+    pytest.param('beginning of next week', id='033'),
+    pytest.param('first week in January', id='034'),
+    pytest.param('first week in June', id='035'),
+    pytest.param('week after next', id='036'),
+    pytest.param('week before last', id='037'),
+    pytest.param('a week ago', id='038'),
+    pytest.param('three weeks from now', id='039'),
+    pytest.param('two weeks ago', id='040'),
+    pytest.param('a week earlier', id='041'),
+    pytest.param('a week later', id='042'),
+    # pytest.param('fourth day of this week', id='043'),
+    # pytest.param('fifth day of last week', id='044'),
+    # pytest.param('beginning of this week', id='045'),
+    ])
 def test_natural_language(inp):
     pytest.debug_func()
     prs = nldt.Parser()
@@ -794,23 +793,23 @@ def test_from_now_except():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("month, year, exp", [
-    (1, None, 31),
-    (2, 2017, 28),
-    (2, 2016, 29),
-    (2, 2000, 29),
-    (2, 1900, 28),
-    (3, 2018, 31),
-    (4, None, 30),
+    pytest.param(1, None, 31, id='001'),
+    pytest.param(2, 2017, 28, id='002'),
+    pytest.param(2, 2016, 29, id='003'),
+    pytest.param(2, 2000, 29, id='004'),
+    pytest.param(2, 1900, 28, id='005'),
+    pytest.param(3, 2018, 31, id='006'),
+    pytest.param(4, None, 30, id='007'),
 
-    (5, None, 31),
-    (6, None, 30),
-    (7, None, 31),
-    (8, None, 31),
-    (9, None, 30),
-    (10, None, 31),
-    (11, None, 30),
-    (12, None, 31),
-    pytest.param(19, None, "Could not indexify", id='indexify_fail'),
+    pytest.param(5, None, 31, id='008'),
+    pytest.param(6, None, 30, id='009'),
+    pytest.param(7, None, 31, id='010'),
+    pytest.param(8, None, 31, id='011'),
+    pytest.param(9, None, 30, id='012'),
+    pytest.param(10, None, 31, id='013'),
+    pytest.param(11, None, 30, id='014'),
+    pytest.param(12, None, 31, id='015'),
+    pytest.param(19, None, "Could not indexify", id='016'),
     ])
 def test_month_days(month, year, exp):
     """
@@ -872,16 +871,15 @@ def test_match_monthnames():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
-    pytest.param("No weekday name in this text", None, id='none'),
-    pytest.param("Can you find the wednesday?", "wednesday", id='wed'),
-    pytest.param("Here it is monday again", "monday", id='mon'),
-    pytest.param("tuesday is a fine day", "tuesday", id='tue'),
-    pytest.param("...Saturday we'll go to the store", 'saturday', id='sat'),
-    pytest.param("Which day precedes (Friday) and which follows?",
-                 'friday',
-                 id='friday'),
-    pytest.param("Still need a Thursday test", 'thursday', id='thu'),
-    pytest.param("On Sunday all the tests are finished", 'sunday', id='sun'),
+    pytest.param("No weekday name in this text", None, id='001'),
+    pytest.param("Can you find the wednesday?", "wednesday", id='002'),
+    pytest.param("Here it is monday again", "monday", id='003'),
+    pytest.param("tuesday is a fine day", "tuesday", id='004'),
+    pytest.param("...Saturday we'll go to the store", 'saturday', id='005'),
+    pytest.param("Which day precedes (Friday) and which follows?", 'friday',
+                 id='006'),
+    pytest.param("Still need a Thursday test", 'thursday', id='007'),
+    pytest.param("On Sunday all the tests are finished", 'sunday', id='008'),
     ])
 def test_find_day(inp, exp):
     """
@@ -893,38 +891,39 @@ def test_find_day(inp, exp):
 
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp, exp", [(0, "monday"),
-                                      ("0", "monday"),
-                                      ("mon", "monday"),
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param(0, "monday", id='001'),
+    pytest.param("0", "monday", id='002'),
+    pytest.param("mon", "monday", id='003'),
 
-                                      (1, "tuesday"),
-                                      ("1", "tuesday"),
-                                      ("tue", "tuesday"),
+    pytest.param(1, "tuesday", id='004'),
+    pytest.param("1", "tuesday", id='005'),
+    pytest.param("tue", "tuesday", id='006'),
 
-                                      (2, "wednesday"),
-                                      ("2", "wednesday"),
-                                      ("wed", "wednesday"),
+    pytest.param(2, "wednesday", id='007'),
+    pytest.param("2", "wednesday", id='008'),
+    pytest.param("wed", "wednesday", id='009'),
 
-                                      (3, "thursday"),
-                                      ("3", "thursday"),
-                                      ("thu", "thursday"),
+    pytest.param(3, "thursday", id='010'),
+    pytest.param("3", "thursday", id='011'),
+    pytest.param("thu", "thursday", id='012'),
 
-                                      (4, "friday"),
-                                      ("4", "friday"),
-                                      ("fri", "friday"),
+    pytest.param(4, "friday", id='013'),
+    pytest.param("4", "friday", id='014'),
+    pytest.param("fri", "friday", id='015'),
 
-                                      (5, "saturday"),
-                                      ("5", "saturday"),
-                                      ("sat", "saturday"),
+    pytest.param(5, "saturday", id='016'),
+    pytest.param("5", "saturday", id='017'),
+    pytest.param("sat", "saturday", id='018'),
 
-                                      (6, "sunday"),
-                                      ("6", "sunday"),
-                                      ("sun", "sunday"),
+    pytest.param(6, "sunday", id='019'),
+    pytest.param("6", "sunday", id='020'),
+    pytest.param("sun", "sunday", id='021'),
 
-                                      (13, "except"),
-                                      ("13", "except"),
-                                      ("nosuch", "except"),
-                                      ])
+    pytest.param(13, "except", id='022'),
+    pytest.param("13", "except", id='023'),
+    pytest.param("nosuch", "except", id='024'),
+    ])
 def test_week_fullname(inp, exp):
     """
     Test week.fullname
@@ -981,22 +980,17 @@ def test_prep_init():
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
     pytest.param("first of thirteenth", ("of", ["first", "of", "thirteenth"]),
-                 id='thirteenth'),
+                 id='001'),
     pytest.param("last week in January",
-                 ("in", ["last week", "in", "January"]),
-                 id='last-week-in'),
+                 ("in", ["last week", "in", "January"]), id='002'),
     pytest.param("three weeks from yesterday",
-                 ("from", ["three weeks", "from", "yesterday"]),
-                 id='three-weeks'),
+                 ("from", ["three weeks", "from", "yesterday"]), id='003'),
     pytest.param("five days after tomorrow",
-                 ("after", ["five days", "after", "tomorrow"]),
-                 id='five-days'),
+                 ("after", ["five days", "after", "tomorrow"]), id='004'),
     pytest.param("day before tomorrow",
-                 ("before", ["day", "before", "tomorrow"]),
-                 id='day-before'),
+                 ("before", ["day", "before", "tomorrow"]), id='005'),
     pytest.param("one two three four five",
-                 (None, ["one two three four five"]),
-                 id='ordinals'),
+                 (None, ["one two three four five"]), id='006'),
     ])
 def test_prep_split(inp, exp):
     """
@@ -1021,12 +1015,12 @@ def test_prep_are_in():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
-    ("of", 1),
-    ("in", 1),
-    ("from", 1),
-    ("after", 1),
-    ("before", -1),
-    ("foobar", ""),
+    pytest.param("of", 1, id='001'),
+    pytest.param("in", 1, id='002'),
+    pytest.param("from", 1, id='003'),
+    pytest.param("after", 1, id='004'),
+    pytest.param("before", -1, id='005'),
+    pytest.param("foobar", "", id='006'),
     ])
 def test_prep_direction(inp, exp):
     """

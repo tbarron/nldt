@@ -14,10 +14,10 @@ import pytest
 @pytest.mark.parametrize("inp, exp", [
     pytest.param('   Twas brillig and the slithe toves   ',
                  ('Twas', 'brillig and the slithe toves'),
-                 id='twas_brillig'),
-    pytest.param('  humpty     ', ('humpty', None), id='humpty'),
-    pytest.param('     ', (None, None), id='empty'),
-    (['not a string'], (['not a string'], None)),
+                 id='001'),
+    pytest.param('  humpty     ', ('humpty', None), id='002'),
+    pytest.param('     ', (None, None), id='003'),
+    pytest.param(['not a string'], (['not a string'], None), id='004'),
     ])
 def test_tokenize(inp, exp):
     """
@@ -51,17 +51,18 @@ def test_scale():
 
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp, exp", [('one', [1]),
-                                      ('two', [2]),
-                                      ('three', [3]),
-                                      ('four', [4]),
-                                      ('five', [5]),
-                                      ('six', [6]),
-                                      ('seven', [7]),
-                                      ('eight', [8]),
-                                      ('nine', [9]),
-                                      ('thirty-two', [32]),
-                                      ])
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param('one', [1], id='001'),
+    pytest.param('two', [2], id='002'),
+    pytest.param('three', [3], id='003'),
+    pytest.param('four', [4], id='004'),
+    pytest.param('five', [5], id='005'),
+    pytest.param('six', [6], id='006'),
+    pytest.param('seven', [7], id='007'),
+    pytest.param('eight', [8], id='008'),
+    pytest.param('nine', [9], id='009'),
+    pytest.param('thirty-two', [32], id='010'),
+    ])
 def test_digits(inp, exp):
     """
     single digits
@@ -72,18 +73,17 @@ def test_digits(inp, exp):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
-    pytest.param('only three weeks from now',
-                 ['only', 3, 'weeks from now'],
-                 id='three_weeks'),
-    ('seventy-five', [75]),
+    pytest.param('only three weeks from now', ['only', 3, 'weeks from now'],
+                 id='001'),
+    pytest.param('seventy-five', [75], id='002'),
     pytest.param('seventy-six trombones led the big parade',
                  [76, 'trombones led the big parade'],
-                 id='trombones'),
+                 id='003'),
     pytest.param("ten o'clock on june third", [10, "o'clock on june", 3],
-                 id='ten-oclock'),
+                 id='004'),
     pytest.param('three weeks before the fifth of may seven years ago',
                  [3, 'weeks before the', 5, 'of may', 7, 'years ago'],
-                 id='three_weeks'),
+                 id='005'),
     ])
 def test_time_expr(inp, exp):
     """
