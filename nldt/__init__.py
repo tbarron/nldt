@@ -831,7 +831,7 @@ class moment(object):
             time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
             tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
         """
-        with timezone(tz):
+        with tz_context(tz):
             rval = time.localtime(self.moment)
         return rval
 
@@ -1648,7 +1648,7 @@ def timegm(*args):
 
 # -----------------------------------------------------------------------------
 @contextlib.contextmanager
-def timezone(zone=None):
+def tz_context(zone=None):
     """
     This context manager sets the local timezone to *zone* during the yield and
     back to the original setting afterward

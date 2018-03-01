@@ -50,7 +50,7 @@ def test_tz_context_keyerr():
     if 'TZ' in os.environ:
         tzorig = os.getenv('TZ')
 
-    with nldt.timezone('US/Pacific'):
+    with nldt.tz_context('US/Pacific'):
         then = M("2000-12-31 15:59:59", itz='US/Pacific')
         assert then("%F %T") == "2000-12-31 23:59:59"
 
@@ -70,11 +70,11 @@ def test_tz_context_keyerr():
     ])
 def test_tz_context_explicit(zname, std, soff, dst, doff):
     """
-    Verify that 'with nldt.timezone(FOOBAR)' creates a context with FOOBAR as
+    Verify that 'with nldt.tz_context(FOOBAR)' creates a context with FOOBAR as
     the local timezone.
     """
     pytest.debug_func()
-    with nldt.timezone(zname):
+    with nldt.tz_context(zname):
         assert time.timezone == soff
         assert time.altzone == doff
         assert time.daylight == (soff != doff)
@@ -83,9 +83,9 @@ def test_tz_context_explicit(zname, std, soff, dst, doff):
 
 # -----------------------------------------------------------------------------
 # @pytest.mark.parametrize("zname", pytz.all_timezones)
-# def test_timezone(zname):
+# def test_tz_context(zname):
 #     """
-#     Verify that 'with timezone()' does the right thing for all timezones
+#     Verify that 'with tz_context()' does the right thing for all timezones
 #     """
 #     pytest.debug_func()
 #     zone = pytz.timezone(zname)
@@ -97,7 +97,7 @@ def test_tz_context_explicit(zname, std, soff, dst, doff):
 #     # dt_std = zone._utc_transition_times[-1]
 #     exp_std = -1 * zone.utcoffset(datetime(2011, 1, 1)).total_seconds()
 #     exp_dst = -1 * zone.utcoffset(datetime(2011, 7, 1)).total_seconds()
-#     with nldt.timezone(zname):
+#     with nldt.tz_context(zname):
 #         assert time.timezone == exp_std
 #         assert time.altzone == exp_dst
 #         assert time.daylight == (exp_std != exp_dst)
@@ -116,7 +116,7 @@ def test_tz_context_default():
     dst_dt = datetime(2011, 7, 1)
     dst_offset = lz.utcoffset(dst_dt).total_seconds()
     dst_name = lz.tzname(dst_dt)
-    with nldt.timezone():
+    with nldt.tz_context():
         assert time.timezone == -1 * std_offset
         assert time.altzone == -1 * dst_offset
         assert time.daylight == (std_offset != dst_offset)
@@ -129,12 +129,12 @@ def test_tz_context_nested():
     Test nested timezone contexts
     """
     pytest.debug_func()
-    with nldt.timezone('Pacific/Honolulu'):
+    with nldt.tz_context('Pacific/Honolulu'):
         assert time.timezone == 36000
         assert time.altzone == 36000
         assert time.daylight == 0
         assert time.tzname == ('HST', 'HST')
-        with nldt.timezone('US/Mountain'):
+        with nldt.tz_context('US/Mountain'):
             assert time.timezone == 25200
             assert time.altzone == 21600
             assert time.daylight == 1
