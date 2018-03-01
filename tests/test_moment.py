@@ -539,7 +539,7 @@ def test_moment_tz(zone):
     adjusted = now.epoch() + nldt.utc_offset(tz=zone)
     expected = time.strftime("%F %T", time.gmtime(adjusted))
     # payload
-    actual = now("%F %T", tz=zone)
+    actual = now("%F %T", otz=zone)
     assert actual == expected
 
 
@@ -716,7 +716,7 @@ def test_local():
     c = nldt.moment()
     fmt = "%Y.%m%d %H:%M:%S"
     # payload
-    assert c(fmt, tz='local') == time.strftime(fmt)
+    assert c(fmt, otz='local') == time.strftime(fmt)
 
 
 # -----------------------------------------------------------------------------
@@ -778,15 +778,15 @@ def test_with_tz():
     # assert c(tz='est') == '2016-12-31 18:59:59'
     fmt = "%Y-%m-%d %H:%M:%S"
     # payload
-    assert c(fmt, tz='US/Eastern') == '2016-12-31 18:59:59'
+    assert c(fmt, otz='US/Eastern') == '2016-12-31 18:59:59'
     # payload
-    assert c(fmt, tz='US/Central') == '2016-12-31 17:59:59'
+    assert c(fmt, otz='US/Central') == '2016-12-31 17:59:59'
     # payload
-    assert c(fmt, tz='US/Mountain') == '2016-12-31 16:59:59'
+    assert c(fmt, otz='US/Mountain') == '2016-12-31 16:59:59'
     # payload
-    assert c(fmt, tz='US/Pacific') == '2016-12-31 15:59:59'
+    assert c(fmt, otz='US/Pacific') == '2016-12-31 15:59:59'
     # payload
-    assert c(fmt, tz='US/Hawaii') == '2016-12-31 13:59:59'
+    assert c(fmt, otz='US/Hawaii') == '2016-12-31 13:59:59'
 
 
 # -----------------------------------------------------------------------------
@@ -823,5 +823,5 @@ def test_moment_default_tz(deftz, inp, exp):
     result = M(inp)
     assert result.epoch() == exp
     mexp = M(exp)
-    assert result("%F %T", tz=deftz) == mexp("%F %T", tz=deftz)
+    assert result("%F %T", otz=deftz) == mexp("%F %T", otz=deftz)
     assert nldt.moment.default_tz() == deftz

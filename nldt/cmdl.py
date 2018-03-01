@@ -48,11 +48,11 @@ def main():
     when = nldt.moment(opts['--when'])
     ref = prs(expr, start=when)
     if expr in ['today', 'tomorrow', 'yesterday']:
-        print(ref(fmt, tz=zone))
+        print(ref(fmt, otz=zone))
     elif expr in ['now']:
         if fmt:
-            print(ref(fmt, tz=zone))
+            print(ref(fmt, otz=zone))
         elif zone:
-            print(ref("%Y-%m-%d %H:%M:%S", tz=zone))
+            print(ref("%Y-%m-%d %H:%M:%S", otz=zone))
         else:
             print(ref)
