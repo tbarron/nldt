@@ -678,6 +678,7 @@ def test_moment_time():
     """
     pytest.debug_func()
     now = M()
+    # payload
     assert now.time() == now.epoch()
 
 
