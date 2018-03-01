@@ -1620,7 +1620,7 @@ def dst(when=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-def localzone():
+def timezone():
     """
     Returns the locally configured timezone name
 

@@ -522,15 +522,15 @@ def test_indexify_lowstr():
 
 
 # -----------------------------------------------------------------------------
-def test_localzone():
+def test_timezone():
     """
     Timezone should return the current timezone setting
     """
     pytest.debug_func()
     if nldt.dst():
-        assert nldt.localzone() == time.tzname[1]
+        assert nldt.timezone() == time.tzname[1]
     else:
-        assert nldt.localzone() == time.tzname[0]
+        assert nldt.timezone() == time.tzname[0]
 
 
 # -----------------------------------------------------------------------------
