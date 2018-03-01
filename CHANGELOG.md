@@ -1,3 +1,19 @@
+## 0.0.16
+
+ * Renamed the 'tz' argument to moment.__init__() to 'itz' to indicate that
+   the timezone is applied to the *input* date/time spec
+ * Renamed the 'tz' argument to moment.__call__() to 'otz' to indicate that
+   the timezone is applied to the moment on *output*
+ * Add test for nldt.moment.takes_tz() to ensure 100% test coverage.
+ * Add a test that tickles the bug where 'with nldt.tz_context()' throws a
+   KeyError on exit when 'TZ' is not in the environment. Update the code to
+   satisfy the test (thereby fixing the bug).
+ * Use nldt.moment.default_tz() to set the default input timezone for tests
+   to 'utc' so that it doesn't have to be specified on every moment call.
+ * Move the tests for nldt.moment.default_tz() to the end of test_moment.py
+   so they don't interfere with other tests.
+ * Adding reference info to README.md.
+
 ## 0.0.15
 
  * For duration constructor, interpret moment values in the 'utc' timezone
