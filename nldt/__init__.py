@@ -473,23 +473,39 @@ class moment(object):
                     isinstance(value, str) and not value.isdigit()])
 
     # -------------------------------------------------------------------------
-    def __init__(self, dspec=None, fmt=None, tz=None):
+    def __init__(self, dspec=None, fmt=None, itz=None):
         """
         class moment
 
         Constructs a moment object.
 
-        *args*:
-            empty: object represents current UTC time at instantiation
-            one element: may be a date/time spec matching one of the formats in
-                self.formats.
-            two elements: args[0] is a date/time spec, args[1] is a format
-                describing args[0].
+        *dspec*: A date/time specification. May be
+          - a number
+          - a number represented in a string
+          - an already instantiated moment
+          - a time.struct_time as returned by time.localtime or time.gmtime
+          - a tuple containing between 6 and 9 number values
+          - a string representing a date and/or time
 
-        If a timezone is provided in the input string, the string should be
-        interpreted as local to that timezone. The value stored in the
-        constructed object should be the UTC epoch corresponding to the
-        specified local time.
+        The first three (number, number in a string, or an already instantiated
+        moment) represent a UTC epoch (i.e., the number of seconds since
+        midnight January 1, 1970) and therefore never get a timezone
+        adjustment.
+
+        The last three (time.struct_time, tuple, or date/time string) can
+        represent a time in any timezone. By default, the timezone offset local
+        at runtime is used to adjust the time value before storing it in the
+        moment.
+
+        *fmt*: A string containing strftime-style format codes used to
+        interpret a *dspec* of type str.
+
+        *itz*: A timezone used to convert the time in a time.struct_time,
+        tuple, or date/time string (i.e., *dspec* is not one of the number
+        types). If this is not specified, the default timezone. The default
+        timezone will be the timezone configured to be local on the host
+        computer unless class method moment.default_tz() is called to change
+        it.
 
         Examples:
             >>> import nldt
@@ -521,7 +537,7 @@ class moment(object):
             self.__class__.deftz = 'local'
         self.moment = None
         if dspec is None:
-            if tz or fmt:
+            if itz or fmt:
                 raise InitError(no_args)
             else:
                 self.moment = int(time.time())
@@ -529,7 +545,7 @@ class moment(object):
                   isinstance(dspec, str) and dspec.isdigit(),
                   isinstance(dspec, moment)
                   ]):
-            if tz or fmt:
+            if itz or fmt:
                 raise ValueError(epc_no_fmt_tz)
             elif isinstance(dspec, moment):
                 self.moment = dspec.epoch()
@@ -538,8 +554,8 @@ class moment(object):
         elif isinstance(dspec, time.struct_time):
             if fmt:
                 raise InitError(fmt_str)
-            if tz:
-                self.moment = self._normalize(timegm(dspec), tz=tz)
+            if itz:
+                self.moment = self._normalize(timegm(dspec), tz=itz)
             else:
                 self.moment = self._normalize(timegm(dspec),
                                               tz=self.__class__.deftz)
@@ -547,8 +563,8 @@ class moment(object):
             if fmt:
                 raise InitError(fmt_str)
             if 6 <= len(dspec) <= 9:
-                if tz:
-                    self.moment = self._normalize(timegm(dspec), tz=tz)
+                if itz:
+                    self.moment = self._normalize(timegm(dspec), tz=itz)
                 else:
                     self.moment = self._normalize(timegm(dspec),
                                                   tz=self.__class__.deftz)
@@ -559,14 +575,14 @@ class moment(object):
                 fmt = fmt.replace("%F", "%Y-%m-%d")
                 fmt = fmt.replace("%T", "%H:%M:%S")
                 when = timegm(time.strptime(dspec, fmt))
-                if tz:
-                    self.moment = self._normalize(when, tz=tz)
+                if itz:
+                    self.moment = self._normalize(when, tz=itz)
                 else:
                     self.moment = self._normalize(when,
                                                   tz=self.__class__.deftz)
-            elif tz:
+            elif itz:
                 self.moment = self._normalize(self._guess_format(dspec),
-                                              tz=tz)
+                                              tz=itz)
             else:
                 self.moment = self._normalize(self._guess_format(dspec),
                                               tz=self.__class__.deftz)
