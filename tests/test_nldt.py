@@ -51,7 +51,7 @@ def test_tz_context_keyerr():
         tzorig = os.getenv('TZ')
 
     with nldt.timezone('US/Pacific'):
-        then = M("2000-12-31 15:59:59", tz='US/Pacific')
+        then = M("2000-12-31 15:59:59", itz='US/Pacific')
         assert then("%F %T") == "2000-12-31 23:59:59"
 
     if tzorig:

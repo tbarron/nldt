@@ -459,7 +459,7 @@ def test_moment_localtime(inp_time, inp_tz, out_tz, out_time):
     pytest.debug_func()
     expected = time.strptime(out_time, '%Y-%m-%d %H:%M:%S')
     # payload
-    utc = nldt.moment(inp_time, tz=inp_tz)
+    utc = nldt.moment(inp_time, itz=inp_tz)
     actual = utc.localtime(tz=out_tz)
     assert nldt.timegm(actual) == nldt.timegm(expected)
 
@@ -655,7 +655,7 @@ def test_moment_init_tz(inp, zone, exp):
     """
     pytest.debug_func()
     # payload
-    when = M(inp, tz=zone)
+    when = M(inp, itz=zone)
     assert when("%Y.%m%d %T") == exp
 
 
@@ -774,7 +774,7 @@ def test_with_tz():
     timezones to be case insensitive.
     """
     pytest.debug_func()
-    c = nldt.moment('2016-12-31 23:59:59', tz='utc')
+    c = nldt.moment('2016-12-31 23:59:59', itz='utc')
     # assert c(tz='est') == '2016-12-31 18:59:59'
     fmt = "%Y-%m-%d %H:%M:%S"
     # payload
