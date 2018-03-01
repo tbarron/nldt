@@ -44,6 +44,22 @@
     >>> str(P('seven days from now'))
     '2018-03-06 21:18:07 Tue'
 
+## How to think about times and timezones
+
+When the input value of a moment is a single number, it is always
+interpreted as the number of seconds since the epoch (on Unix, this is
+midnight on January 1, 1970) with no timezone adjustment. Such values are
+always UTC times.
+
+When the input value of a moment is a time.struct_time, a date/time tuple,
+or a date/time specified in a string, a timezone adjustment is applied to
+convert the input time to UTC. By default, the local timezone is used for
+this.
+
+The timezone used to interpret the input can be affected by passing an itz
+argument to the moment constructor or by calling nldt.default_tz() to
+change the default timezone directly.
+
 ## Classes ##
 
 This module provides several classes intended to make date and time
@@ -144,9 +160,9 @@ This method is normally called by appending parentheses to an instantiated
 moment object. For example,
 
     import nlde
-    q = nldt.moment()    # record the current time
-    q("%F %T")           # report current time as YYYY-mm-dd HH:MM:SS
-    q("%F %T", tz='US/Pacific')   # report current time for Pacific timezone
+    q = nldt.moment()  # record the current time (converts local to UTC)
+    q("%F %T")         # report current local time as YYYY-mm-dd HH:MM:SS
+    q("%F %T", otz='Cuba')   # report current time in Cuba's timezone
 
 
 ### month ###
