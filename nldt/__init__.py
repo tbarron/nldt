@@ -590,27 +590,22 @@ class moment(object):
             raise ValueError(valid_calls)
 
     # -------------------------------------------------------------------------
-    def __call__(self, format=None, tz=None):
+    def __call__(self, fmt=None, otz=None):
         """
         class moment
 
         Returns a string representing the date/time of the epoch value stored
         in self.
 
-        *format*: Optional string indicating the desired output format.
+        *fmt*: Optional string indicating the desired output format.
 
-        *tz*: Optional timezone indicating that the date/time in the output
+        *otz*: Optional timezone indicating that the date/time in the output
         string should be localized to the specified timezone.
-
-        If *format* contains a timezone specifier, localize the time to that
-        zone. If *tz* is not empty, it can be used to do the same thing. If
-        *format* contains a timezone specifier and *tz* is specified, *tz*
-        should be ignored and the timezone in the format string should be used.
 
         Examples:
             >>> import nldt
             >>> a = nldt.moment()
-            # No arguments, default format (ISO)
+            # No arguments, the default format is the ISO date
             >>> a()
             '2016-12-04'
 
@@ -618,19 +613,19 @@ class moment(object):
             >>> a('%Y.%m%d %H:%M:%S')
             '2016.1204 07:16:20'
         """
-        format = format or "%Y-%m-%d"
-        tz = tz or 'UTC'
-        if tz == 'local':
+        fmt = fmt or "%Y-%m-%d"
+        otz = otz or 'UTC'
+        if otz == 'local':
             tm = time.localtime(self.moment)
-        elif tz == 'UTC' or tz is None:
+        elif otz == 'UTC' or otz is None:
             tzset('UTC+00UTC+00')
             tm = time.gmtime(self.moment)
         else:
-            offset = duration(seconds=utc_offset(self.moment, tz))
+            offset = duration(seconds=utc_offset(self.moment, otz))
             tm = time.gmtime(self.moment + offset.seconds)
-            format = format.replace('%Z', tzname(tz=tz, epoch=self.moment))
-            format = format.replace('%z', offset("%H%M"))
-        rval = time.strftime(format, tm)
+            fmt = fmt.replace('%Z', tzname(tz=otz, epoch=self.moment))
+            fmt = fmt.replace('%z', offset("%H%M"))
+        rval = time.strftime(fmt, tm)
         tzset(None)
         return rval
 
