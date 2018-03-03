@@ -614,10 +614,10 @@ class moment(object):
             '2016.1204 07:16:20'
         """
         fmt = fmt or "%Y-%m-%d"
-        otz = otz or 'UTC'
+        otz = otz or 'local'
         if otz == 'local':
             tm = time.localtime(self.moment)
-        elif otz == 'UTC' or otz is None:
+        elif otz.lower() == 'utc':
             tzset('UTC+00UTC+00')
             tm = time.gmtime(self.moment)
         else:
