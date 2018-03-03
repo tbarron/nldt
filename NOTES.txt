@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------
+2018-03-02 11:52:53    Don't put 'class' first in docstring
+
+It seems that if a function's docstring begins with the word 'class',
+subsequent emacs python-mode indentation in the file is messed up. It's
+good to document the name of the class for reference, but it needs to be
+later in the docstring, not right at the beginning.
+
+---------------------------------------------------------------------------
 2018-02-27 06:12:05    Rules
 
   * When a moment is initialized, should the input time be interpreted as
@@ -16,6 +24,15 @@
 
       * A possible solution would be to provide the user a call that will
         set the default timezone context.
+
+  * Does a week begin on Sunday or Monday?
+
+      * In a time.struct_time(), tm_wday == 0 indicates Monday
+
+      * With date +%u, Monday = 1, Sunday = 7
+
+      * With date +%w, Sunday = 0, Monday = 1, Saturday = 6
+
 
 ---------------------------------------------------------------------------
 2018-02-26 08:00:23    Broken timezones
