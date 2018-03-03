@@ -52,7 +52,7 @@ def test_tz_context_keyerr():
 
     with nldt.tz_context('US/Pacific'):
         then = M("2000-12-31 15:59:59", itz='US/Pacific')
-        assert then("%F %T") == "2000-12-31 23:59:59"
+        assert then("%F %T") == "2000-12-31 15:59:59"
 
     if tzorig:
         os.environ['TZ'] = tzorig
@@ -684,12 +684,12 @@ def nl_oracle(spec):
     if direction == 'next':
         wdidx = wk.index(day)
         start = prs('tomorrow')
-        while wk.day_number(start) != wdidx:
+        while start.localtime().tm_wday != wdidx:
             start = M(start.epoch() + tu.magnitude('day'))
     elif direction == 'last':
         wdidx = wk.index(day)
         start = prs('yesterday')
-        while wk.day_number(start) != wdidx:
+        while start.localtime().tm_wday != wdidx:
             start = M(start.epoch() - tu.magnitude('day'))
     elif day == 'week':
         (day, direction) = (direction, day)

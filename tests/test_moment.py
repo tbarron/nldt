@@ -73,7 +73,7 @@ def test_display():
     """
     pytest.debug_func()
     now = time.time()
-    exp = time.strftime("%Y-%m-%d", time.gmtime(now))
+    exp = time.strftime("%Y-%m-%d", time.localtime(now))
     wobj = nldt.moment(now)
     # payload
     assert wobj() == exp
@@ -88,7 +88,7 @@ def test_display_formatted():
     pytest.debug_func()
     fmt = "%H:%M %p on %B %d, %Y"
     now = time.time()
-    exp = time.strftime(fmt, time.gmtime(now))
+    exp = time.strftime(fmt, time.localtime(now))
     wobj = nldt.moment(now)
     # payload
     assert wobj(fmt) == exp
@@ -394,11 +394,11 @@ def test_moment_gmtime():
                  id='003'),
     pytest.param("2018-01-01 00:00:00", "%F %T", "US/Eastern", 1514782800,
                  id='004'),
-    pytest.param("2018-01-01 00:00:00", "%F %T", None, 1514764800,
+    pytest.param("2018-01-01 00:00:00", "%F %T", None, 1514782800,
                  id='005'),
     pytest.param("2018.0101 01:02:03", None, "Pacific/Truk", 1514732523,
                  id='006'),
-    pytest.param("2018.0704 09:23:57", None, None, 1530696237,
+    pytest.param("2018.0704 09:23:57", None, None, 1530710637,
                  id='007'),
     pytest.param((2017, 1, 1, 0, 0, 0), "%F %T", None,
                  nldt.InitError("moment() cannot take format when date is not "
@@ -414,11 +414,11 @@ def test_moment_gmtime():
                                 ' of type str'),
                  id='010.1'),
     pytest.param(time.struct_time((2010, 2, 28, 0, 32, 17, 0, 0, 0)),
-                 None, None, 1267317137,
+                 None, None, 1267335137,
                  id='011'),
     pytest.param(time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
                  None, 'Europe/Stockholm', 1267331537, id='012'),
-    pytest.param((2012, 2, 29, 2, 47, 19), None, None, 1330483639,
+    pytest.param((2012, 2, 29, 2, 47, 19), None, None, 1330501639,
                  id='013'),
     pytest.param((2012, 2, 29, 7, 47, 19), None, 'Asia/Chongqing', 1330472839,
                  id='014'),

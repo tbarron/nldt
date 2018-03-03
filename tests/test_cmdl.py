@@ -55,7 +55,7 @@ def test_unanchored_now():
     epoch = int(epoch)
     now = time.time()
     assert abs(int(now) - epoch) < 2
-    assert ymd.strip() == time.strftime("%F %T", time.gmtime(epoch))
+    assert ymd.strip() == time.strftime("%F %T", time.localtime(epoch))
 
 
 # -----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ def test_unanchored_noarg():
     epoch = int(epoch)
     now = time.time()
     assert abs(int(now) - epoch) < 2
-    assert ymd.strip() == time.strftime("%F %T", time.gmtime(epoch))
+    assert ymd.strip() == time.strftime("%F %T", time.localtime(epoch))
 
 
 # -----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ def test_unanchored_noarg():
                  id='006'),
 
     pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 today',
-                 '2000.1231 09:07:43',
+                 '2000.1231 04:07:43',
                  id='007'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" '
@@ -135,7 +135,7 @@ def test_unanchored_noarg():
                  id='015'),
 
     pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 tomorrow',
-                 '2001.0101 09:07:43',
+                 '2001.0101 04:07:43',
                  id='016'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w "2000.1231 15:07:43"'
@@ -174,7 +174,7 @@ def test_unanchored_noarg():
                  id='024'),
 
     pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 yesterday',
-                 '2000.1230 09:07:43', id='025'),
+                 '2000.1230 04:07:43', id='025'),
 
     pytest.param('nldt yesterday -z local -f "%Y.%m%d %H:%M:%S" '
                  '-w "2000.1231 15:07:43"',
