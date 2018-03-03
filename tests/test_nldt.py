@@ -17,6 +17,8 @@ import time
 import nldt
 from nldt import moment as M
 
+nldt.moment.default_tz('clear')
+
 
 # -----------------------------------------------------------------------------
 def test_bug_pctsec():
