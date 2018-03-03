@@ -472,8 +472,6 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __init__(self, dspec=None, fmt=None, itz=None):
         """
-        class moment
-
         Constructs a moment object.
 
         *dspec*: A date/time specification. May be
@@ -591,8 +589,6 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __call__(self, fmt=None, otz=None):
         """
-        class moment
-
         Returns a string representing the date/time of the epoch value stored
         in self.
 
@@ -653,8 +649,6 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
-        class moment
-
         Returns True or False - whether two moment objects are equal
         implicit
 
@@ -726,8 +720,6 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __repr__(self):
         """
-        class moment
-
         Returns a string that will regenerate this object if passed to eval()
 
         Examples:
@@ -737,6 +729,7 @@ class moment(object):
             True
             >>> print repr(c)
             nldt.moment(1481000400)
+        (class moment)
         """
         rval = "nldt.moment({:d})".format(int(self.moment))
         return rval
@@ -744,8 +737,6 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __str__(self):
         """
-        class moment
-
         Returns a human-readable representation of this object
 
         Examples:
