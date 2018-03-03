@@ -791,6 +791,114 @@ def test_takes_tz(marg, exp):
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("unit, weekday, anchor, exp", [
+    pytest.param('week', 'sunday', '2008.0815', '2008.0816 23:59:59',
+                 id='001'),
+    #                  1218758400,   1218931199
+    pytest.param('week', 'monday', '2008.0815', '2008.0817 23:59:59',
+                 id='002'),
+    #                  1218758400,   1219017599
+    pytest.param('week', 'tuesday', '2008.0815', '2008.0818 23:59:59',
+                 id='003'),
+    #                  1218758400,   1219103999
+    pytest.param('week', 'wednesday', '2008.0815', '2008.0819 23:59:59',
+                 id='004'),
+    #                  1218758400,   1219190399
+    pytest.param('week', 'thursday', '2008.0815', '2008.0820 23:59:59',
+                 id='005'),
+    #                  1218758400,   1219276799
+    pytest.param('week', 'friday', '2008.0818', '2008.0821 23:59:59',
+                 id='006'),
+    #                  1219017600    1219363199
+    pytest.param('week', 'saturday', '2008.0818', '2008.0822 23:59:59',
+                 id='007'),
+    #                  1219017600    1219449599
+
+    pytest.param('minute', 'monday', '2008.1231',
+                 ValueError('ceiling() only accepts start for unit=\'week\''),
+                 id='010'),
+    pytest.param('hour', 'monday', '2008.1231',
+                 ValueError('ceiling() only accepts start for unit=\'week\''),
+                 id='009'),
+    pytest.param('day', 'monday', '2008.1231',
+                 ValueError('ceiling() only accepts start for unit=\'week\''),
+                 id='008'),
+    pytest.param('week', 'frogs', '2008.1231',
+                 ValueError(txt['start_inv02'])),
+    pytest.param('month', 'monday', '2008.1231',
+                 ValueError('ceiling() only accepts start for unit=\'week\''),
+                 id='011'),
+    pytest.param('year', 'monday', '2008.1231',
+                 ValueError(txt['start_inv01']),
+                 id='012'),
+    ])
+def test_week_ceiling_start(unit, weekday, anchor, exp):
+    """
+    Verify correct behavior of moment().ceiling('week', start=<weekday>) and
+    that the start argument with a unit other than 'week' raises an error.
+    """
+    pytest.debug_func()
+    tz_orig = nldt.moment.default_tz('utc')
+    base = nldt.moment(anchor, itz='utc')
+    if isinstance(exp, Exception):
+        with pytest.raises(type(exp)):
+            assert base.ceiling(unit, start=weekday) == exp
+    else:
+        assert base.ceiling(unit, start=weekday) == exp
+    nldt.moment.default_tz(tz_orig)
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("unit, weekday, anchor, exp", [
+    pytest.param('week', 'sunday', '2008.0815', '2008.0810 00:00:00',
+                 id='001'),
+    pytest.param('week', 'monday', '2008.0815', '2008.0811 00:00:00',
+                 id='002'),
+    pytest.param('week', 'tuesday', '2008.0815', '2008.0812 00:00:00',
+                 id='003'),
+    pytest.param('week', 'wednesday', '2008.0815', '2008.0813 00:00:00',
+                 id='004'),
+    pytest.param('week', 'thursday', '2008.0815', '2008.0814 00:00:00',
+                 id='005'),
+    pytest.param('week', 'friday', '2008.0818', '2008.0815 00:00:00',
+                 id='006'),
+    pytest.param('week', 'saturday', '2008.0818', '2008.0816 00:00:00',
+                 id='007'),
+
+    pytest.param('day', 'monday', '2008.1231',
+                 ValueError('floor() only accepts start for unit=\'week\''),
+                 id='008'),
+    pytest.param('hour', 'monday', '2008.1231',
+                 ValueError('floor() only accepts start for unit=\'week\''),
+                 id='009'),
+    pytest.param('minute', 'monday', '2008.1231',
+                 ValueError('floor() only accepts start for unit=\'week\''),
+                 id='010'),
+    pytest.param('month', 'monday', '2008.1231',
+                 ValueError('floor() only accepts start for unit=\'week\''),
+                 id='011'),
+    pytest.param('year', 'monday', '2008.1231',
+                 ValueError('floor() only accepts start for unit=\'week\''),
+                 id='012'),
+    ])
+def test_week_floor_start(unit, weekday, anchor, exp):
+    """
+    Verify correct behavior of moment().floor('week', start=<weekday>) and
+    moment().ceiling('week', start=<weekday>) and that the start argument with
+    a unit other than 'week' raises an error.
+    """
+    pytest.debug_func()
+    tz_orig = nldt.moment.default_tz('utc')
+    base = nldt.moment(anchor, itz='utc')
+    if isinstance(exp, Exception):
+        with pytest.raises(type(exp)):
+            assert base.floor(unit, start=weekday) == exp
+    else:
+        assert base.floor(unit, start=weekday) == exp
+    nldt.moment.default_tz(tz_orig)
+
+
+# -----------------------------------------------------------------------------
 def test_with_format():
     """
     If a format is specified, the spec must match
