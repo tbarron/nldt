@@ -315,7 +315,6 @@ def test_moment_ceiling():
 
     pytest.debug_func()
     tu = nldt.time_units()
-    wk = nldt.week()
     now = time.time()
     mug = nldt.moment(now)
     for unit in tu.unit_list():
@@ -354,7 +353,6 @@ def test_moment_floor():
 
     pytest.debug_func()
     tu = nldt.time_units()
-    wk = nldt.week()
     now = time.time()
     mug = nldt.moment(now)
     for unit in tu.unit_list():
