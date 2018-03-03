@@ -963,12 +963,11 @@ class month(Indexable):
             q = moment(date, itz='utc')
             mname = q('%B', otz='utc').lower()
             abbr = mname[0:3]
-            this = {
-                'name': mname,
-                'abbr': abbr,
-                'idx': midx,
-                'days': self._days(midx)
-                }
+            this = {'name': mname,
+                    'abbr': abbr,
+                    'idx': midx,
+                    'days': self._days(midx)
+                    }
             self._dict[abbr] = this
             self._dict[midx] = this
 
@@ -1379,11 +1378,10 @@ class week(Indexable):
             q = moment("2018.01{:02d}".format(idx+1))
             wname = q('%A').lower()
             abbr = wname[0:3]
-            this = {
-                'name': wname,
-                'abbr': abbr,
-                'idx': idx,
-                }
+            this = {'name': wname,
+                    'abbr': abbr,
+                    'idx': idx,
+                    }
             self._dict[abbr] = this
             self._dict[idx] = this
 

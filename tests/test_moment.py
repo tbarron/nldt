@@ -299,14 +299,14 @@ def test_moment_ceiling():
             exp = now + mag - (now % mag) - 1
         elif unit == 'week':
             tm = time.gmtime(now)
-            delta = wk.forediff(tm.tm_wday, 'mon')
-            nflr = nldt.timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
-                                0, 0, 0, 0, 0, 0))
-            exp = nflr - 1
+            exp = nldt.timegm((tm.tm_year, tm.tm_mon,
+                               tm.tm_mday + (6-tm.tm_wday),
+                               23, 59, 59, 0, 0, 0))
         elif unit == 'month':
             tm = time.gmtime(now)
-            nflr = nldt.timegm((tm.tm_year, tm.tm_mon+1, 1, 0, 0, 0, 0, 0, 0))
-            exp = nflr - 1
+            maxday = nldt.month().days(year=tm.tm_year, month=tm.tm_mon)
+            exp = nldt.timegm((tm.tm_year, tm.tm_mon, maxday,
+                               23, 59, 59, 0, 0, 0))
         elif unit == 'year':
             tm = time.gmtime(now)
             nflr = nldt.timegm((tm.tm_year+1, 1, 1, 0, 0, 0, 0, 0, 0))
@@ -342,8 +342,7 @@ def test_moment_floor():
             exp = now - (now % mag)
         elif unit == 'week':
             tm = time.gmtime(now)
-            delta = wk.backdiff(tm.tm_wday, 'mon') % 7
-            exp = nldt.timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
+            exp = nldt.timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - tm.tm_wday,
                                0, 0, 0, 0, 0, 0))
         elif unit == 'month':
             tm = time.gmtime(now)
@@ -404,8 +403,9 @@ def test_moment_gmtime():
     pytest.param((2017, 1, 1, 0, 0, 0), "%F %T", None,
                  nldt.InitError("moment() cannot take format when date is not "
                                 "of type str"), id='008'),
-    # pytest.param(1530696573, None, 'America/Argentina/Mendoza', 1530707373,
-    # id='009'),
+    pytest.param(1530696573, None, 'America/Argentina/Mendoza',
+                 ValueError("moment(epoch) does not take timezone or format"),
+                 id='009'),
     pytest.param(1530696573, None, None, 1530696573,
                  id='010'),
     pytest.param(time.struct_time((2010, 2, 28, 0, 32, 17, 0, 0, 0)),
