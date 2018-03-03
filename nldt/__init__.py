@@ -855,13 +855,15 @@ class moment(object):
         return rval
 
     # -------------------------------------------------------------------------
-    def ceiling(self, unit):
+    def ceiling(self, unit, start=None):
         """
         Computes the ceiling of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
 
         (class moment)
         """
+        wk = week()
+        self._validate(unit, start)
         tm = time.gmtime(self.epoch())
         if unit == 'second':
             ceil = self.epoch()
@@ -875,7 +877,9 @@ class moment(object):
             ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday,
                            23, 59, 59, 0, 0, 0))
         elif unit == 'week':
-            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + (6-tm.tm_wday),
+            start = start or 'monday'
+            delta = (6 + wk.index(start) - tm.tm_wday) % 7
+            ceil = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday + delta,
                            23, 59, 59, 0, 0, 0))
         elif unit == 'month':
             maxday = month().days(year=tm.tm_year, month=tm.tm_mon)
@@ -888,13 +892,15 @@ class moment(object):
         return moment(ceil)
 
     # -------------------------------------------------------------------------
-    def floor(self, unit):
+    def floor(self, unit, start=None):
         """
         Computes the floor of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
 
         (class moment)
         """
+        wk = week()
+        self._validate(unit, start)
         epoch = self.epoch()
         if unit == 'second':
             rval = self
@@ -914,8 +920,10 @@ class moment(object):
                             0, 0, 0))
             rval = moment(floor)
         elif unit == 'week':
+            start = start or 'monday'
             tm = time.gmtime(epoch)
-            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - tm.tm_wday,
+            delta = (7 + tm.tm_wday - wk.index(start)) % 7
+            floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
                             0, 0, 0, 0, 0, 0))
             rval = moment(floor)
         elif unit == 'month':
