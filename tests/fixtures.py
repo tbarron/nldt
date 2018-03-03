@@ -12,7 +12,7 @@ import tbx
 
 
 # -----------------------------------------------------------------------------
-def ftime(fmt, local=False, anchor=None):
+def ftime(fmt, local=True, anchor=None):
     """
     Provide an oracle for test_cmdline
     """
