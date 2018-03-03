@@ -779,7 +779,6 @@ class moment(object):
         return when - offset
 
     # -------------------------------------------------------------------------
-    def asctime(self, tz=None):
         If *unit* is not 'week' and *start* is not None, raise an exception. If
         start is not a weekday, raise an exception (class moment)
         """
@@ -790,7 +789,9 @@ class moment(object):
             elif all([start not in x for x in wk.day_list()]):
                 raise ValueError(txt['start_inv02'])
 
-        Format the UTC time as '%a %b %d %T %Y'.
+    # -------------------------------------------------------------------------
+    def asctime(self, tz=None):
+        """
         Format the UTC time as '%a %b %d %T %Y'. (class moment)
         """
         tz = tz or 'UTC'
