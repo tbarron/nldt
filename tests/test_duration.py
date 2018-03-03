@@ -10,6 +10,7 @@ import nldt
 from nldt import moment
 from nldt import duration
 import pytest
+from nldt.text import txt
 import time
 
 moment.default_tz('utc')
@@ -392,8 +393,7 @@ def test_dur_sub_exc():
     with pytest.raises(TypeError) as err:
         # payload
         assert d - x
-    msg = ("unsupported operand type(s): '{}' and '{}'"
-           .format(d.__class__, x.__class__))
+    msg = (txt['optypes_02'].format(d.__class__, x.__class__))
     assert msg in str(err)
 
 
@@ -476,7 +476,7 @@ def test_duration_minus():
     with pytest.raises(TypeError) as err:
         # payload (duration - moment => exception
         assert duration(seconds=25) - moment("2018-02-01")
-    assert "unsupported operand type(s): try 'moment' - 'duration'" in str(err)
+    assert txt['optypes_01'] in str(err)
 
 
 # -----------------------------------------------------------------------------
