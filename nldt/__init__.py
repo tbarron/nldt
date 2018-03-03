@@ -452,7 +452,9 @@ class moment(object):
             loc = get_localzone()
             rval = loc.zone
             cls.deftz = rval
-        if value:
+        if value == 'clear':
+            del cls.deftz
+        elif value:
             cls.deftz = value
         return rval
 
