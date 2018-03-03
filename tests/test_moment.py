@@ -112,6 +112,31 @@ def test_epoch():
 
 
 # -----------------------------------------------------------------------------
+def test_in_local():
+    """
+    Verify that by default the input timezone is local
+    """
+    pytest.debug_func()
+    tz_orig = nldt.moment.default_tz('clear')
+    fixed = nldt.moment(1000000000)
+    # payload -- verify default input timezone
+    result = nldt.moment(fixed("%F %T", otz='local'))
+    nldt.moment.default_tz(tz_orig)
+    assert result.epoch() == 1000000000
+
+
+# -----------------------------------------------------------------------------
+def test_out_local():
+    """
+    Verify that by default both the input and output timezone is local
+    """
+    pytest.debug_func()
+    zap = nldt.moment(1000000000)
+    # payload -- verify default output timezone
+    assert zap("%F %T", otz='local') == zap("%F %T")
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, fmt, exp", [
     pytest.param('Dec 29 2016', None, '2016-12-29', id='001'),
     pytest.param('Dec 17, 1975 03:17', '%Y-%m-%d %H:%M', '1975-12-17 03:17',
