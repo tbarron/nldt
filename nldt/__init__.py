@@ -249,6 +249,8 @@ class duration(object):
         """
         if isinstance(start_end_value, numbers.Number):
             rval = moment(start_end_value)
+        elif isinstance(start_end_value, moment):
+            rval = start_end_value
         elif isinstance(start_end_value, time.struct_time):
             rval = moment(start_end_value, itz='utc')
         elif isinstance(start_end_value, tuple):
@@ -256,8 +258,6 @@ class duration(object):
                 raise InitError(txt['invtup'])
             else:
                 rval = moment(start_end_value, itz='utc')
-        elif isinstance(start_end_value, moment):
-            rval = start_end_value
         elif isinstance(start_end_value, str):
             rval = moment(start_end_value, itz='utc')
         return rval
