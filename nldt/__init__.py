@@ -128,9 +128,8 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __repr__(self):
         """
-        class duration
-        return the object's repr suitable to be processed by
-        eval()
+        Return an object representation suitable to be processed by eval (class
+        duration)
         """
         return "{}.{}(seconds={})".format(self.__module__,
                                           self.__class__.__name__,
@@ -139,7 +138,7 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __str__(self):
         """
-        class duration: return the object's str suitable human consumption
+        Return the objects str suitable human consumption (class duration)
         """
         secs = self.seconds
         days = int(secs / (3600 * 24))
@@ -153,10 +152,11 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __add__(self, other):
         """
-        class duration: Add *self* and *other*:
-          - duration + moment => moment
-          - duration + duration => duration
-          - duration + number-of-seconds => duration
+        Add *other* to *self*
+         - duration + moment => moment
+         - duration + duration => duration
+         - duration + number-of-seconds => duration
+        (class duration)
         """
         if isinstance(other, duration):
             rval = duration(seconds=self.seconds + other.seconds)
@@ -172,8 +172,8 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __call__(self, fmtstr):
         """
-        class duration
-        This function reports the stored interval according to *fmtstr*
+        This function reports the stored interval according to fmtstr (class
+        duration)
         """
         interval = self._deconstruct()
         result = fmtstr
@@ -187,8 +187,8 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __eq__(self, other):
         """
-        class duration: Assess whether this object is equal to the *other*
-        value
+        Assess whether this object is equal to the *other* value (class
+        duration)
         """
         if isinstance(other, numbers.Number):
             return self.seconds == other
@@ -198,10 +198,11 @@ class duration(object):
     # -------------------------------------------------------------------------
     def __sub__(self, other):
         """
-        class duration: Subtract *other* from *self*
+        Subtract *other* from *self*
           - duration - duration => duration
           - duration - number-of-seconds => duration
           - duration - moment => exception
+        (class duration)
         """
         if isinstance(other, numbers.Number):
             rval = self.seconds - other
@@ -216,7 +217,8 @@ class duration(object):
     # -------------------------------------------------------------------------
     def _deconstruct(self):
         """
-        Allocate the seconds to a year, day, hour, min, sec dict
+        Allocate the seconds to a year, day, hour, min, sec dict (class
+        duration)
         """
         rval = {}
         secs = self.seconds
@@ -234,15 +236,16 @@ class duration(object):
     # -------------------------------------------------------------------------
     def _resolve_value(self, start_end_value):
         """
-        class duration
         *start_end_value* may be any of the following types:
 
-            1) an epoch,
+            1) an epoch number,
+            2) a moment,
+            3) a string representing an epoch number,
             2) a tm struct,
-            3) a moment, or
+            3) a tuple (6 to 9 numbers), or
             4) a date/time string in a format moment recognizes,
 
-        and they don't have to be in the same format.
+        and they don't have to be in the same format. (class duration)
         """
         if isinstance(start_end_value, numbers.Number):
             rval = moment(start_end_value)
@@ -262,8 +265,8 @@ class duration(object):
     # -------------------------------------------------------------------------
     def dhms(self):
         """
-        class duration
-        This method reports a duration as <days>.HH:MM:SS in a string
+        This method reports a duration as <days>.HH:MM:SS in a string (class
+        duration)
         """
         secs = self.seconds
         days = int(secs / (24*3600))
@@ -278,8 +281,7 @@ class duration(object):
     # -------------------------------------------------------------------------
     def sleep(self):
         """
-        class duration
-        sleep for the duration period
+        sleep for the duration period (class duration)
         """
         time.sleep(self.seconds)
 
@@ -295,9 +297,8 @@ class Indexable(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        class Indexable
         Don't instantiate this class. It is an abstract base for month and
-        week.
+        week. (class Indexable)
         """
         raise TypeError("This is an abstract base class -- "
                         "don't instantiate it.")
@@ -305,9 +306,8 @@ class Indexable(object):
     # -------------------------------------------------------------------------
     def indexify(self, name_or_idx):
         """
-        class Indexable
         Return an int idx in the range [0, 7) (i.e., between 0 and 6 inclusive)
-        or -1.
+        or -1. (class Indexable)
         """
         rval = None
         if name_or_idx in self._dict:
@@ -343,28 +343,28 @@ class local(object):
     # -------------------------------------------------------------------------
     def timezone(self):
         """
-        Return the UTC offset for the local standard time
+        Return the UTC offset for the local standard time (class local)
         """
         return time.timezone
 
     # -------------------------------------------------------------------------
     def altzone(self):
         """
-        Return the UTC offset for the local time during DST
+        Return the UTC offset for the local time during DST (class local)
         """
         return time.altzone
 
     # -------------------------------------------------------------------------
     def daylight(self):
         """
-        Return 1 if DST info is defined for the local timezone
+        Return 1 if DST info is defined for the local timezone (class local)
         """
         return time.daylight
 
     # -------------------------------------------------------------------------
     def tzname(self):
         """
-        Return tuple of standard and DST timezone abbreviation
+        Return tuple of standard and DST timezone abbreviation (class local)
         """
         return time.tzname
 
@@ -441,11 +441,10 @@ class moment(object):
     @classmethod
     def default_tz(cls, value=None):
         """
-        class moment
-
         If *value* is None, return the currently set default timezone. If
         *value* is not None, use it to set the default timezone for
         interpreting inputs to the moment constructor (other than epoch values)
+        (class moment)
         """
         if hasattr(cls, 'deftz'):
             rval = cls.deftz
@@ -461,10 +460,8 @@ class moment(object):
     @classmethod
     def takes_tz(cls, value):
         """
-        class moment
-
         Returns True if a tz arg can be passed to the moment constructor for
-        this *value* as a date/time specification.
+        this *value* as a date/time specification. (class moment)
         """
         return any([isinstance(value, time.struct_time),
                     isinstance(value, tuple),
@@ -519,6 +516,8 @@ class moment(object):
             >>> then = nldt.moment('Dec 29 2016', '%b %m %Y')
             >>> then()
             '2016-12-29'
+
+        (class moment)
         """
         # messages
         no_args = 'moment() cannot take format or tz without date spec'
@@ -610,6 +609,8 @@ class moment(object):
             # *format* specified
             >>> a('%Y.%m%d %H:%M:%S')
             '2016.1204 07:16:20'
+
+        (class moment)
         """
         fmt = fmt or "%Y-%m-%d"
         otz = otz or 'local'
@@ -630,10 +631,11 @@ class moment(object):
     # -------------------------------------------------------------------------
     def __add__(self, other):
         """
-        class moment:
+        Add *other* to *self*
             moment + duration => moment
             moment + number-of-seconds => moment
             moment + moment => exception
+        (class moment)
         """
         if isinstance(other, duration):
             rval = moment(self.epoch() + other.seconds)
@@ -673,20 +675,41 @@ class moment(object):
             >>> b = prs('tomorrow', b)
             >>> a == b
             True
+        (class moment)
         """
-        return self.epoch() == other.epoch()
+        if isinstance(other, moment):
+            rval = (self.epoch() == other.epoch())
+        elif isinstance(other, numbers.Number):
+            rval = (self.epoch() == int(other))       # nocov
+        elif isinstance(other, str):
+            if other.isdigit():
+                rval = (self.epoch == int(other))     # nocov
+            else:
+                othm = moment(other)
+                rval = (self.epoch() == othm.epoch())
+        # vvv nocov vvv
+        elif isinstance(other, time.struct_tm):
+            othm = timegm(other)
+            rval = (self.epoch() == othm.epoch())
+        elif isinstance(other, tuple):
+            if 6 <= len(other) <= 9:
+                othm = timegm(other)
+                rval = (self.epoch() == othm.epoch())
+            else:
+                raise ValueError('need at least 6 values, no more than 9')
+        # ^^^ nocov ^^^
+        return rval
 
     # -------------------------------------------------------------------------
     def __sub__(self, other):
         """
-        class moment
-
         Returns the difference of *self* and *other*. The result type depends
         on the type of the subtrahend:
             moment - moment => duration
             moment - duration => moment
             moment - number-of-seconds => moment
             moment - anything-else => undefined
+        (class moment)
         """
         if isinstance(other, moment):
             rval = duration(seconds=(self.epoch() - other.epoch()))
@@ -728,17 +751,16 @@ class moment(object):
             >>> c = nldt.moment()
             >>> print(c)
             2016-12-04 07:31:08
+        (class moment)
         """
         return time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(self.moment))
 
     # -------------------------------------------------------------------------
     def _guess_format(self, spec):
         """
-        class moment
-
         Tries each of the parse formats in the list until one works or the list
         is exhausted. Returns the UTC epoch (or None if we don't find a
-        matching format).
+        matching format). (class moment)
         """
         tm = None
         for fmt in self.formats:
@@ -757,17 +779,17 @@ class moment(object):
     # -------------------------------------------------------------------------
     def _normalize(self, when, tz):
         """
-        class moment
         Apply the appropriate UTC offset for the specified timezone *tz* to
-        *when*
+        *when* (class moment)
         """
         offset = utc_offset(epoch=when, tz=tz)
         return when - offset
 
     # -------------------------------------------------------------------------
     def asctime(self, tz=None):
+        If *unit* is not 'week' and *start* is not None, raise an exception. If
+        start is not a weekday, raise an exception (class moment)
         """
-        class moment
         wk = week()
         if start:
             if unit != 'week':
@@ -776,6 +798,7 @@ class moment(object):
                 raise ValueError(txt['start_inv02'])
 
         Format the UTC time as '%a %b %d %T %Y'.
+        Format the UTC time as '%a %b %d %T %Y'. (class moment)
         """
         tz = tz or 'UTC'
         rval = time.strftime('%c', self.localtime(tz=tz))
@@ -784,17 +807,13 @@ class moment(object):
     # -------------------------------------------------------------------------
     def ctime(self, **kw):
         """
-        class moment
-
-        This is an alias for self.asctime()
+        This is an alias for self.asctime() (class moment)
         """
         return self.asctime(**kw)
 
     # -------------------------------------------------------------------------
     def epoch(self):
         """
-        class moment
-
         Returns the currently stored moment as an int UTC epoch
 
         Examples:
@@ -802,14 +821,14 @@ class moment(object):
             >>> q = nldt.moment()
             >>> q.epoch()
             1480855032
+
+        (class moment)
         """
         return int(self.moment)
 
     # -------------------------------------------------------------------------
     def gmtime(self):
         """
-        class moment
-
         Returns the UTC tm structure for the currently stored moment
 
         examples:
@@ -818,14 +837,14 @@ class moment(object):
             >>> q.gmtime()
             time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
             tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
+
+        (class moment)
         """
         return time.gmtime(self.moment)
 
     # -------------------------------------------------------------------------
     def localtime(self, tz=None):
         """
-        class moment
-
         Returns the local time tm structure for the stored moment
 
         examples:
@@ -834,6 +853,8 @@ class moment(object):
             >>> q.localtime()
             time.struct_time(tm_year=2016, tm_mon=12, tm_mday=4, tm_hour=7,
             tm_min=37, tm_sec=12, tm_wday=6, tm_yday=339, tm_isdst=0)
+
+        (class moment)
         """
         with tz_context(tz):
             rval = time.localtime(self.moment)
@@ -842,10 +863,10 @@ class moment(object):
     # -------------------------------------------------------------------------
     def ceiling(self, unit):
         """
-        class moment
-
         Computes the ceiling of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
+
+        (class moment)
         """
         tm = time.gmtime(self.epoch())
         if unit == 'second':
@@ -875,10 +896,10 @@ class moment(object):
     # -------------------------------------------------------------------------
     def floor(self, unit):
         """
-        class moment
-
         Computes the floor of *unit* (second, minute, hour, day, etc.) from
         *self*.epoch()
+
+        (class moment)
         """
         epoch = self.epoch()
         if unit == 'second':
@@ -918,19 +939,16 @@ class moment(object):
     # -------------------------------------------------------------------------
     def time(self):
         """
-        class moment
-
-        Alias for self.epoch()
+        Alias for self.epoch() (class moment)
         """
         return self.epoch()
 
     # -------------------------------------------------------------------------
     def week_floor(self):
         """
-        class moment
-
         Finds the beginning of the week in which *self*.moment occurs and
-        return a new moment object that stores that point in time.
+        return a new moment object that stores that point in time. (class
+        moment)
         """
         return self.floor('week')
 
@@ -943,9 +961,7 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        class month
-
-        Set up month info
+        Set up month info (class month)
         """
         self._dict = {}
         for midx in range(1, 13):
@@ -965,10 +981,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def days(self, month, year=None):
         """
-        class month
-
         Returns the number of days in the indicated *month*. If *year* is not
-        specified, the current year is used.
+        specified, the current year is used. (class month)
         """
         month = self.indexify(month)              # noqa: F821
         rval = self._dict[month]['days']
@@ -979,10 +993,9 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def _days(self, midx):
         """
-        class month
-
         This is a private function returning the number of days in each month,
-        based on the year 2010. It is used for setting up self._dict.
+        based on the year 2010. It is used for setting up self._dict. (class
+        month)
         """
         q = moment("2010.{:02d}01".format((midx % 12) + 1))
         p = moment(q.moment - 24 * 3600)
@@ -992,10 +1005,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def index(self, name_or_idx):
         """
-        class month
-
         Given a month name or index in *name_or_idx*, this returns the index of
-        the month in the range 1 .. 12 or throws a ValueError.
+        the month in the range 1 .. 12 or throws a ValueError. (class month)
         """
         midx = self.indexify(name_or_idx)
         return self._dict[midx]['idx']
@@ -1003,10 +1014,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def isleap(self, year=None):
         """
-        class month
-
         Returns true if *year* is leap. If *year* is not provided, return True
-        if the current year is leap, else False.
+        if the current year is leap, else False. (class month)
         """
         if year is None:
             rval = False
@@ -1017,9 +1026,7 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def names(self):
         """
-        class month
-
-        Returns a list of lowercase full month names
+        Returns a list of lowercase full month names (class month)
         """
         return [self._dict[x]['name'] for x in self._dict
                 if isinstance(x, int)]
@@ -1027,9 +1034,8 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def short_names(self):
         """
-        class month
-
         Returns a list of three letter lowercase month name abbreviations
+        (class month)
         """
         return [self._dict[x]['abbr'] for x in self._dict
                 if isinstance(x, int)]
@@ -1037,9 +1043,7 @@ class month(Indexable):
     # -------------------------------------------------------------------------
     def match_monthnames(self):
         """
-        class month
-
-        Returns a regex that will match all month names
+        Returns a regex that will match all month names (class month)
         """
         rgx = "(" + "|".join([self._dict[x]['name'] for x in self._dict
                               if isinstance(x, int)]) + ")"
@@ -1056,8 +1060,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        class Parser:
-        Sets up the Parser object
+        Sets up the Parser object (class Parser)
         """
         self.preps = prepositions()
         self.tu = time_units()
@@ -1068,9 +1071,8 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def __call__(self, expr, start=None):
         """
-        class Parser:
         Parses *expr*, using *start* as the initial reference point if
-        provided.
+        provided. (class Parser)
         """
         expr = expr.replace("earlier", "ago")
         expr = expr.replace("later", "from now")
@@ -1104,8 +1106,8 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_of_in(self, expr, prep, start):
         """
-        class Parser:
-        Handles expressions like 'third of May', 'first week in June'
+        Handles expressions like 'third of May', 'first week in June' (class
+        Parser)
         """
         unit = self.tu.find_unit(expr)
         pre, post = expr.split(prep)
@@ -1121,8 +1123,8 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_mon_name(self, expr, start):
         """
-        class Parser:
-        Handles expressions like 'May', 'October', 'February, 1933'
+        Handles expressions like 'May', 'October', 'February, 1933' (class
+        Parser)
         """
         rval = moment()
         tm = rval.gmtime()
@@ -1132,9 +1134,8 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_ago(self, expr, start):
         """
-        class Parser:
         Handle expressions like 'a week ago', 'three days ago', 'five years
-        ago', etc.
+        ago', etc. (class Parser)
         """
         nums = numberize.scan(expr)
         if isinstance(nums[0], int):
@@ -1151,9 +1152,8 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_from_now(self, expr, start):
         """
-        class Parser:
         Handle expressions like 'an hour from now', 'two days from now', 'four
-        weeks from now', 'three years from now', etc.
+        weeks from now', 'three years from now', etc. (class Parser)
         """
         nums = numberize.scan(expr)
         if isinstance(nums[0], int):
@@ -1170,8 +1170,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_month(self, expr, start):
         """
-        class Parser:
-        Handle 'next month', 'last month'
+        Handle 'next month', 'last month' (class Parser)
         """
         wb = word_before('month', expr)
         if wb == 'last':
@@ -1187,8 +1186,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_week(self, expr, start):
         """
-        class Parser:
-        Various expressions that involve 'week'
+        Various expressions that involve 'week' (class Parser)
         """
         wb = word_before('week', expr)
         if wb == 'last':
@@ -1218,8 +1216,7 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_year(self, expr, start):
         """
-        class Parser:
-        Parse expressions like 'last year', 'next year'
+        Parse expressions like 'last year', 'next year' (class Parser)
         """
         wb = word_before('year', expr)
         if wb == 'last':
@@ -1233,8 +1230,8 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_weekday(self, expr, result, start):
         """
-        class Parser:
-        Parse expressions like 'next monday', 'last wednesday', etc.
+        Parse expressions like 'next monday', 'last wednesday', etc. (class
+        Parser)
         """
         wday = result[0].group()
         wb = word_before(wday, expr)
@@ -1251,12 +1248,12 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def parse_yestermorrow(self, expr, start):
         """
-        class Parser:
         Handle 'yesterday', 'today', 'tomorrow'. Decided that 'today' should
         return the same as 'now' and that 'yesterday' and 'tomorrow' are offset
         from now by a day's magnitude in opposite directions. The other option
         would be to have each of these resolve to the floor of a day. If floor
         is what is desired, we can always do m = <parser>('today').floor().
+        (class Parser)
         """
         if expr == 'yesterday':
             rval = moment(start.epoch() - self.tu.magnitude('day'))
@@ -1269,9 +1266,9 @@ class Parser(object):
     # -------------------------------------------------------------------------
     def research(self, pattern, text, result):
         """
-        class Parser:
         Looks for *pattern* in *text*. If something is found, push the search
-        object into *result* (which must be a list) and also return it.
+        object into *result* (which must be a list) and also return it. (class
+        Parser)
         """
         if not isinstance(result, list):
             raise TypeError("result must be an empty list")
@@ -1290,21 +1287,18 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        class prepositions
-
         Sets up the prepositions object. In the self.preps dict, the keys are
         the recognized prepositions and the values indicate the temporal
-        direction of the key -- +1 for forward in time, -1 for backward.
+        direction of the key -- +1 for forward in time, -1 for backward. (class
+        prepositions)
         """
         self.preps = {'of': 1, 'in': 1, 'from': 1, 'after': 1, 'before': -1}
 
     # -------------------------------------------------------------------------
     def split(self, text):
         """
-        class prepositions
-
         Constructs (and caches) a regex based on the prepositions and use it to
-        split *text*, returning the list of pieces.
+        split *text*, returning the list of pieces. (class prepositions)
         """
         if not hasattr(self, 'regex'):
             self.regex = "\\s(" + "|".join(self.preps.keys()) + ")\\s"
@@ -1317,18 +1311,14 @@ class prepositions(object):
     # -------------------------------------------------------------------------
     def are_in(self, text):
         """
-        class prepositions
-
-        Returns True if *text* contains any prepositions
+        Returns True if *text* contains any prepositions (class prepositions)
         """
         return any([x in self.preps for x in text.split()])
 
     # -------------------------------------------------------------------------
     def direction(self, prep):
         """
-        class prepositions
-
-        Returns the direction for preposition *prep*
+        Returns the direction for preposition *prep* (class prepositions)
         """
         return self.preps[prep]
 
@@ -1341,9 +1331,8 @@ class time_units(object):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        class time_units
-
-        Sets up the list of units with the number of seconds in each
+        Sets up the list of units with the number of seconds in each (class
+        time_units)
         """
         self.units = {'second': 1,
                       'minute': 60,
@@ -1356,9 +1345,7 @@ class time_units(object):
     # -------------------------------------------------------------------------
     def find_unit(self, text):
         """
-        class time_units
-
-        Scans *text* and return the first unit found or None
+        Scans *text* and return the first unit found or None (class time_units)
         """
         found = [unit for unit in self.units.keys()
                  if re.search("(^|\s){}s?(\s|$)".format(unit), text)]
@@ -1370,18 +1357,15 @@ class time_units(object):
     # -------------------------------------------------------------------------
     def magnitude(self, unit):
         """
-        class time_units
-
         Returns the number of seconds in *unit* or -1 if *unit* is not valid
+        (class time_units)
         """
         return self.units.get(unit, -1)
 
     # -------------------------------------------------------------------------
     def unit_list(self):
         """
-        class time_units
-
-        Returns the list of units
+        Returns the list of units (class time_units)
         """
         return self.units.keys()
 
@@ -1394,9 +1378,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def __init__(self):
         """
-        class week
-
-        Sets up week info
+        Sets up week info (class week)
         """
         self._dict = {}
         for idx in range(0, 7):
@@ -1414,9 +1396,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def day_list(self):
         """
-        class week
-
-        Returns a list of weekday names
+        Returns a list of weekday names (class week)
         """
         return [self._dict[x]['name'] for x in self._dict
                 if isinstance(x, int)]
@@ -1424,9 +1404,7 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def find_day(self, text):
         """
-        class week
-
-        Finds and returns the first weekday name in *text*
+        Finds and returns the first weekday name in *text* (class week)
         """
         found = [wday for wday in self.day_list()
                  if re.search("(^|\W){}(\W|$)".format(wday),
@@ -1440,11 +1418,9 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def forediff(self, start, end):
         """
-        class week
-
         Returns the number of days required to get from day *start* to day
         *end* going forward. *start* and *end* can be day names or index
-        values.
+        values. (class week)
         """
         start = self.indexify(start)
         end = self.indexify(end)
@@ -1456,11 +1432,9 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def backdiff(self, start, end):
         """
-        class week
-
         Returns the number of days required to get from day *start* to day
         *end* going forward. *start* and *end* can be day names or index
-        values.
+        values. (class week)
         """
         start = self.indexify(start)
         end = self.indexify(end)
@@ -1472,9 +1446,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def index(self, wday):
         """
-        class week
-
-        Returns the numeric index for *wday* (sun = 0, mon = 1, ... sat = 6)
+        Returns the numeric index for *wday* (mon = 0, tue = 1, ... sun = 6)
+        (class week)
         """
         if 3 < len(wday):
             wday = wday[0:3].lower()
@@ -1483,9 +1456,8 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def fullname(self, idx_or_abbr):
         """
-        class week
-
-        Looks up *idx_or_abbr* in self._dict and return the 'name' item
+        Looks up *idx_or_abbr* in self._dict and return the 'name' item (class
+        week)
         """
         idx = self.indexify(idx_or_abbr)
         return self._dict[idx]['name']
@@ -1493,17 +1465,13 @@ class week(Indexable):
     # -------------------------------------------------------------------------
     def match_weekdays(self):
         """
-        class week
-
-        Returns a regex that will match all weekdays
+        Returns a regex that will match all weekdays (class week)
         """
         return "(mon|tues|wednes|thurs|fri|satur|sun)day"
 
     # -------------------------------------------------------------------------
     def day_number(self, moment_or_epoch, count=None):
         """
-        class week
-
         This returns a weekday number based on a moment or epoch time. The
         *count* argument can be one of
 
@@ -1519,6 +1487,8 @@ class week(Indexable):
 
         'mon1' is the counting regime for the '%u' specifier in time.strftime()
         and time.strptime().
+
+        (class week)
         """
         count = count or 'mon0'
         if isinstance(moment_or_epoch, moment):
