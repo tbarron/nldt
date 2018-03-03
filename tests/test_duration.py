@@ -225,6 +225,7 @@ def test_dur_moment_diff(start, end, exp):
     Test creating a duration by difference of moments
     """
     pytest.debug_func()
+    tz_orig = moment.default_tz('utc')
     if isinstance(exp, Exception):
         with pytest.raises(type(exp)) as err:
             # payload
@@ -234,6 +235,7 @@ def test_dur_moment_diff(start, end, exp):
         # payload
         result = moment(end) - moment(start)
         assert exp == result
+    moment.default_tz(tz_orig)
 
 
 # -----------------------------------------------------------------------------
