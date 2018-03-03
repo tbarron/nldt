@@ -1384,7 +1384,7 @@ class week(Indexable):
         self._dict = {}
         for idx in range(0, 7):
             q = moment("2018.01{:02d}".format(idx+1))
-            wname = q('%A').lower()
+            wname = q('%A', otz='utc').lower()
             abbr = wname[0:3]
             this = {'name': wname,
                     'abbr': abbr,

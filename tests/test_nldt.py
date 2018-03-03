@@ -628,11 +628,11 @@ def nl_oracle(spec):
     elif spec == 'week after next':
         nxwk = prs('next week')
         nxwk = prs('next week', nxwk)
-        return nxwk()
+        return nxwk(otz='utc')
     elif spec == 'week before last':
         lswk = prs('last week')
         lswk = prs('last week', lswk)
-        return lswk()
+        return lswk(otz='utc')
     elif spec == 'a week ago':
         now = nldt.moment()
         then = nldt.moment(now.epoch() - 7 * 24 * 3600)
@@ -764,7 +764,7 @@ def test_natural_language(inp):
     prs = nldt.Parser()
     exp = nl_oracle(inp)
     wobj = prs(inp)
-    assert wobj() == exp
+    assert wobj(otz='utc') == exp
 
 
 # -----------------------------------------------------------------------------

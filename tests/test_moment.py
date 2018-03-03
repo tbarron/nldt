@@ -24,13 +24,13 @@ def test_ambig():
     """
     pytest.debug_func()
     # payload
-    iso = nldt.moment('01-02-03')
+    iso = nldt.moment('01-02-03', itz='local')
     assert iso() == '2001-02-03'
     # payload
-    uso = nldt.moment('01-02-03', '%m-%d-%y')
+    uso = nldt.moment('01-02-03', '%m-%d-%y', itz='local')
     assert uso() == '2003-01-02'
     # payload
-    euro = nldt.moment('01-02-03', '%d-%m-%y')
+    euro = nldt.moment('01-02-03', '%d-%m-%y', itz='local')
     assert euro() == '2003-02-01'
 
 
@@ -208,7 +208,7 @@ def test_intuit(inp, fmt, exp):
     Try to guess popular time formats
     """
     pytest.debug_func()
-    later = nldt.moment(inp)
+    later = nldt.moment(inp, itz='local')
     # payload
     assert later(fmt) == exp
 
@@ -266,7 +266,7 @@ def test_moment_asctime(inp, loc, exp):
     timezone.
     """
     pytest.debug_func()
-    this = nldt.moment(inp)
+    this = nldt.moment(inp, itz='utc')
     assert this.asctime(tz=loc) == exp
     assert this.ctime(tz=loc) == exp
 
@@ -798,7 +798,7 @@ def test_with_format():
     If a format is specified, the spec must match
     """
     pytest.debug_func()
-    wobj = nldt.moment('Dec 29, 2016', '%b %d, %Y')
+    wobj = nldt.moment('Dec 29, 2016', '%b %d, %Y', itz='local')
     assert wobj() == '2016-12-29'
     with pytest.raises(ValueError) as err:
         # payload
