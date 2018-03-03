@@ -779,6 +779,8 @@ class moment(object):
         return when - offset
 
     # -------------------------------------------------------------------------
+    def _validate(self, unit, start):
+        """
         If *unit* is not 'week' and *start* is not None, raise an exception. If
         start is not a weekday, raise an exception (class moment)
         """
