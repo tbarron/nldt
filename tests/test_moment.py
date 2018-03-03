@@ -580,7 +580,7 @@ def test_moment_tz(zone):
 
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp, zone, exp", [
+@pytest.mark.parametrize("inp, inzone, exp", [
     pytest.param("2016.0101 00:00:00", "Africa/Freetown",
                  "2016.0101 00:00:00", id='001'),
     pytest.param("2016.0701 00:00:00", "Africa/Freetown",
@@ -683,7 +683,7 @@ def test_moment_tz(zone):
     pytest.param("2016.0701 00:00:00", "US/Pacific",
                  "2016.0701 07:00:00", id='042'),
     ])
-def test_moment_init_tz(inp, zone, exp):
+def test_moment_init_tz(inp, inzone, exp):
     """
     Timezones when initializing a moment indicate how the input time should be
     interpreted. This test verifies that the moment constructor can apply a
@@ -691,8 +691,8 @@ def test_moment_init_tz(inp, zone, exp):
     """
     pytest.debug_func()
     # payload
-    when = M(inp, itz=zone)
-    assert when("%Y.%m%d %T") == exp
+    when = M(inp, itz=inzone)
+    assert when("%Y.%m%d %T", otz='utc') == exp
 
 
 # -----------------------------------------------------------------------------
