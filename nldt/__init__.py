@@ -960,8 +960,8 @@ class month(Indexable):
         self._dict = {}
         for midx in range(1, 13):
             date = "2010.{:02d}01".format(midx)
-            q = moment(date)
-            mname = q('%B').lower()
+            q = moment(date, itz='utc')
+            mname = q('%B', otz='utc').lower()
             abbr = mname[0:3]
             this = {
                 'name': mname,
