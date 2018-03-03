@@ -75,6 +75,7 @@ import numbers
 import os
 import pytz
 import re
+from nldt.text import txt
 import time
 from nldt import verinfo
 
@@ -102,7 +103,7 @@ class duration(object):
         if start or end:
             # build duration from the difference between end and start
             if not start or not end:
-                raise InitError('If start or end is specified, both must be')
+                raise InitError(txt['mctor_001'])
             start = self._resolve_value(start)
             end = self._resolve_value(end)
             self.seconds = end.epoch() - start.epoch()
@@ -207,12 +208,9 @@ class duration(object):
         elif isinstance(other, duration):
             rval = self.seconds - other.seconds
         elif isinstance(other, moment):
-            msg = "unsupported operand type(s): try 'moment' - 'duration'"
-            raise TypeError(msg)
+            raise TypeError(txt['optypes_01'])
         else:
-            msg = ("unsupported operand type(s): '{}' and '{}'"
-                   .format(type(self), type(other)))
-            raise TypeError(msg)
+            raise TypeError(txt['optypes_02'].format(type(self), type(other)))
         return rval
 
     # -------------------------------------------------------------------------
@@ -252,7 +250,7 @@ class duration(object):
             rval = moment(start_end_value, itz='utc')
         elif isinstance(start_end_value, tuple):
             if len(start_end_value) < 6 or 9 < len(start_end_value):
-                raise InitError('Invalid tm tuple')
+                raise InitError(txt['invtup'])
             else:
                 rval = moment(start_end_value, itz='utc')
         elif isinstance(start_end_value, moment):
@@ -770,6 +768,12 @@ class moment(object):
     def asctime(self, tz=None):
         """
         class moment
+        wk = week()
+        if start:
+            if unit != 'week':
+                raise ValueError(txt['start_inv01'])
+            elif all([start not in x for x in wk.day_list()]):
+                raise ValueError(txt['start_inv02'])
 
         Format the UTC time as '%a %b %d %T %Y'.
         """

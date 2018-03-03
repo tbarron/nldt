@@ -10,6 +10,7 @@ import nldt
 from nldt import moment as M
 from nldt import duration as D
 import pytest
+from nldt.text import txt
 import time
 from tzlocal import get_localzone
 
