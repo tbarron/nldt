@@ -13,6 +13,7 @@ import numbers
 import os
 import pytest
 import re
+from nldt.text import txt
 import time
 import nldt
 from nldt import moment as M
@@ -53,8 +54,8 @@ def test_tz_context_keyerr():
         tzorig = os.getenv('TZ')
 
     with nldt.tz_context('US/Pacific'):
-        then = M("2000-12-31 15:59:59", itz='US/Pacific')
-        assert then("%F %T") == "2000-12-31 15:59:59"
+        then = M(txt['date02'], itz='US/Pacific')
+        assert then("%F %T") == txt['date02']
 
     if tzorig:
         os.environ['TZ'] = tzorig
@@ -150,11 +151,11 @@ def test_indexable_abc():
     directly.
     """
     pytest.debug_func()
-    msg = "This is an abstract base class -- don't instantiate it."
     with pytest.raises(TypeError) as err:
         _ = nldt.Indexable()
         assert isinstance(_, nldt.Indexable)
     assert msg in str(err)
+    assert txt['ABC_noinst'] in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -217,7 +218,7 @@ def test_month_index():
     assert m.index('December') == 12
     with pytest.raises(ValueError) as err:
         assert m.index('frobble')
-    assert "Could not indexify 'frobble'" in str(err)
+    assert txt['not_indxfy'].format('frobble') in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -380,7 +381,7 @@ def test_dst_list():
     pytest.debug_func()
     with pytest.raises(TypeError) as err:
         nldt.dst(time.gmtime())
-    assert "dst() when arg must be str, number, or moment" in str(err)
+    assert txt['dst_when'] in str(err)
 
 
 # -----------------------------------------------------------------------------

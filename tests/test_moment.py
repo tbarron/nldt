@@ -531,8 +531,7 @@ def test_moment_plus():
         # payload
         assert base + M("2018-03-01") != M("2018-04-01")
     assert "sum of moments is not defined" in str(err)
-    msg = ("unsupported operand type(s) for +: "
-           "'<class 'nldt.moment'>' and '<class 'list'>'")
+    msg = txt['optypes_02'].format("<class 'nldt.moment'>", "<class 'list'>")
     with pytest.raises(TypeError) as err:
         # payload
         M("2018-02-01") + [1, 2, 3]
