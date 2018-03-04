@@ -674,24 +674,22 @@ class moment(object):
         if isinstance(other, moment):
             rval = (self.epoch() == other.epoch())
         elif isinstance(other, numbers.Number):
-            rval = (self.epoch() == int(other))       # nocov
+            rval = (self.epoch() == int(other))
         elif isinstance(other, str):
             if other.isdigit():
-                rval = (self.epoch == int(other))     # nocov
+                rval = (self.epoch() == int(other))
             else:
                 othm = moment(other)
                 rval = (self.epoch() == othm.epoch())
-        # vvv nocov vvv
-        elif isinstance(other, time.struct_tm):
-            othm = timegm(other)
+        elif isinstance(other, time.struct_time):
+            othm = moment(other)
             rval = (self.epoch() == othm.epoch())
         elif isinstance(other, tuple):
             if 6 <= len(other) <= 9:
-                othm = timegm(other)
+                othm = moment(other)
                 rval = (self.epoch() == othm.epoch())
             else:
-                raise ValueError('need at least 6 values, no more than 9')
-        # ^^^ nocov ^^^
+                raise ValueError(txt['tuplen'])
         return rval
 
     # -------------------------------------------------------------------------
