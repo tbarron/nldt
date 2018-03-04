@@ -519,15 +519,15 @@ class moment(object):
         (class moment)
         """
         # messages
-        no_args = 'moment() cannot take format or tz without date spec'
-        epc_no_fmt_tz = 'moment(epoch) does not take timezone or format'
-        fmt_str = 'moment() cannot take format when date is not of type str'
-        tuplen = 'need at least 6 values, no more than 9'
-        valid_calls = "\n".join(["Valid ways of calling nldt.moment():",
-                                 "    nldt.moment()",
-                                 "    nldt.moment(<epoch-seconds>)",
-                                 "    nldt.moment('YYYY-mm-dd')",
-                                 "    nldt.moment(<date-str>[, <format>])"])
+        # no_args = 'moment() cannot take format or tz without date spec'
+        # epc_no_fmt_tz = 'moment(epoch) does not take timezone or format'
+        # fmt_str = 'moment() cannot take format when date is not of type str'
+        # tuplen = 'need at least 6 values, no more than 9'
+        # valid_calls = "\n".join(["Valid ways of calling nldt.moment():",
+        #                          "    nldt.moment()",
+        #                          "    nldt.moment(<epoch-seconds>)",
+        #                          "    nldt.moment('YYYY-mm-dd')",
+        #                          "    nldt.moment(<date-str>[, <format>])"])
 
         if not hasattr(self.__class__, 'deftz'):
             self.__class__.deftz = 'local'
