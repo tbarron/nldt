@@ -328,6 +328,44 @@ def test_moment_ceiling():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("this, that, exp", [
+    pytest.param(M(1500000000), 1500000000, True, id='int-True'),
+    pytest.param(M(1500000001), 1500000000, False, id='int-False'),
+    pytest.param(M(1500000000), 1500000000.0, True, id='float-True'),
+    pytest.param(M(1500000001), 1500000000.5, False, id='float-False'),
+    pytest.param(M(1500000000), "1500000000", True, id='strint-True'),
+    pytest.param(M(1500000001), "1500000000", False, id='strint-False'),
+    pytest.param(M((2010, 1, 1, 0, 0, 0, 0, 0, 0), itz='local'),
+                 time.struct_time((2010, 1, 1, 0, 0, 0, 0, 0, 0)),
+                 True, id='tm-True'),
+    pytest.param(M((2010, 1, 1, 0, 0, 0, 0, 0, 0), itz='local'),
+                 time.struct_time((2010, 1, 1, 0, 0, 1, 0, 0, 0)),
+                 False, id='tm-False'),
+    pytest.param(M((2010, 1, 1, 0, 0, 0, 0, 0, 0), itz='local'),
+                 (2010, 1, 1, 0, 0, 0, 0, 0, 0), True, id='tuple-True'),
+    pytest.param(M((2010, 1, 1, 0, 0, 0, 0, 0, 0), itz='local'),
+                 (2010, 1, 1, 0, 0, 1, 0, 0, 0), False, id='tuple-False'),
+
+    pytest.param(M((2010, 1, 1, 0, 0, 0, 0, 0, 0), itz='local'),
+                 (2010, 1, 1, 0, 0),
+                 ValueError(txt['tuplen']), id='tuple-short'),
+    pytest.param(M((2010, 1, 1, 0, 0, 0, 0, 0, 0), itz='local'),
+                 (2010, 1, 1, 0, 0, 1, 0, 0, 0, 0),
+                 ValueError(txt['tuplen']), id='tuple-long'),
+    ])
+def test_moment_eq(this, that, exp):
+    """
+    Verify that moment.__eq__() behaves as expected
+    """
+    pytest.debug_func()
+    if isinstance(exp, Exception):
+        with pytest.raises(type(exp)):
+            assert (this == that)
+    else:
+        assert (this == that) == exp
+
+
+# -----------------------------------------------------------------------------
 def test_moment_floor():
     """
     moment().floor(*unit*) should return the lowest second in the indicated
