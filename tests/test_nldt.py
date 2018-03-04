@@ -25,7 +25,7 @@ def test_bug_pctsec():
     """
     given
         x = moment()
-    x.moment should be equal to int(x("%s"))
+    x.epoch() should be equal to int(x('%s'))
     """
     pytest.debug_func()
     now = nldt.moment()
