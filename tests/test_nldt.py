@@ -861,6 +861,27 @@ def test_isleap():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param(35, True, id='int'),
+    pytest.param(-19, True, id='negint'),
+    pytest.param(35.7, True, id='float'),
+    pytest.param(-74.392, True, id='negfloat'),
+    pytest.param('ABC', False, id='notint'),
+    pytest.param('17abc', False, id='hasalpha'),
+    pytest.param('92', True, id='strint'),
+    pytest.param('-13', True, id='str negint'),
+    pytest.param('-13.9', True, id='str negfloat'),
+    pytest.param('13.9', True, id='str float'),
+    ])
+def test_isnum(inp, exp):
+    """
+    Verify that nldt.isnum() behaves as expected
+    """
+    pytest.debug_func()
+    assert nldt.isnum(inp) == exp
+
+
+# -----------------------------------------------------------------------------
 def test_match_monthnames():
     """
     Verify the regex returned by month.match_monthnames
