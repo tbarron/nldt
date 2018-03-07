@@ -574,23 +574,23 @@ def nl_oracle(spec):
         now = prs('last week')
         now = prs('next week', now)
         now = prs('next thursday', now)
-        return now()
     elif spec == 'fifth day of last week':
         now = nldt.moment('last week')
         now.parse('next friday')
-        return now()
+        return now(otz='utc')
+        return now(otz='utc')
     elif spec == 'today':
         return time.strftime("%Y-%m-%d", time.gmtime())
     elif spec == 'tomorrow':
         tm = time.gmtime()
         then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday+1,
                               0, 0, 0, 0, 0, 0)))
-        return then()
+        return then(otz='utc')
     elif spec == 'yesterday':
         tm = time.gmtime()
         then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday-1,
                               0, 0, 0, 0, 0, 0)))
-        return then()
+        return then(otz='utc')
     elif 'year' in spec:
         if nldt.word_before('year', spec) == 'next':
             year = int(time.strftime("%Y")) + 1
@@ -603,12 +603,12 @@ def nl_oracle(spec):
             tm = time.gmtime()
             nmon = M(time.mktime((tm.tm_year, tm.tm_mon+1, 1,
                                   0, 0, 0, 0, 0, 0)))
-            return nmon()
+            return nmon(otz='utc')
         elif nldt.word_before('month', spec) == 'last':
             tm = time.gmtime()
             lmon = M(time.mktime((tm.tm_year, tm.tm_mon-1, 1,
                                   0, 0, 0, 0, 0, 0)))
-            return lmon()
+            return lmon(otz='utc')
     elif spec == 'next year':
         year = int(time.strftime("%Y")) + 1
         return '{}-01-01'.format(year)
@@ -620,29 +620,29 @@ def nl_oracle(spec):
         start = prs('tomorrow')
         while wk.day_number(start) != wdidx:
             start = M(start.epoch() + tu.magnitude('day'))
-        return start()
+        return start(otz='utc')
     elif spec == 'last week':
         wdidx = wk.index('mon')
         start = prs('yesterday')
         start = nldt.moment(start.epoch() - 6*24*3600)
         while wk.day_number(start) != wdidx:
             start = prs('yesterday', start)
-        return start()
+        return start(otz='utc')
     elif spec == 'end of the week':
         wdidx = 6
         start = nldt.moment()
         while wk.day_number(start) != wdidx:
             start = prs('tomorrow', start)
-        return start()
+        return start(otz='utc')
     elif spec == 'end of last week':
         eolw = M(nldt.moment().week_floor().epoch() - 1)
-        return eolw()
+        return eolw(otz='utc')
     elif spec == 'beginning of next week':
         wdidx = 0
         start = prs('tomorrow')
         while wk.day_number(start) != wdidx:
             start = prs('tomorrow', start)
-        return start()
+        return start(otz='utc')
     elif spec == 'first week in last January':
         wdidx = 1
         now = nldt.moment()
@@ -650,7 +650,7 @@ def nl_oracle(spec):
         start = nldt.moment('{}-01-07'.format(year))
         while int(start('%u')) != wdidx:
             start.parse('yesterday')
-        return start()
+        return start(otz='utc')
     elif spec == 'week after next':
         nxwk = prs('next week')
         nxwk = prs('next week', nxwk)
@@ -662,15 +662,15 @@ def nl_oracle(spec):
     elif spec == 'a week ago':
         now = nldt.moment()
         then = nldt.moment(now.epoch() - 7 * 24 * 3600)
-        return then()
+        return then(otz='utc')
     elif spec == 'two weeks ago':
         now = nldt.moment()
         then = nldt.moment(now.epoch() - 14 * 24 * 3600)
-        return then()
+        return then(otz='utc')
     elif spec == 'three weeks from now':
         now = nldt.moment()
         then = nldt.moment(now.epoch() + 21 * 24 * 3600)
-        return then()
+        return then(otz='utc')
     elif 'first week in' in spec:
         month = nldt.month()
         for mname in month.short_names():
@@ -683,10 +683,10 @@ def nl_oracle(spec):
             start = nldt.moment('{}-{}-07'.format(year, midx))
             while wk.day_number(start) != 0:
                 start = prs('yesterday', start)
-            return start()
+            return start(otz='utc')
         else:
             now = nldt.moment()
-            return now()
+            return now(otz='utc')
     elif re.findall('weeks?', spec) and 'earlier' in spec:
         result = numberize.scan(spec)
         if isinstance(result[0], numbers.Number):
@@ -695,7 +695,7 @@ def nl_oracle(spec):
             mult = 1
         now = nldt.moment()
         then = nldt.moment(now.epoch() - mult * 7 * 24 * 3600)
-        return then()
+        return then(otz='utc')
     elif re.findall('weeks?', spec) and 'later' in spec:
         result = numberize.scan(spec)
         if isinstance(result[0], numbers.Number):
@@ -704,7 +704,7 @@ def nl_oracle(spec):
             mult = 1
         now = nldt.moment()
         then = nldt.moment(now.epoch() + mult * 7 * 24 * 3600)
-        return then()
+        return then(otz='utc')
 
     (direction, day) = spec.split()
     if direction == 'next':
@@ -734,7 +734,7 @@ def nl_oracle(spec):
         # now jump forward a week
         start = M(when.epoch() + tu.magnitude('week'))
 
-    return start()
+    return start(otz='utc')
 
 
 # -----------------------------------------------------------------------------
