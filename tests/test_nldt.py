@@ -819,23 +819,23 @@ def test_from_now_except():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("month, year, exp", [
-    pytest.param(1, None, 31, id='001'),
-    pytest.param(2, 2017, 28, id='002'),
-    pytest.param(2, 2016, 29, id='003'),
-    pytest.param(2, 2000, 29, id='004'),
-    pytest.param(2, 1900, 28, id='005'),
-    pytest.param(3, 2018, 31, id='006'),
-    pytest.param(4, None, 30, id='007'),
+    pytest.param(1, None, 31, id="jan"),
+    pytest.param(2, 2017, 28, id="feb-common"),
+    pytest.param(2, 2016, 29, id='feb-leap'),
+    pytest.param(2, 2000, 29, id='feb-400-leap'),
+    pytest.param(2, 1900, 28, id='feb-100-common'),
+    pytest.param(3, 2018, 31, id='mar'),
+    pytest.param(4, None, 30, id='apr'),
 
-    pytest.param(5, None, 31, id='008'),
-    pytest.param(6, None, 30, id='009'),
-    pytest.param(7, None, 31, id='010'),
-    pytest.param(8, None, 31, id='011'),
-    pytest.param(9, None, 30, id='012'),
-    pytest.param(10, None, 31, id='013'),
-    pytest.param(11, None, 30, id='014'),
-    pytest.param(12, None, 31, id='015'),
-    pytest.param(19, None, "Could not indexify", id='016'),
+    pytest.param(5, None, 31, id='may'),
+    pytest.param(6, None, 30, id='june'),
+    pytest.param(7, None, 31, id='july'),
+    pytest.param(8, None, 31, id='aug'),
+    pytest.param(9, None, 30, id='sep'),
+    pytest.param(10, None, 31, id='oct'),
+    pytest.param(11, None, 30, id='nov'),
+    pytest.param(12, None, 31, id='dec'),
+    pytest.param(19, None, txt["err-indxfy-nof"], id='ex-range'),
     ])
 def test_month_days(month, year, exp):
     """
