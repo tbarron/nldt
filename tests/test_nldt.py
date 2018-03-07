@@ -56,7 +56,7 @@ def test_tz_context_keyerr():
 
     with nldt.tz_context('US/Pacific'):
         then = M(txt['date02'], itz='US/Pacific')
-        assert then("%F %T") == txt['date02']
+        assert then("%F %T", otz='US/Pacific') == txt['date02']
 
     if tzorig:
         os.environ['TZ'] = tzorig
