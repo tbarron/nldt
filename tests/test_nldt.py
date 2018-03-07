@@ -6,6 +6,7 @@ See file LICENSING for details
 This file contains code for testing nldt functionality.
 """
 from fixtures import fx_calls_debug    # noqa
+from fixtures import local_formatted
 from tzlocal import get_localzone
 from datetime import datetime
 from nldt import numberize
@@ -579,7 +580,7 @@ def nl_oracle(spec):
         now.parse(txt["xpr-nfri"])
         return now(otz='utc')
     elif spec == 'today':
-        return time.strftime(txt['iso_date'], time.gmtime())
+        return local_formatted(txt['iso_date'], None, time.gmtime)
     elif spec == 'tomorrow':
         tm = time.gmtime()
         then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday+1,

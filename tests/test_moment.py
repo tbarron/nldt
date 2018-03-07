@@ -74,7 +74,7 @@ def test_display():
     """
     pytest.debug_func()
     now = time.time()
-    exp = time.strftime("%Y-%m-%d", time.localtime(now))
+    exp = local_formatted("%Y-%m-%d", now)
     wobj = nldt.moment(now)
     # payload
     assert wobj() == exp
@@ -89,7 +89,7 @@ def test_display_formatted():
     pytest.debug_func()
     fmt = "%H:%M %p on %B %d, %Y"
     now = time.time()
-    exp = time.strftime(fmt, time.localtime(now))
+    exp = local_formatted(fmt, now)
     wobj = nldt.moment(now)
     # payload
     assert wobj(fmt) == exp
@@ -620,7 +620,7 @@ def test_moment_tz(zone):
     pytest.debug_func()
     now = M()
     adjusted = now.epoch() + nldt.utc_offset(tz=zone)
-    expected = time.strftime("%F %T", time.gmtime(adjusted))
+    expected = local_formatted("%F %T", adjusted, time.gmtime)
     # payload
     actual = now("%F %T", otz=zone)
     assert actual == expected
@@ -800,7 +800,7 @@ def test_local():
     c = nldt.moment()
     fmt = "%Y.%m%d %H:%M:%S"
     # payload
-    assert c(fmt, otz='local') == time.strftime(fmt)
+    assert c(fmt, otz='local') == local_formatted(fmt)
 
 
 # -----------------------------------------------------------------------------
@@ -811,7 +811,7 @@ def test_str():
     pytest.debug_func()
     c = nldt.moment()
     fmt = "%Y-%m-%d %H:%M:%S"
-    exp = time.strftime(fmt, time.gmtime(c.epoch()))
+    exp = local_formatted(fmt, c.epoch(), time.gmtime)
     # payload
     assert str(c) == exp
 
