@@ -456,10 +456,12 @@ class moment(object):
     @classmethod
     def default_tz(cls, value=None):
         """
-        If *value* is None, return the currently set default timezone. If
-        *value* is not None, use it to set the default timezone for
-        interpreting inputs to the moment constructor (other than epoch values)
-        (class moment)
+        If *value* is None, return the currently set default timezone without
+        changing it. If *value* is 'clear', reset the default timezone to
+        factory default by deleting the attribute cls.deftz. If *value* is
+        anything else, use it to set the default timezone for interpreting
+        inputs to the moment constructor (other than epoch values) (class
+        moment)
         """
         if hasattr(cls, 'deftz'):
             rval = cls.deftz
