@@ -280,6 +280,21 @@ class duration(object):
         return rval
 
     # -------------------------------------------------------------------------
+    def hms(self):
+        """
+        This method reports a duration as HH:MM:SS in a string (class duration)
+        """
+        secs = abs(self.seconds)
+        hours = int(secs / 3600)
+        secs -= hours * 3600
+        minutes = int(secs / 60)
+        secs -= minutes * 60
+        rval = "{:02d}:{:02d}:{:02d}".format(hours, minutes, secs)
+        if self.seconds < 0:
+            rval = "-" + rval
+        return rval
+
+    # -------------------------------------------------------------------------
     def sleep(self):
         """
         sleep for the duration period (class duration)
@@ -1590,6 +1605,40 @@ def dst(when=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
+def isnum(strval):
+    """
+    Returns True if strval represents a valid number, otherwise False
+    """
+    try:
+        return isinstance(int(float(strval)), numbers.Number)
+    except ValueError:
+        return False
+
+
+# -----------------------------------------------------------------------------
+def offset_list(tzname):
+    """
+    Given the name of a timezone, return a list of the offsets the zone will
+    use in the current year
+    """
+    zone = pytz.timezone(tzname)
+    year = datetime.now().year
+    offd = {}
+    for m in range(1, 13):
+        offset = zone.utcoffset(datetime(year, m, 1)).total_seconds()
+        if offset not in offd:
+            name = zone.tzname(datetime(year, m, 1))
+            offd[offset] = {'name': name,
+                            'secs': offset}
+
+    rval = {}
+    for offset, label in zip(sorted(offd.keys()), ['std', 'dst']):
+        rval[label] = offd[offset]
+
+    return rval
+
+
+# -----------------------------------------------------------------------------
 def timezone():
     """
     Returns the locally configured timezone name
@@ -1618,24 +1667,18 @@ def timegm(*args):
 
 # -----------------------------------------------------------------------------
 @contextlib.contextmanager
-def tz_context(zone=None):
+def tz_context(tzname=None, year=None):
     """
     This context manager sets the local timezone to *zone* during the yield and
     back to the original setting afterward
     """
     tzorig = os.getenv('TZ')
-    if zone:
-        zone = pytz.timezone(zone)
-    else:
+    year = year or datetime.now().year
+    if tzname is None:
         zone = get_localzone()
+        tzname = zone.zone
 
-    sdt = datetime(2011, 1, 1)
-    soff = -1 * int(zone.utcoffset(sdt).total_seconds()/3600)
-    ddt = datetime(2011, 7, 1)
-    doff = -1 * int(zone.utcoffset(ddt).total_seconds()/3600)
-    tzstr = "{}{}{}{}".format(zone.tzname(sdt), soff,
-                              zone.tzname(ddt), doff)
-    os.environ['TZ'] = tzstr
+    os.environ['TZ'] = tzstring(tzname)
     time.tzset()
 
     yield
@@ -1668,6 +1711,21 @@ def tzset(zone=None):
     elif 'TZ' in os.environ:
         del os.environ['TZ']
     time.tzset()
+
+
+# -----------------------------------------------------------------------------
+def tzstring(tzname):
+    """
+    """
+    offl = offset_list(tzname)
+    name = 'XXX' if isnum(offl['std']['name']) else offl['std']['name']
+    hms = duration(seconds=-1 * int(offl['std']['secs'])).hms()
+    tzstr = "{}{}".format(name, hms)
+    if 'dst' in offl:
+        name = 'XXX' if isnum(offl['dst']['name']) else offl['dst']['name']
+        hms = duration(seconds=-1 * int(offl['dst']['secs'])).hms()
+        tzstr += "{}{}".format(name, hms)
+    return tzstr
 
 
 # -----------------------------------------------------------------------------
