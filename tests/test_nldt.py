@@ -718,20 +718,22 @@ def nl_oracle(spec):
             start = M(start.epoch() - tu.magnitude('day'))
     elif day == 'week':
         (day, direction) = (direction, day)
-        # now direction is 'week' and day is likely a weekday (eg, 'monday
+        # now direction is 'week' and day is likely a weekday (eg, from 'monday
         # week')
         #
         # we've already handled '{next,last} week' above, so we don't need to
         # worry about those here
         #
-        # advance to day
+        # weekday we want to advance to
         wdidx = wk.index(day)
-        when = prs('tomorrow')
+        # current time plus a day
+        when = time.time() + 24*3600
         while wk.day_number(when) != wdidx:
-            when = M(when.epoch() + tu.magnitude('day'))
+            # add a day until we hit the target weekday number
+            when += 24*3600
 
         # now jump forward a week
-        start = M(when.epoch() + tu.magnitude('week'))
+        start = M(when + tu.magnitude('week'))
 
     return start(otz='utc')
 
