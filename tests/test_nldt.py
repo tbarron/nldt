@@ -995,19 +995,19 @@ def test_week_day_number():
     sat = nldt.moment("2000-01-01")
     sun = nldt.moment("2000-01-02")
 
-    assert w.day_number(sat.epoch()) == 5
-    assert w.day_number(sat) == 5
+    assert w.day_number(sat.epoch()) == 5        # payload
+    assert w.day_number(sat) == 5                # payload
 
     with pytest.raises(TypeError) as err:
         # payload
         w.day_number("the other day") == 14
     assert "argument must be moment or epoch number" in str(err)
 
-    assert w.day_number(sat, count='mon1') == 6
-    assert w.day_number(sun, count='mon1') == 7
+    assert w.day_number(sat, count='mon1') == 6    # payload
+    assert w.day_number(sun, count='mon1') == 7    # payload
 
-    assert w.day_number(sat, count='sun0') == 6
-    assert w.day_number(sun, count='sun0') == 0
+    assert w.day_number(sat, count='sun0') == 6    # payload
+    assert w.day_number(sun, count='sun0') == 0    # payload
 
 
 # -----------------------------------------------------------------------------
