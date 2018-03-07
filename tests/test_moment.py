@@ -861,13 +861,13 @@ def test_takes_tz(marg, exp):
                  ValueError('ceiling() only accepts start for unit=\'week\''),
                  id='008'),
     pytest.param('week', 'frogs', '2008.1231',
-                 ValueError(txt['start_inv02'])),
+                 ValueError(txt['start_inv02']), id='frogs'),
     pytest.param('month', 'monday', '2008.1231',
-                 ValueError('ceiling() only accepts start for unit=\'week\''),
-                 id='011'),
+                 ValueError(txt['err-ceilweek']),
+                 id='ceilweek'),
     pytest.param('year', 'monday', '2008.1231',
                  ValueError(txt['start_inv01']),
-                 id='012'),
+                 id='invalid-start'),
     ])
 def test_week_ceiling_start(unit, weekday, anchor, exp):
     """
