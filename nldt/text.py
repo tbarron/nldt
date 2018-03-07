@@ -24,6 +24,7 @@ txt['epc_nofmttz'] = "moment(epoch) does not take timezone or format"
 
 txt['err_abc'] = "This is an abstract base class -- don't instantiate it."
 txt['err-argmore'] = "argument must be moment or epoch number"
+txt['err-ceilweek'] = "ceiling() only accepts start for unit='week'"
 txt['err_notatime'] = ("Failure parsing '{}' -- not recognized as a"
                        " time expression")
 txt['err-nounit'] = "No unit found in expression"
