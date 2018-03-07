@@ -15,6 +15,15 @@ import tbx
 
 
 # -----------------------------------------------------------------------------
+def local_formatted(fmt, epoch=None, dstor=None):
+    """
+    Format the epoch time as local
+    """
+    dstor = dstor or time.localtime
+    return time.strftime(fmt, dstor(epoch))
+
+
+# -----------------------------------------------------------------------------
 def ftime(fmt, local=True, anchor=None):
     """
     Provide an oracle for test_cmdline
