@@ -154,7 +154,6 @@ def test_indexable_abc():
     with pytest.raises(TypeError) as err:
         _ = nldt.Indexable()
         assert isinstance(_, nldt.Indexable)
-    assert msg in str(err)
     assert txt['ABC_noinst'] in str(err)
 
 
@@ -311,8 +310,8 @@ def test_utc_offset():
         assert nldt.utc_offset() == -1 * time.timezone
 
     with pytest.raises(TypeError) as err:
-        nldt.utc_offset("not a number")
-    assert "utc_offset requires an epoch time or None" in str(err)
+        nldt.utc_offset(txt['nan'])
+    assert txt['utc_offset'] in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -334,7 +333,7 @@ def test_dst_off():
     writing).
     """
     pytest.debug_func()
-    then = nldt.moment("2010-12-31", "%Y-%m-%d")
+    then = nldt.moment(txt['date03'], txt['iso_date'])
     assert not nldt.dst(then.epoch())
 
 
@@ -346,8 +345,8 @@ def test_dst_on():
     writing).
     """
     pytest.debug_func()
-    then = nldt.moment("2012-07-01", "%Y-%m-%d")
-    assert nldt.dst(then.epoch(), tz="US/Eastern")
+    then = nldt.moment(txt['date04'], txt['iso_date'])
+    assert nldt.dst(then.epoch(), tz=txt['tz_est'])
 
 
 # -----------------------------------------------------------------------------
@@ -366,10 +365,10 @@ def test_dst_elsewhere_off():
     permanently off.
     """
     pytest.debug_func()
-    then = nldt.moment("2012-01-01")
-    assert not nldt.dst(then.epoch(), "US/Alaska")
-    assert not nldt.dst(then.epoch(), "Africa/Addis_Ababa")
-    assert nldt.dst(then.epoch(), "NZ")
+    then = nldt.moment(txt['date01'])
+    assert not nldt.dst(then.epoch(), txt['tz_ak'])
+    assert not nldt.dst(then.epoch(), txt['tz_addis'])
+    assert nldt.dst(then.epoch(), txt['tz_nz'])
 
 
 # -----------------------------------------------------------------------------
@@ -391,9 +390,9 @@ def test_dst_elsewhere_on():
     DST during times of the year when DST IS in force.
     """
     pytest.debug_func()
-    then = nldt.moment("2012-07-01")
-    assert nldt.dst(then.epoch(), "US/Alaska")
-    assert not nldt.dst(then.epoch(), "NZ")
+    then = nldt.moment(txt['date04'])
+    assert nldt.dst(then.epoch(), txt['tz_ak'])
+    assert not nldt.dst(then.epoch(), txt['tz_nz'])
 
 
 # -----------------------------------------------------------------------------
@@ -416,12 +415,12 @@ def test_parse_unbound_local():
     An unparseable input is causing a traceback
     """
     pytest.debug_func()
+    inp = "one two"
     prs = nldt.Parser()
     with pytest.raises(nldt.ParseError) as err:
-        prs("one two")
-    msg = "Failure parsing 'one two' -- not recognized as a time expression"
-    assert msg in str(err)
-    assert "UnboundLocalError" not in str(err)
+        prs(inp)
+    assert txt['err_notatime'].format(inp) in str(err)
+    assert txt['exc-ulerr'] not in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -445,14 +444,14 @@ def test_parse_tomorrow():
     set to the following day.
     """
     pytest.debug_func()
-    eoy = nldt.moment("2007-12-31")
+    eoy = nldt.moment(txt['2010-end'])
     assert not hasattr(eoy, 'parse')
     prs = nldt.Parser()
     result = prs('tomorrow', start=eoy)
-    assert result() == '2008-01-01'
-    feb28 = nldt.moment("2012-02-28")
+    assert result() == txt['2011-begin']
+    feb28 = nldt.moment(txt['leap-yester'])
     result = prs('tomorrow', start=feb28)
-    assert result() == '2012-02-29'
+    assert result() == txt['leap-today']
 
 
 # -----------------------------------------------------------------------------
@@ -514,7 +513,7 @@ def test_indexify_numint():
     assert mon.indexify(11) == 11
     with pytest.raises(ValueError) as err:
         assert mon.indexify(17) == -1
-    assert "Could not indexify '17'" in str(err)
+    assert txt["err_indxfy"].format("17") in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -570,17 +569,17 @@ def nl_oracle(spec):
     wk = nldt.week()
     tu = nldt.time_units()
     prs = nldt.Parser()
-    if spec == 'fourth day of this week':
-        now = prs('last week')
-        now = prs('next week', now)
-        now = prs('next thursday', now)
-    elif spec == 'fifth day of last week':
-        now = nldt.moment('last week')
-        now.parse('next friday')
+    if spec == txt["xpr-4dotw"]:
+        now = prs(txt["xpr-lwk"])
+        now = prs(txt["xpr-nwk"], now)
+        now = prs(txt["xpr-nthu"], now)
         return now(otz='utc')
+    elif spec == txt["xpr-5dolw"]:
+        now = nldt.moment(txt["xpr-lwk"])
+        now.parse(txt["xpr-nfri"])
         return now(otz='utc')
     elif spec == 'today':
-        return time.strftime("%Y-%m-%d", time.gmtime())
+        return time.strftime(txt['iso_date'], time.gmtime())
     elif spec == 'tomorrow':
         tm = time.gmtime()
         then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday+1,
@@ -802,7 +801,7 @@ def test_ago_except():
     prs = nldt.Parser()
     with pytest.raises(ValueError) as err:
         prs("no number no unit ago")
-    assert "No unit found in expression" in str(err)
+    assert txt["err-nounit"] in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -814,7 +813,7 @@ def test_from_now_except():
     prs = nldt.Parser()
     with pytest.raises(ValueError) as err:
         prs("no number no unit from now")
-    assert "No unit found in expression" in str(err)
+    assert txt["err-nounit"] in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -980,7 +979,7 @@ def test_week_fullname(inp, exp):
     if exp == "except":
         with pytest.raises(ValueError) as err:
             w.fullname(inp) == exp
-        assert "Could not indexify '{}'".format(inp) in str(err)
+        assert txt["err-indxfy-f"].format(inp) in str(err)
     else:
         assert w.fullname(inp) == exp
 
@@ -1000,8 +999,8 @@ def test_week_day_number():
 
     with pytest.raises(TypeError) as err:
         # payload
-        w.day_number("the other day") == 14
-    assert "argument must be moment or epoch number" in str(err)
+        w.day_number(txt['xpr-tod']) == 14
+    assert txt["err-argmore"] in str(err)
 
     assert w.day_number(sat, count='mon1') == 6    # payload
     assert w.day_number(sun, count='mon1') == 7    # payload
