@@ -11,6 +11,7 @@ from fixtures import ftime
 import pexpect
 import pytest
 import tbx
+from nldt.text import txt
 import time
 
 
@@ -96,9 +97,11 @@ def test_unanchored_noarg():
                  ftime('%Y-%m-%d', local=True, anchor='2000.1231 09:07:43'),
                  id='006'),
 
-    pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 today',
-                 '2000.1231 04:07:43',
-                 id='007'),
+    # ?TRAVIS
+    pytest.param('nldt -f "{}" -w 978253663 today'.format(txt["iso-datetime"]),
+                 time.strftime(txt["iso-datetime"],
+                               time.localtime(978253663)),
+                 id='anchored-today-iso'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" '
                  '-w "2000-12-31 15:07:43" today',
@@ -134,9 +137,12 @@ def test_unanchored_noarg():
                  ftime('%Y-%m-%d', local=True, anchor='2001.0101 09:07:43'),
                  id='015'),
 
-    pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 tomorrow',
-                 '2001.0101 04:07:43',
-                 id='016'),
+    # ?TRAVIS
+    pytest.param('nldt -f "{}" -w 978253663 tomorrow'
+                 .format(txt["iso-datetime"]),
+                 time.strftime(txt["iso-datetime"],
+                               time.localtime(978253663 + 24*3600)),
+                 id='anchored-tomoro-iso'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w "2000.1231 15:07:43"'
                  ' tomorrow',
@@ -173,8 +179,13 @@ def test_unanchored_noarg():
                  ftime('%Y-%m-%d', local=True, anchor='2000.1230 09:07:43'),
                  id='024'),
 
-    pytest.param('nldt -f "%Y.%m%d %H:%M:%S" -w 978253663 yesterday',
-                 '2000.1230 04:07:43', id='025'),
+    # ?TRAVIS
+    pytest.param('nldt -f "{}" -w 978253663 yesterday'
+                 .format(txt["iso-datetime"]),
+                 # '2000.1230 04:07:43',
+                 time.strftime(txt["iso-datetime"],
+                               time.localtime(978253663 - 24*3600)),
+                 id='anchored-yester-iso'),
 
     pytest.param('nldt yesterday -z local -f "%Y.%m%d %H:%M:%S" '
                  '-w "2000.1231 15:07:43"',

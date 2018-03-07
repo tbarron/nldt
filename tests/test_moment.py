@@ -6,6 +6,7 @@ See file LICENSING for details
 This file contains code for testing nldt functionality.
 """
 from fixtures import fx_calls_debug    # noqa
+from fixtures import local_formatted
 import nldt
 from nldt import moment as M
 from nldt import duration as D
@@ -430,12 +431,18 @@ def test_moment_gmtime():
                  id='003'),
     pytest.param("2018-01-01 00:00:00", "%F %T", "US/Eastern", 1514782800,
                  id='004'),
-    pytest.param("2018-01-01 00:00:00", "%F %T", None, 1514782800,
-                 id='005'),
+    # ?TRAVIS
+    pytest.param(local_formatted(txt['iso-datetime'], 1514782800),
+                 "%F %T", None, 1514782800,
+                 id='local-iso'),
+
     pytest.param("2018.0101 01:02:03", None, "Pacific/Truk", 1514732523,
                  id='006'),
-    pytest.param("2018.0704 09:23:57", None, None, 1530710637,
-                 id='007'),
+    # ?TRAVIS
+    pytest.param(local_formatted(txt['iso-ymdhms'], 1530710637),
+                 None, None, 1530710637,
+                 id='local-ymdhms'),
+
     pytest.param((2017, 1, 1, 0, 0, 0), "%F %T", None,
                  nldt.InitError("moment() cannot take format when date is not "
                                 "of type str"), id='008'),
@@ -449,12 +456,15 @@ def test_moment_gmtime():
                  nldt.InitError('moment() cannot take format when date is not'
                                 ' of type str'),
                  id='010.1'),
-    pytest.param(time.struct_time((2010, 2, 28, 0, 32, 17, 0, 0, 0)),
+    # ?TRAVIS
+    pytest.param(time.localtime(1267335137),
                  None, None, 1267335137,
                  id='011'),
     pytest.param(time.struct_time((2010, 2, 28, 5, 32, 17, 0, 0, 0)),
                  None, 'Europe/Stockholm', 1267331537, id='012'),
-    pytest.param((2012, 2, 29, 2, 47, 19), None, None, 1330501639,
+    # ?TRAVIS
+    pytest.param(tuple(time.localtime(1330501639)),
+                 None, None, 1330501639,
                  id='013'),
     pytest.param((2012, 2, 29, 7, 47, 19), None, 'Asia/Chongqing', 1330472839,
                  id='014'),
