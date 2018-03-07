@@ -472,6 +472,29 @@ def test_parse_yesterday():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param(3.4, 3, id='numfloat'),
+    pytest.param(11, 11, id='numint'),
+    pytest.param(17, ValueError(txt['err_indxfy'].format(17)),
+                 id='year-range'),
+    pytest.param('5', 5, id='numstr'),
+    pytest.param('October', 10, id='str'),
+    pytest.param('oct', 10, id='abbr'),
+    ])
+def test_month_indexify(inp, exp):
+    """
+    Tests for month.indexify()
+    """
+    pytest.debug_func()
+    mon = nldt.month()
+    if isinstance(exp, Exception):
+        with pytest.raises(type(exp)):
+            assert mon.indexify(inp) == 'something'
+    else:
+        assert mon.indexify(inp) == exp
+
+
+# -----------------------------------------------------------------------------
 def test_indexify_numfloat():
     """
     Cover lines in method month.indexify()
