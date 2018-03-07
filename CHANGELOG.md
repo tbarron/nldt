@@ -1,3 +1,22 @@
+## 0.0.17
+
+    * Ensure that the default timezone is local for both input (when
+      constructing moments) and output (when reporting out the stored
+      time). The default timezone can be overridden for input by calling
+      moment.default_tz() or by passing the itz argument to the moment
+      constructor. The default can be overridden for output by using 'with
+      nldt.tz_context' or passing the otz argument to moment.__call__().
+    * Put message strings in text.py and use them from there.
+    * Move 'class' away from the beginning of docstrings since otherwise
+      emacs python-mode indentation is messed up.
+    * Ability to reset default timezone to the factory default.
+    * Ability for week start to be arbitrary day.
+    * Full test coverage for moment.__eq__(), nldt.tzstring(),
+      nldt.isnum().
+    * Make test case ids more descriptive.
+    * Get tz_context() working for all timezones.
+    * Test case consolidation, code cleanup.
+
 ## 0.0.16
 
  * Renamed the 'tz' argument to moment.__init__() to 'itz' to indicate that
