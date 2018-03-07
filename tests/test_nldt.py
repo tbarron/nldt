@@ -85,25 +85,24 @@ def test_tz_context_explicit(zname, std, soff, dst, doff):
 
 
 # -----------------------------------------------------------------------------
-# @pytest.mark.parametrize("zname", pytz.all_timezones)
-# def test_tz_context(zname):
-#     """
-#     Verify that 'with tz_context()' does the right thing for all timezones
-#     """
-#     pytest.debug_func()
-#     zone = pytz.timezone(zname)
-#     # now = datetime.now()
-#     # for idx, point in enumerate(zone._utc_transition_times):
-#     #     if now < point:
-#     #         when_idx = idx
-#     #         break
-#     # dt_std = zone._utc_transition_times[-1]
-#     exp_std = -1 * zone.utcoffset(datetime(2011, 1, 1)).total_seconds()
-#     exp_dst = -1 * zone.utcoffset(datetime(2011, 7, 1)).total_seconds()
-#     with nldt.tz_context(zname):
-#         assert time.timezone == exp_std
-#         assert time.altzone == exp_dst
-#         assert time.daylight == (exp_std != exp_dst)
+@pytest.mark.parametrize("zname", pytz.common_timezones)
+def test_tz_context(zname):
+    """
+    Verify that 'with tz_context()' does the right thing for all timezones
+    """
+    pytest.debug_func()
+    offl = nldt.offset_list(zname)
+    assert 1 <= len(offl) <= 2
+    if 1 == len(offl):
+        exp_std = -1 * offl['std']['secs']
+        exp_dst = exp_std
+    else:
+        exp_std = -1 * offl['std']['secs']
+        exp_dst = -1 * offl['dst']['secs']
+    with nldt.tz_context(zname):
+        assert time.timezone == exp_std
+        assert time.altzone == exp_dst
+        assert time.daylight == (exp_std != exp_dst)
 
 
 # -----------------------------------------------------------------------------
