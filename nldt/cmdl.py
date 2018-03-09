@@ -43,7 +43,7 @@ def main():
         pdb.set_trace()
     expr = " ".join(opts['DATE_TIME_EXPR']) or 'now'
     fmt = opts['--format']
-    zone = opts['--zone']
+    zone = opts['--zone'] or 'local'
     prs = nldt.Parser()
     when = nldt.moment(opts['--when'])
     ref = prs(expr, start=when)
