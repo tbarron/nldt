@@ -5,7 +5,6 @@ See file LICENSING for details
 
 This file contains code for testing nldt functionality.
 """
-from calendar import timegm
 from fixtures import fx_calls_debug      # noqa
 from fixtures import ftime
 from fixtures import local_formatted
@@ -26,7 +25,7 @@ def test_now_nofmt_nozone():
     exp = time.time()
     # payload
     result = tbx.run('nldt now')
-    repoch = timegm(time.strptime(result.strip(), "%Y-%m-%d %H:%M:%S"))
+    repoch = time.mktime(time.strptime(result.strip(), "%Y-%m-%d %H:%M:%S"))
     assert abs(repoch - exp) < 1.0
 
 
