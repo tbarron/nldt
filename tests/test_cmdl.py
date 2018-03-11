@@ -8,6 +8,8 @@ This file contains code for testing nldt functionality.
 from fixtures import fx_calls_debug      # noqa
 from fixtures import ftime
 from fixtures import local_formatted
+from fixtures import nl_oracle
+import nldt
 import pexpect
 import pytest
 import tbx
@@ -76,7 +78,27 @@ def test_unanchored_noarg():
 
 
 # -----------------------------------------------------------------------------
+@pytest.mark.parametrize("weekday", [
+    ("monday")
+    ])
+def test_next_weekday(weekday):
+    """
+    'nldt next monday' should generate the date for next Monday
+    """
+    pytest.debug_func()
+    # payload
+    result = tbx.run("nldt next {}".format(weekday))
+    result = result.strip()
+    # rm = nldt.moment(result)
+    # exp = rm("%F %T", otz='local')
+    exp = nl_oracle("next {}".format(weekday))
+    assert result == exp
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("cmd, exp", [
+    pytest.param('nldt next week', nl_oracle('next week'), id='next-week'),
+
     # today
     pytest.param('nldt today', ftime('%Y-%m-%d'), id='001'),
 
