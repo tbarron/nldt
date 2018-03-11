@@ -937,9 +937,12 @@ class moment(object):
         elif unit == 'week':
             start = start or 'monday'
             tm = time.gmtime(epoch)
+            # tm = time.localtime(epoch)
             delta = (7 + tm.tm_wday - wk.index(start)) % 7
             floor = timegm((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
                             0, 0, 0, 0, 0, 0))
+            # floor = time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday - delta,
+            #                      0, 0, 0, 0, 0, 0))
             rval = moment(floor)
         elif unit == 'month':
             tm = time.gmtime(epoch)
@@ -1070,8 +1073,14 @@ class month(Indexable):
 class Parser(object):
     """
     This class provides a method object whose __call__() method will examine
-    its input to determine the correct submethod(s) to do the work or parsing
+    its input to determine the correct submethod(s) to do the work of parsing
     the input.
+
+    Colloquial expressions should assume the local timezone.
+
+    The start moment will come in as a UTC time because moments always
+    represent UTC. So it will have to be converted to local time to know where
+    we're starting from.
     """
     # -------------------------------------------------------------------------
     def __init__(self):
