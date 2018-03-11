@@ -48,17 +48,17 @@
 
 When the input value of a moment is a single number, it is always
 interpreted as the number of seconds since the epoch (on Unix, this is
-midnight on January 1, 1970) with no timezone adjustment. Such values are
+1970-01-01T00:00:00 UTC) with no timezone adjustment. Such values are
 always UTC times.
 
 When the input value of a moment is a time.struct_time, a date/time tuple,
 or a date/time specified in a string, a timezone adjustment is applied to
-convert the input time to UTC. By default, the local timezone is used for
-this.
+convert the local input time to UTC. By default, the local timezone is used
+to interpret the input time, but you can specify another timezone to use
+with the 'itz' argument to the moment constructor.
 
-The timezone used to interpret the input can be affected by passing an itz
-argument to the moment constructor or by calling nldt.default_tz() to
-change the default timezone directly.
+The function nldt.default_tz() can be used to change the default input
+timezone.
 
 ## Classes ##
 
