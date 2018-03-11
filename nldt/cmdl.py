@@ -56,3 +56,12 @@ def main():
             print(ref("%Y-%m-%d %H:%M:%S", otz=zone))
         else:
             print(ref)
+    else:
+        if fmt and zone:
+            print(ref(fmt, otz=zone))
+        elif fmt:
+            print(ref(fmt, otz='local'))
+        elif zone:
+            print(ref(otz=zone))
+        else:
+            print(ref)
