@@ -1,4 +1,23 @@
 ---------------------------------------------------------------------------
+2018-03-11 10:54:41    better organization
+
+I need a complete design document to resolve all the discrepancies I'm
+running into. I want README.md to start at the top and work down. I need
+another document that starts with the most fundamental functionality and
+builds up from there.
+
+---------------------------------------------------------------------------
+2018-03-08 11:48:13    Parsing natlang time expressions
+
+If the user says 'next monday', presumably they're interested in next
+Monday in the local timezone. So the parser needs to compute next Monday
+based on the local timezone, not utc.
+
+However, at the moment, 'nldt next monday' is getting an empty response.
+'nldt tomorrow' gets an ISO date, which is what I want. 'nldt next monday'
+should write the date of next Monday in ISO format to stdout.
+
+---------------------------------------------------------------------------
 2018-03-02 11:52:53    Don't put 'class' first in docstring
 
 It seems that if a function's docstring begins with the word 'class',
