@@ -5,8 +5,12 @@ See file LICENSING for details
 
 This file contains code for testing nldt functionality.
 """
+from nldt import moment as M
 import nldt
+import numbers
 import pytest
+import re
+from nldt.text import txt
 import time
 import tbx
 
