@@ -6,15 +6,17 @@ in UTC.
 
 The local time for a given timezone is computed as an offset from UTC time.
 
-layer 0: class Indexable, class Stub, InitError, ParseError, isnum, offset_list
+layer 1: class Indexable, class Stub, InitError, ParseError, isnum, offset_list
 
-layer 1: utc_offset, class month, class week, class time_units,
+layer 2: utc_offset, class month, class week, class time_units,
          caller_name, clock, txt, class local, dst, timezone,
          timegm, tz_context, tzname, tzset, tzstring, word_before
 
-layer 2: class duration, class moment, class prepositions
+layer 3: class duration, class moment, class prepositions
 
-layer 3: class Parser
+layer 4: class Parser
+
+layer 5: command line
 
 
 I'd like to add some bells and whistles to pytz:
