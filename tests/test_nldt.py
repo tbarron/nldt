@@ -265,55 +265,6 @@ def test_weekday_names():
 
 
 # -----------------------------------------------------------------------------
-def test_utc_offset():
-    """
-    Check routine utc_offset() against some known timezones that don't change
-    with dst
-    """
-    pytest.debug_func()
-    m_dst_off = M("2001-01-01")
-    m_dst_on = M("2001-07-01")
-    assert nldt.utc_offset(tz='Singapore') == 8 * 3600
-
-    assert nldt.utc_offset(m_dst_off.epoch(), tz='Pacific/Apia') == -11 * 3600
-    assert nldt.utc_offset(m_dst_on.epoch(), tz='Pacific/Apia') == -11 * 3600
-
-    # The expected value must be computed based on the local timezone, not
-    # assumed to be Eastern.
-    loc = get_localzone()
-    exp_off = loc.utcoffset(datetime.fromtimestamp(m_dst_off.epoch()))
-    exp_on = loc.utcoffset(datetime.fromtimestamp(m_dst_on.epoch()))
-    assert nldt.utc_offset(m_dst_off.epoch()) == exp_off.total_seconds()
-    assert nldt.utc_offset(m_dst_on.epoch()) == exp_on.total_seconds()
-
-    # Note: we have to multiply time.{alt,time}zone by -1 here because the time
-    # module, based on the Unix standard, assumes zones east of UTC have a
-    # negative offset while those west of UTC have a positive offset. The UTC
-    # standard defines this in the opposite way, assigning positive offsets to
-    # the east and negative offsets to the west.
-    #
-    # With the UTC standard,
-    #
-    #      localtime = UTC + offset
-    #      UTC = localtime - offset
-    #
-    # With the Unix standard,
-    #
-    #      localtime = UTC - offset
-    #      UTC = localtime + offset
-    #
-    tm = time.localtime()
-    if tm.tm_isdst:
-        assert nldt.utc_offset() == -1 * time.altzone
-    else:
-        assert nldt.utc_offset() == -1 * time.timezone
-
-    with pytest.raises(TypeError) as err:
-        nldt.utc_offset(txt['nan'])
-    assert txt['utc_offset'] in str(err)
-
-
-# -----------------------------------------------------------------------------
 def test_dst_now():
     """
     The module dst function should return True or False indicating whether
