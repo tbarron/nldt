@@ -627,17 +627,6 @@ def test_tzstring(tz, exp):
 
 
 # -----------------------------------------------------------------------------
-def test_unit_list():
-    """
-    Verify time_units().unit_list()
-    """
-    pytest.debug_func()
-    tu = nldt.time_units()
-    exp = ["second", "minute", "hour", "day", "week", "month", "year"]
-    assert list(tu.unit_list()) == exp
-
-
-# -----------------------------------------------------------------------------
 def test_parser_research():
     """
     Parser research method throws an exception if its third argument is not a
