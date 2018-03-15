@@ -467,27 +467,6 @@ def test_match_monthnames():
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
-    pytest.param("No weekday name in this text", None, id='001'),
-    pytest.param("Can you find the wednesday?", "wednesday", id='002'),
-    pytest.param("Here it is monday again", "monday", id='003'),
-    pytest.param("tuesday is a fine day", "tuesday", id='004'),
-    pytest.param("...Saturday we'll go to the store", 'saturday', id='005'),
-    pytest.param("Which day precedes (Friday) and which follows?", 'friday',
-                 id='006'),
-    pytest.param("Still need a Thursday test", 'thursday', id='007'),
-    pytest.param("On Sunday all the tests are finished", 'sunday', id='008'),
-    ])
-def test_find_day(inp, exp):
-    """
-    Coverage for week.find_day
-    """
-    pytest.debug_func()
-    w = nldt.week()
-    assert w.find_day(inp) == exp
-
-
-# -----------------------------------------------------------------------------
-@pytest.mark.parametrize("inp, exp", [
     pytest.param(0, "monday", id='001'),
     pytest.param("0", "monday", id='002'),
     pytest.param("mon", "monday", id='003'),

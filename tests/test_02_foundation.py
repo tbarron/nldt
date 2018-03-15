@@ -203,13 +203,32 @@ def test_week_day_list()
 
 # -----------------------------------------------------------------------------
 def test_week_find_day()
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("text, exp", [
+    pytest.param("No weekday name in this text", None, id='001'),
+    pytest.param("Can you find the wednesday?", "wednesday", id='002'),
+    pytest.param("Here it is monday again", "monday", id='003'),
+    pytest.param("tuesday is a fine day", "tuesday", id='004'),
+    pytest.param("...Saturday we'll go to the store", 'saturday', id='005'),
+    pytest.param("Which day precedes (Friday) and which follows?", 'friday',
+                 id='006'),
+    pytest.param("Still need a Thursday test", 'thursday', id='007'),
+    pytest.param("On Sunday all the tests are finished", 'sunday', id='008'),
+    ])
+def test_week_find_day(text, exp):
     """
+    Coverage for week.find_day()
     """
     raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
 def test_week_forediff()
+    pytest.debug_func()
+    w = nldt.week()
+    assert w.find_day(text) == exp
+
+
     """
     """
     raise nldt.Stub()
