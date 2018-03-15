@@ -135,13 +135,38 @@ def test_month_days_curyear():
 def test_month_under_days():
     """
     """
+    pytest.debug_func()
+    mobj = nldt.month()
+    exp = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    for dnum in range(1, 13):
+        assert mobj._days(dnum) == exp[dnum-1]
 
 
 # -----------------------------------------------------------------------------
 def test_month_index():
     """
+    nldt.month_index() takes a month name and returns its index. On bad input,
+    it will raise a KeyError.
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    m = nldt.month()
+    assert m.index('jan') == 1
+    assert m.index('February') == 2
+    assert m.index('marc') == 3
+    assert m.index('apr') == 4
+    assert m.index('May') == 5
+    assert m.index('june') == 6
+    assert m.index('jul') == 7
+    assert m.index('August') == 8
+    assert m.index('sep') == 9
+    assert m.index('Octob') == 10
+    assert m.index('nov') == 11
+    assert m.index('December') == 12
+    with pytest.raises(ValueError) as err:
+        assert m.index('frobble')
+    assert txt['not_indxfy'].format('frobble') in str(err)
+
+
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("year, exp", [
     pytest.param(1896, True, id='1896'),
