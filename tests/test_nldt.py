@@ -22,27 +22,6 @@ nldt.moment.default_tz('clear')
 
 
 # -----------------------------------------------------------------------------
-def test_tz_context_keyerr():
-    """
-    Test for 'with nldt.tz_context(ZONE)' when 'TZ' is not in os.environ (so
-    pre-fix, 'del os.environ['TZ']' throws a KeyError)
-    """
-    pytest.debug_func()
-    tzorig = None
-    if 'TZ' in os.environ:
-        tzorig = os.getenv('TZ')
-
-    with nldt.tz_context('US/Pacific'):
-        then = M(txt['date02'], itz='US/Pacific')
-        assert then("%F %T", otz='US/Pacific') == txt['date02']
-
-    if tzorig:
-        os.environ['TZ'] = tzorig
-    elif 'TZ' in os.environ:
-        del os.environ['TZ']
-
-
-# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
     pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='001'),
     pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='002'),
