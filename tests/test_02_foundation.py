@@ -282,16 +282,33 @@ def test_month_match_monthnames(inp, exp):
 
 # -----------------------------------------------------------------------------
 def test_week_constructor()
+def test_week_constructor():
     """
+    nldt.week() constructor should return an object with dict of months
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    w = nldt.week()
+    assert hasattr(w, '_dict')
+    for midx in range(0, 7):
+        assert midx in w._dict
+    for wname in ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']:
+        assert wname in w._dict
 
 
 # -----------------------------------------------------------------------------
 def test_week_day_list()
+def test_week_day_list():
     """
+    Verify nldt.week.day_list()
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    w = nldt.week()
+    dl = w.day_list()
+    for wname in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                  'Saturday', 'Sunday']:
+        assert wname.lower() in dl
 
 
 # -----------------------------------------------------------------------------
@@ -313,44 +330,248 @@ def test_week_find_day(text, exp):
     Coverage for week.find_day()
     """
     raise nldt.Stub()
-
-
-# -----------------------------------------------------------------------------
-def test_week_forediff()
     pytest.debug_func()
     w = nldt.week()
     assert w.find_day(text) == exp
 
 
+# -----------------------------------------------------------------------------
+def test_week_forediff()
+@pytest.mark.parametrize("inps, inpe, exp", [
+    pytest.param('mon', 'tue', 1, id='mon-tue'),
+    pytest.param('mon', 2, 2, id='mon-wed'),
+    pytest.param(0, 'thu', 3, id='mon-thu'),
+    pytest.param('mon', 'fri', 4, id='mon-fri'),
+    pytest.param(0, 5, 5, id='mon-sat'),
+    pytest.param('mon', 'sun', 6, id='mon-sun'),
+    pytest.param('mon', 'mon', 7, id='mon-mon'),
+
+    pytest.param('tue', 'wed', 1, id='tue-wed'),
+    pytest.param('tue', 3, 2, id='tue-thu'),
+    pytest.param(1, 'fri', 3, id='tue-fri'),
+    pytest.param(1, 5, 4, id='tue-sat'),
+    pytest.param('tue', 'sun', 5, id='tue-sun'),
+    pytest.param('tue', 'mon', 6, id='tue-mon'),
+    pytest.param('tue', 'tue', 7, id='tue-tue'),
+
+    pytest.param('wed', 'thu', 1, id='wed-thu'),
+    pytest.param('wed', 'fri', 2, id='wed-fri'),
+    pytest.param('wed', 'sat', 3, id='wed-sat'),
+    pytest.param('wed', 'sun', 4, id='wed-sun'),
+    pytest.param('wed', 'mon', 5, id='wed-mon'),
+    pytest.param('wed', 'tue', 6, id='wed-tue'),
+    pytest.param('wed', 'wed', 7, id='wed-wed'),
+
+    pytest.param('thu', 'fri', 1, id='thu-fri'),
+    pytest.param('thu', 'sat', 2, id='thu-sat'),
+    pytest.param('thu', 'sun', 3, id='thu-sun'),
+    pytest.param('thu', 'mon', 4, id='thu-mon'),
+    pytest.param('thu', 'tue', 5, id='thu-tue'),
+    pytest.param('thu', 'wed', 6, id='thu-wed'),
+    pytest.param('thu', 'thu', 7, id='thu-thu'),
+
+    pytest.param(4, 'fri', 7, id='fri-fri'),
+    pytest.param(4, 'sat', 1, id='fri-sat'),
+    pytest.param(4, 'sun', 2, id='fri-sun'),
+    pytest.param(4, 'mon', 3, id='fri-mon'),
+    pytest.param(4, 'tue', 4, id='fri-tue'),
+    pytest.param(4, 'wed', 5, id='fri-wed'),
+    pytest.param(4, 'thu', 6, id='fri-thu'),
+
+    pytest.param('sat', 6, 1, id='sat-sun'),
+    pytest.param('sat', 0, 2, id='sat-mon'),
+    pytest.param('sat', 1, 3, id='sat-tue'),
+    pytest.param('sat', 2, 4, id='sat-wed'),
+    pytest.param('sat', 3, 5, id='sat-thu'),
+    pytest.param('sat', 4, 6, id='sat-fri'),
+    pytest.param('sat', 5, 7, id='sat-sat'),
+
+    pytest.param('sun', 0, 1, id='sun-mon'),
+    pytest.param('sun', 1, 2, id='sun-tue'),
+    pytest.param('sun', 2, 3, id='sun-wed'),
+    pytest.param('sun', 3, 4, id='sun-thu'),
+    pytest.param('sun', 4, 5, id='sun-fri'),
+    pytest.param('sun', 5, 6, id='sun-sat'),
+    pytest.param('sun', 6, 7, id='sun-sun'),
+    ])
+def test_week_forediff(inps, inpe, exp):
     """
+    week.forediff() returns the number of days between two week days, jumping
+    forward. The returned value ranges between 1 and 7
+    """
+    pytest.debug_func()
+    w = nldt.week()
+    assert w.find_day(text) == exp
+    assert w.forediff(inps, inpe) == exp
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inps, inpe, exp", [
+    pytest.param('mon', 'mon', 7, id='mon-mon'),
+    pytest.param('mon', 'tue', 6, id='mon-tue'),
+    pytest.param('mon', 2, 5, id='mon-wed'),
+    pytest.param(0, 'thu', 4, id='mon-thu'),
+    pytest.param('mon', 'fri', 3, id='mon-fri'),
+    pytest.param(0, 5, 2, id='mon-sat'),
+    pytest.param('mon', 'sun', 1, id='mon-sun'),
+
+    pytest.param('tue', 'wed', 6, id='tue-wed'),
+    pytest.param('tue', 3, 5, id='tue-thu'),
+    pytest.param(1, 'fri', 4, id='tue-fri'),
+    pytest.param(1, 5, 3, id='tue-sat'),
+    pytest.param('tue', 'sun', 2, id='tue-sun'),
+    pytest.param('tue', 'mon', 1, id='tue-mon'),
+    pytest.param('tue', 'tue', 7, id='tue-tue'),
+
+    pytest.param('wed', 'thu', 6, id='wed-thu'),
+    pytest.param('wed', 'fri', 5, id='wed-fri'),
+    pytest.param('wed', 'sat', 4, id='wed-sat'),
+    pytest.param('wed', 'sun', 3, id='wed-sun'),
+    pytest.param('wed', 'mon', 2, id='wed-mon'),
+    pytest.param('wed', 'tue', 1, id='wed-tue'),
+    pytest.param('wed', 'wed', 7, id='wed-wed'),
+
+    pytest.param('thu', 'fri', 6, id='thu-fri'),
+    pytest.param('thu', 'sat', 5, id='thu-sat'),
+    pytest.param('thu', 'sun', 4, id='thu-sun'),
+    pytest.param('thu', 'mon', 3, id='thu-mon'),
+    pytest.param('thu', 'tue', 2, id='thu-tue'),
+    pytest.param('thu', 'wed', 1, id='thu-wed'),
+    pytest.param('thu', 'thu', 7, id='thu-thu'),
+
+    pytest.param(4, 'sat', 6, id='fri-sat'),
+    pytest.param(4, 'sun', 5, id='fri-sun'),
+    pytest.param(4, 'mon', 4, id='fri-mon'),
+    pytest.param(4, 'tue', 3, id='fri-tue'),
+    pytest.param(4, 'wed', 2, id='fri-wed'),
+    pytest.param(4, 'thu', 1, id='fri-thu'),
+    pytest.param(4, 'fri', 7, id='fri-fri'),
+
+    pytest.param('sat', 6, 6, id='sat-sun'),
+    pytest.param('sat', 0, 5, id='sat-mon'),
+    pytest.param('sat', 1, 4, id='sat-tue'),
+    pytest.param('sat', 2, 3, id='sat-wed'),
+    pytest.param('sat', 3, 2, id='sat-thu'),
+    pytest.param('sat', 4, 1, id='sat-fri'),
+    pytest.param('sat', 5, 7, id='sat-sat'),
+
+    pytest.param('sun', 0, 6, id='sun-mon'),
+    pytest.param('sun', 1, 5, id='sun-tue'),
+    pytest.param('sun', 2, 4, id='sun-wed'),
+    pytest.param('sun', 3, 3, id='sun-thu'),
+    pytest.param('sun', 4, 2, id='sun-fri'),
+    pytest.param('sun', 5, 1, id='sun-sat'),
+    pytest.param('sun', 6, 7, id='sun-sun'),
+    ])
+def test_week_backdiff(inps, inpe, exp):
+    """
+    week.backdiff() returns the number of days between two week days, jumping
+    backward. The returned value ranges between 1 and 7
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    w = nldt.week()
+    assert w.backdiff(inps, inpe) == exp
 
 
 # -----------------------------------------------------------------------------
 def test_week_backdiff()
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param(["Monday", "Mon", "monday", "mon"], 0, id='mon'),
+    pytest.param(["Tuesday", "Tue", "tuesday", "tues"], 1, id='tue'),
+    pytest.param(["Wednesday", "Wedn", "wednesday", "wednes"], 2, id='wed'),
+    pytest.param(["Thursday", "Thur", "thursday", "thu"], 3, id='thu'),
+    pytest.param(["Friday", "Fri", "friday", "fri"], 4, id='fri'),
+    pytest.param(["Saturday", "Satur", "saturday", "sat"], 5, id='sat'),
+    pytest.param(["Sunday", "Sun", "sunday", "sun"], 6, id='sun'),
+    ])
+def test_week_index(inp, exp):
     """
+    Verify that weekday names are mapped to the correct numbers
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    w = nldt.week()
+    for inps in inp:
+        assert w.index(inps) == exp
 
 
 # -----------------------------------------------------------------------------
 def test_week_index()
+@pytest.mark.parametrize("inpl, exp", [
+    pytest.param([0, 'mon', 'mond', 'monday'], "monday", id='mon'),
+    pytest.param([1, 'tue', 'tues', 'tuesday'], "tuesday", id='tue'),
+    pytest.param([2, 'wed', 'wednes', 'wednesday'], "wednesday", id='wed'),
+    pytest.param([3, 'thu', 'thurs', 'thursday'], "thursday", id='thu'),
+    pytest.param([4, 'fri', 'frid', 'friday'], "friday", id='fri'),
+    pytest.param([5, 'sat', 'satur', 'saturday'], "saturday", id='sat'),
+    pytest.param([6, 'sun', 'sunda', 'sunday'], "sunday", id='sun'),
+    ])
+def test_week_fullname(inpl, exp):
     """
+    Verify mapping index and abbreviations to full names
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    w = nldt.week()
+    for inp in inpl:
+        assert w.fullname(inp) == exp
 
 
 # -----------------------------------------------------------------------------
 def test_week_fullname()
+# !@! Put the strings below into text.py? No... Strings that are purely for
+# testing should not be in the production text catalog. But I can create a
+# catalog extension file that will import txt from text and then add test
+# strings to it.
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param(txt['rgx_mon'], ["Mon"], id='mon'),
+    pytest.param(txt['rgx_tue'], ["Tues"], id='tue'),
+    pytest.param(txt['rgx_wed'], ["Wednes"], id='wed'),
+    pytest.param(txt['rgx_thu'], ["Thurs", "Satur"], id='thu-sat'),
+    pytest.param(txt['rgx_fri'], ["Fri"], id='fri'),
+    pytest.param(txt['rgx_sun'], ["Sun"], id='sun'),
+    ])
+def test_week_match_weekdays(inp, exp):
     """
+    Verify that the weekday matching regex works
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    w = nldt.week()
+    assert re.findall(w.match_weekdays(), inp, re.I) == exp
 
 
 # -----------------------------------------------------------------------------
 def test_match_weekdays()
+def test_week_day_number():
     """
+    Test week.day_number()
+    """
+    pytest.debug_func()
+    w = nldt.week()
+    sat = nldt.moment("2000-01-01")
+    sun = nldt.moment("2000-01-02")
+
+    assert w.day_number(sat.epoch()) == 5        # payload
+    assert w.day_number(sat) == 5                # payload
+
+    with pytest.raises(TypeError) as err:
+        # payload
+        w.day_number(txt['xpr-tod']) == 14
+    assert txt["err-argmore"] in str(err)
+
+    assert w.day_number(sat, count='mon1') == 6    # payload
+    assert w.day_number(sun, count='mon1') == 7    # payload
+
+    assert w.day_number(sat, count='sun0') == 6    # payload
+    assert w.day_number(sun, count='sun0') == 0    # payload
+
+
+# -----------------------------------------------------------------------------
+def test_tu_constructor():
+    """
+    Test class time_units constructor
     """
     raise nldt.Stub()
 
