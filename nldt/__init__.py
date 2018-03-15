@@ -1471,8 +1471,9 @@ class week(Indexable):
         Returns the numeric index for *wday* (mon = 0, tue = 1, ... sun = 6)
         (class week)
         """
+        wday = wday.lower()
         if 3 < len(wday):
-            wday = wday[0:3].lower()
+            wday = wday[0:3]
         return self._dict[wday]['idx']
 
     # -------------------------------------------------------------------------
