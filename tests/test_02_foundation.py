@@ -125,7 +125,6 @@ def test_month_days_curyear():
 def test_month_under_days():
     """
     """
-    raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
@@ -133,10 +132,29 @@ def test_month_index():
     """
     """
     raise nldt.Stub()
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("year, exp", [
+    pytest.param(1896, True, id='1896'),
+    pytest.param(1899, False, id='1899'),
+    pytest.param(1900, False, id='1900'),
+    pytest.param(1901, False, id='1901'),
+    pytest.param(1904, True, id='1904'),
+    pytest.param(1996, True, id='1996'),
+    pytest.param(1999, False, id='1999'),
+    pytest.param(2000, True, id='2000'),
+    pytest.param(2001, False, id='2001'),
+    pytest.param(2004, True, id='2004'),
+    ])
+def test_month_isleap(year, exp):
+    """
+    month.isleap() returns True when year is a leap year, otherwise False
+    """
+    pytest.debug_func()
+    m = nldt.month()
+    assert m.isleap(year) == exp
 
 
 # -----------------------------------------------------------------------------
-def test_month_isleap():
     """
     """
     raise nldt.Stub()

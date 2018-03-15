@@ -454,22 +454,6 @@ def test_from_now_except():
 
 
 # -----------------------------------------------------------------------------
-def test_isleap():
-    """
-    When year is not given, isleap should return True if the current year is
-    leap, else False
-    """
-    pytest.debug_func()
-    m = nldt.month()
-    if m.days(2) == 29:
-        # payload
-        assert m.isleap(None)
-    else:
-        # payload
-        assert not m.isleap(None)
-
-
-# -----------------------------------------------------------------------------
 def test_match_monthnames():
     """
     Verify the regex returned by month.match_monthnames
