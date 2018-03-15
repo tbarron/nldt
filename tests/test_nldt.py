@@ -22,18 +22,6 @@ nldt.moment.default_tz('clear')
 
 
 # -----------------------------------------------------------------------------
-def test_bug_pctsec():
-    """
-    given
-        x = moment()
-    x.epoch() should be equal to int(x('%s'))
-    """
-    pytest.debug_func()
-    now = nldt.moment()
-    assert now.epoch() == int(now("%s"))
-
-
-# -----------------------------------------------------------------------------
 def test_clock():
     """
     nldt.clock() is an alias for time.clock()
