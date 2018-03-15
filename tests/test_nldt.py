@@ -663,16 +663,3 @@ def test_Stub():
         raise nldt.Stub("extra text")
     msg = "test_Stub() is a stub -- please complete it. (extra text)"
     assert msg in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_caller_name():
-    """
-    Test function caller_name()
-    """
-    pytest.debug_func()
-
-    def foobar():
-        assert nldt.caller_name() == 'test_caller_name'
-
-    foobar()

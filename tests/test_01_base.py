@@ -11,6 +11,19 @@ from nldt.text import txt
 
 
 # -----------------------------------------------------------------------------
+def test_caller_name():
+    """
+    Test function caller_name()
+    """
+    pytest.debug_func()
+
+    def foobar():
+        assert nldt.caller_name() == 'test_caller_name'
+
+    foobar()
+
+
+# -----------------------------------------------------------------------------
 def test_indexable_abc():
     """
     Indexable is an abstract base class that should not be instantiated
