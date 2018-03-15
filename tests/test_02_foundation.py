@@ -222,8 +222,14 @@ def test_month_names():
 # -----------------------------------------------------------------------------
 def test_month_short_names():
     """
+    month.short_names() is supposed to return a list of three letter lowercase
+    month name abbreviations
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    m = nldt.month()
+    for item in m.short_names():
+        assert len(item) == 3
+        assert item.lower() == item
 
 
 # -----------------------------------------------------------------------------
