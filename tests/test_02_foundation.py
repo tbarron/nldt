@@ -128,12 +128,10 @@ def test_month_days(month, year, exp):
 
 
 # -----------------------------------------------------------------------------
-def test_month_days():
 def test_month_days_curyear():
     """
     Verify that month.days() for february this year does the right thing
     """
-    raise nldt.Stub()
     pytest.debug_func()
     mobj = nldt.month()
     now = nldt.moment()
@@ -207,7 +205,6 @@ def test_month_curyear_isleap():
     When year is not given, isleap should return True if the current year is
     leap, else False
     """
-    raise nldt.Stub()
     pytest.debug_func()
     m = nldt.month()
     if m.days(2) == 29:
@@ -245,8 +242,6 @@ def test_month_short_names():
 
 
 # -----------------------------------------------------------------------------
-def test_month_match_monthnames():
-# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, exp", [
     pytest.param("No monthnames in this string", None, id='nomatch'),
     pytest.param("January is present here", "January", id='January'),
@@ -269,7 +264,6 @@ def test_month_match_monthnames(inp, exp):
     """
     Test the monthnames regex against each of the month names
     """
-    raise nldt.Stub()
     pytest.debug_func()
     m = nldt.month()
     rgx = m.match_monthnames()
@@ -281,12 +275,10 @@ def test_month_match_monthnames(inp, exp):
 
 
 # -----------------------------------------------------------------------------
-def test_week_constructor()
 def test_week_constructor():
     """
     nldt.week() constructor should return an object with dict of months
     """
-    raise nldt.Stub()
     pytest.debug_func()
     w = nldt.week()
     assert hasattr(w, '_dict')
@@ -297,12 +289,10 @@ def test_week_constructor():
 
 
 # -----------------------------------------------------------------------------
-def test_week_day_list()
 def test_week_day_list():
     """
     Verify nldt.week.day_list()
     """
-    raise nldt.Stub()
     pytest.debug_func()
     w = nldt.week()
     dl = w.day_list()
@@ -311,8 +301,6 @@ def test_week_day_list():
         assert wname.lower() in dl
 
 
-# -----------------------------------------------------------------------------
-def test_week_find_day()
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("text, exp", [
     pytest.param("No weekday name in this text", None, id='001'),
@@ -329,14 +317,12 @@ def test_week_find_day(text, exp):
     """
     Coverage for week.find_day()
     """
-    raise nldt.Stub()
     pytest.debug_func()
     w = nldt.week()
     assert w.find_day(text) == exp
 
 
 # -----------------------------------------------------------------------------
-def test_week_forediff()
 @pytest.mark.parametrize("inps, inpe, exp", [
     pytest.param('mon', 'tue', 1, id='mon-tue'),
     pytest.param('mon', 2, 2, id='mon-wed'),
@@ -401,7 +387,6 @@ def test_week_forediff(inps, inpe, exp):
     """
     pytest.debug_func()
     w = nldt.week()
-    assert w.find_day(text) == exp
     assert w.forediff(inps, inpe) == exp
 
 
@@ -468,14 +453,12 @@ def test_week_backdiff(inps, inpe, exp):
     week.backdiff() returns the number of days between two week days, jumping
     backward. The returned value ranges between 1 and 7
     """
-    raise nldt.Stub()
     pytest.debug_func()
     w = nldt.week()
     assert w.backdiff(inps, inpe) == exp
 
 
 # -----------------------------------------------------------------------------
-def test_week_backdiff()
 @pytest.mark.parametrize("inp, exp", [
     pytest.param(["Monday", "Mon", "monday", "mon"], 0, id='mon'),
     pytest.param(["Tuesday", "Tue", "tuesday", "tues"], 1, id='tue'),
@@ -489,7 +472,6 @@ def test_week_index(inp, exp):
     """
     Verify that weekday names are mapped to the correct numbers
     """
-    raise nldt.Stub()
     pytest.debug_func()
     w = nldt.week()
     for inps in inp:
@@ -497,7 +479,6 @@ def test_week_index(inp, exp):
 
 
 # -----------------------------------------------------------------------------
-def test_week_index()
 @pytest.mark.parametrize("inpl, exp", [
     pytest.param([0, 'mon', 'mond', 'monday'], "monday", id='mon'),
     pytest.param([1, 'tue', 'tues', 'tuesday'], "tuesday", id='tue'),
@@ -511,7 +492,6 @@ def test_week_fullname(inpl, exp):
     """
     Verify mapping index and abbreviations to full names
     """
-    raise nldt.Stub()
     pytest.debug_func()
     w = nldt.week()
     for inp in inpl:
@@ -519,7 +499,6 @@ def test_week_fullname(inpl, exp):
 
 
 # -----------------------------------------------------------------------------
-def test_week_fullname()
 # !@! Put the strings below into text.py? No... Strings that are purely for
 # testing should not be in the production text catalog. But I can create a
 # catalog extension file that will import txt from text and then add test
@@ -536,14 +515,12 @@ def test_week_match_weekdays(inp, exp):
     """
     Verify that the weekday matching regex works
     """
-    raise nldt.Stub()
     pytest.debug_func()
     w = nldt.week()
     assert re.findall(w.match_weekdays(), inp, re.I) == exp
 
 
 # -----------------------------------------------------------------------------
-def test_match_weekdays()
 def test_week_day_number():
     """
     Test week.day_number()
@@ -573,7 +550,6 @@ def test_tu_constructor():
     """
     Test class time_units constructor
     """
-    raise nldt.Stub()
     pytest.debug_func()
     tu = nldt.time_units()
     for unit in ['second', 'minute', 'hour', 'day', 'week', 'month', 'year']:
@@ -581,7 +557,6 @@ def test_tu_constructor():
 
 
 # -----------------------------------------------------------------------------
-def test_day_number()
 @pytest.mark.parametrize("inp, exp", [
     pytest.param("What 'year' is it?", "year", id='year'),
     pytest.param("The month is march forth", "month", id='month'),
@@ -595,14 +570,12 @@ def test_tu_find_unit(inp, exp):
     """
     Test find_unit() method of class time_units
     """
-    raise nldt.Stub()
     pytest.debug_func()
     tu = nldt.time_units()
     assert tu.find_unit(inp) == exp
 
 
 # -----------------------------------------------------------------------------
-def test_tu_constructor()
 @pytest.mark.parametrize("inp, exp", [
     pytest.param('second', 1, id='second'),
     pytest.param('minute', 60, id='minute'),
@@ -614,22 +587,18 @@ def test_tu_constructor()
     ])
 def test_tu_magnitude(inp, exp):
     """
-    Test class time_units constructor
     Test magnitude() method of class time_units
     """
-    raise nldt.Stub()
     pytest.debug_func()
     tu = nldt.time_units()
     assert tu.magnitude(inp) == exp
 
 
 # -----------------------------------------------------------------------------
-def test_tu_find_unit()
 def test_tu_unit_list():
     """
     Verify time_units().unit_list()
     """
-    raise nldt.Stub()
     pytest.debug_func()
     tu = nldt.time_units()
     exp = ["second", "minute", "hour", "day", "week", "month", "year"]
