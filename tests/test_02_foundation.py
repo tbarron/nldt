@@ -107,9 +107,18 @@ def test_month_days(month, year, exp):
 
 # -----------------------------------------------------------------------------
 def test_month_days():
+def test_month_days_curyear():
     """
+    Verify that month.days() for february this year does the right thing
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    mobj = nldt.month()
+    now = nldt.moment()
+    curyear = int(now('%Y'))
+    exp = 29 if mobj.isleap(curyear) else 28
+    # payload
+    assert mobj.days(2) == exp
 
 
 # -----------------------------------------------------------------------------
