@@ -22,15 +22,6 @@ nldt.moment.default_tz('clear')
 
 
 # -----------------------------------------------------------------------------
-def test_clock():
-    """
-    nldt.clock() is an alias for time.clock()
-    """
-    pytest.debug_func()
-    assert abs(nldt.clock() - time.clock()) < 0.0001
-
-
-# -----------------------------------------------------------------------------
 def test_tz_context_keyerr():
     """
     Test for 'with nldt.tz_context(ZONE)' when 'TZ' is not in os.environ (so
