@@ -190,9 +190,20 @@ def test_month_isleap(year, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_month_curyear_isleap():
     """
+    When year is not given, isleap should return True if the current year is
+    leap, else False
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    m = nldt.month()
+    if m.days(2) == 29:
+        # payload
+        assert m.isleap(None)
+    else:
+        # payload
+        assert not m.isleap(None)
 
 
 # -----------------------------------------------------------------------------
