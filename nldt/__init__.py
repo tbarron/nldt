@@ -1357,21 +1357,21 @@ class time_units(object):
         Sets up the list of units with the number of seconds in each (class
         time_units)
         """
-        self.units = {'second': 1,
-                      'minute': 60,
-                      'hour': 3600,
-                      'day': 24 * 3600,
-                      'week': 7 * 24 * 3600,
-                      'month': 30 * 24 * 3600,
-                      'year': 365 * 24 * 3600}
+        self._units = {'second': 1,
+                       'minute': 60,
+                       'hour': 3600,
+                       'day': 24 * 3600,
+                       'week': 7 * 24 * 3600,
+                       'month': 30 * 24 * 3600,
+                       'year': 365 * 24 * 3600}
 
     # -------------------------------------------------------------------------
     def find_unit(self, text):
         """
         Scans *text* and return the first unit found or None (class time_units)
         """
-        found = [unit for unit in self.units.keys()
-                 if re.search("(^|\s){}s?(\s|$)".format(unit), text)]
+        found = [unit for unit in self._units.keys()
+                 if re.search("(^|\W){}s?(\W|$)".format(unit), text)]
         if found:
             return found[0]
         else:
@@ -1383,14 +1383,14 @@ class time_units(object):
         Returns the number of seconds in *unit* or -1 if *unit* is not valid
         (class time_units)
         """
-        return self.units.get(unit, -1)
+        return self._units.get(unit, -1)
 
     # -------------------------------------------------------------------------
     def unit_list(self):
         """
         Returns the list of units (class time_units)
         """
-        return self.units.keys()
+        return self._units.keys()
 
 
 # -----------------------------------------------------------------------------
