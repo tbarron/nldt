@@ -7,12 +7,12 @@ This file contains code for testing nldt functionality.
 """
 from fixtures import fx_calls_debug    # noqa
 from fixtures import nl_oracle
-from tzlocal import get_localzone
-from datetime import datetime
+# from tzlocal import get_localzone
+# from datetime import datetime
 import numbers
 import os
 import pytest
-import pytz
+# import pytz
 from nldt.text import txt
 import time
 import nldt
