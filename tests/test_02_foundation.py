@@ -145,8 +145,14 @@ def test_month_isleap():
 # -----------------------------------------------------------------------------
 def test_month_names():
     """
+    nldt.month_names() returns the list of month names in order
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    m = nldt.month()
+    result = m.names()
+    exp = ['january', 'february', 'march', 'april', 'may', 'june',
+           'july', 'august', 'september', 'october', 'november', 'december']
+    assert result == exp
 
 
 # -----------------------------------------------------------------------------

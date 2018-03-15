@@ -98,19 +98,6 @@ def test_month_index():
 
 
 # -----------------------------------------------------------------------------
-def test_month_names():
-    """
-    nldt.month_names() returns the list of month names in order
-    """
-    pytest.debug_func()
-    m = nldt.month()
-    result = m.names()
-    exp = ['january', 'february', 'march', 'april', 'may', 'june',
-           'july', 'august', 'september', 'october', 'november', 'december']
-    assert result == exp
-
-
-# -----------------------------------------------------------------------------
 def test_weekday_index():
     """
     nldt.weekday_index() takes a weekday name and returns its index. On bad
