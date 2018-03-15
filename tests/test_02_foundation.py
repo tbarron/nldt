@@ -67,8 +67,18 @@ def test_utc_offset():
 # -----------------------------------------------------------------------------
 def test_month_constructor():
     """
+    nldt.month() constructor should return an object with dict of months
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    m = nldt.month()
+    assert hasattr(m, '_dict')
+    for midx in range(1, 13):
+        assert midx in m._dict
+    for mname in ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']:
+        assert mname in m._dict
+
+
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("month, year, exp", [
     pytest.param(1, None, 31, id="jan"),
