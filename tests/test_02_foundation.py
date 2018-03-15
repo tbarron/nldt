@@ -574,28 +574,66 @@ def test_tu_constructor():
     Test class time_units constructor
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    tu = nldt.time_units()
+    for unit in ['second', 'minute', 'hour', 'day', 'week', 'month', 'year']:
+        assert unit in tu._units
 
 
 # -----------------------------------------------------------------------------
 def test_day_number()
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param("What 'year' is it?", "year", id='year'),
+    pytest.param("The month is march forth", "month", id='month'),
+    pytest.param("Next week we'll see what happens", "week", id='week'),
+    pytest.param("This is the first day of the rest of time", "day", id='day'),
+    pytest.param("Another hour will pass", "hour", id='hour'),
+    pytest.param("Wait a minute!", "minute", id='minute'),
+    pytest.param("It's the second door on the right", "second", id='second'),
+    ])
+def test_tu_find_unit(inp, exp):
     """
+    Test find_unit() method of class time_units
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    tu = nldt.time_units()
+    assert tu.find_unit(inp) == exp
 
 
 # -----------------------------------------------------------------------------
 def test_tu_constructor()
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param('second', 1, id='second'),
+    pytest.param('minute', 60, id='minute'),
+    pytest.param('hour', 3600, id='hour'),
+    pytest.param('day', 24 * 3600, id='day'),
+    pytest.param('week', 7 * 24 * 3600, id='week'),
+    pytest.param('month', 30 * 24 * 3600, id='month'),
+    pytest.param('year', 365 * 24 * 3600, id='year'),
+    ])
+def test_tu_magnitude(inp, exp):
     """
     Test class time_units constructor
+    Test magnitude() method of class time_units
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    tu = nldt.time_units()
+    assert tu.magnitude(inp) == exp
 
 
 # -----------------------------------------------------------------------------
 def test_tu_find_unit()
+def test_tu_unit_list():
     """
+    Verify time_units().unit_list()
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    tu = nldt.time_units()
+    exp = ["second", "minute", "hour", "day", "week", "month", "year"]
+    assert list(tu.unit_list()) == exp
 
 
 # -----------------------------------------------------------------------------
