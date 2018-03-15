@@ -7,6 +7,20 @@ This file contains code for testing nldt functionality.
 """
 import nldt
 import pytest
+from nldt.text import txt
+
+
+# -----------------------------------------------------------------------------
+def test_indexable_abc():
+    """
+    Indexable is an abstract base class that should not be instantiated
+    directly.
+    """
+    pytest.debug_func()
+    with pytest.raises(TypeError) as err:
+        _ = nldt.Indexable()
+        assert isinstance(_, nldt.Indexable)
+    assert txt['ABC_noinst'] in str(err)
 
 
 # -----------------------------------------------------------------------------
