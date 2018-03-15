@@ -467,42 +467,6 @@ def test_from_now_except():
 
 
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize("month, year, exp", [
-    pytest.param(1, None, 31, id="jan"),
-    pytest.param(2, 2017, 28, id="feb-common"),
-    pytest.param(2, 2016, 29, id='feb-leap'),
-    pytest.param(2, 2000, 29, id='feb-400-leap'),
-    pytest.param(2, 1900, 28, id='feb-100-common'),
-    pytest.param(3, 2018, 31, id='mar'),
-    pytest.param(4, None, 30, id='apr'),
-
-    pytest.param(5, None, 31, id='may'),
-    pytest.param(6, None, 30, id='june'),
-    pytest.param(7, None, 31, id='july'),
-    pytest.param(8, None, 31, id='aug'),
-    pytest.param(9, None, 30, id='sep'),
-    pytest.param(10, None, 31, id='oct'),
-    pytest.param(11, None, 30, id='nov'),
-    pytest.param(12, None, 31, id='dec'),
-    pytest.param(19, None, txt["err-indxfy-nof"], id='ex-range'),
-    ])
-def test_month_days(month, year, exp):
-    """
-    Get the number of days in each month
-    """
-    pytest.debug_func()
-    m = nldt.month()
-    if isinstance(exp, numbers.Number):
-        # payload
-        assert m.days(month=month, year=year) == exp
-    else:
-        with pytest.raises(ValueError) as err:
-            # payload
-            m.days(month=month, year=year)
-        assert exp in str(err)
-
-
-# -----------------------------------------------------------------------------
 def test_month_days_curyear():
     """
     Verify that month.days() for february this year does the right thing
