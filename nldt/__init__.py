@@ -1455,7 +1455,7 @@ class week(Indexable):
     def backdiff(self, start, end):
         """
         Returns the number of days required to get from day *start* to day
-        *end* going forward. *start* and *end* can be day names or index
+        *end* going backward. *start* and *end* can be day names or index
         values. (class week)
         """
         start = self.indexify(start)
