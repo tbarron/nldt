@@ -228,9 +228,38 @@ def test_month_short_names():
 
 # -----------------------------------------------------------------------------
 def test_month_match_monthnames():
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param("No monthnames in this string", None, id='nomatch'),
+    pytest.param("January is present here", "January", id='January'),
+    pytest.param("This string has February in the middle", "February",
+                 id='February'),
+    pytest.param("At the end of this string we find March", "March",
+                 id='March'),
+    pytest.param("Here's April", "April", id='April'),
+    pytest.param("We may find a month name here", "may", id='May'),
+    pytest.param("See the moon in june", "june", id='June'),
+    pytest.param("This is JULY", "JULY", id='July'),
+    pytest.param("Augustus was a Roman emperor", "August", id='August'),
+    pytest.param("Try to remember the kind of september", "september",
+                 id='September'),
+    pytest.param("october october october", "october", id='October'),
+    pytest.param("Last November was the time", "November", id='November'),
+    pytest.param("Winter solstice in December", "December", id='December'),
+    ])
+def test_month_match_monthnames(inp, exp):
     """
+    Test the monthnames regex against each of the month names
     """
     raise nldt.Stub()
+    pytest.debug_func()
+    m = nldt.month()
+    rgx = m.match_monthnames()
+    result = re.search(rgx, inp, re.I)
+    if exp is None:
+        assert result is None
+    else:
+        assert exp == result.group()
 
 
 # -----------------------------------------------------------------------------
