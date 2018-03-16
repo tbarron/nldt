@@ -9,7 +9,6 @@ from fixtures import fx_calls_debug      # noqa
 from fixtures import ftime
 from fixtures import local_formatted
 from fixtures import nl_oracle
-import nldt
 import pexpect
 import pytest
 import tbx
