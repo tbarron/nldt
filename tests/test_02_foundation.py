@@ -795,21 +795,20 @@ def test_dst_utc():
 
 
 # -----------------------------------------------------------------------------
-def test_local_daylight()
+def test_timezone():
     """
     """
     raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
-def test_local_tzname()
+def test_timegm():
     """
     """
     raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
-def test_dst()
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
     pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='est-edt'),
     pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='csd-cdt'),
@@ -822,7 +821,6 @@ def test_tz_context_explicit(zname, std, soff, dst, doff):
     Verify that 'with nldt.tz_context(FOOBAR)' creates a context with FOOBAR as
     the local timezone.
     """
-    raise nldt.Stub()
     pytest.debug_func()
     with nldt.tz_context(zname):
         assert time.timezone == soff
@@ -832,13 +830,11 @@ def test_tz_context_explicit(zname, std, soff, dst, doff):
 
 
 # -----------------------------------------------------------------------------
-def test_timezone()
 @pytest.mark.parametrize("zname", pytz.common_timezones)
 def test_tz_context(zname):
     """
     Verify that 'with tz_context()' does the right thing for all timezones
     """
-    raise nldt.Stub()
     pytest.debug_func()
     offl = nldt.offset_list(zname)
     assert 1 <= len(offl) <= 2
@@ -855,12 +851,10 @@ def test_tz_context(zname):
 
 
 # -----------------------------------------------------------------------------
-def test_timegm()
 def test_tz_context_default():
     """
     Test default timezone context
     """
-    raise nldt.Stub()
     pytest.debug_func()
     lz = get_localzone()
     std_dt = datetime(2011, 1, 1)
@@ -877,12 +871,10 @@ def test_tz_context_default():
 
 
 # -----------------------------------------------------------------------------
-def test_tz_context()
 def test_tz_context_nested():
     """
     Test nested timezone contexts
     """
-    raise nldt.Stub()
     pytest.debug_func()
     with nldt.tz_context('Pacific/Honolulu'):
         assert time.timezone == 36000
@@ -897,31 +889,28 @@ def test_tz_context_nested():
 
 
 # -----------------------------------------------------------------------------
-def test_tzname()
+def test_tzname():
     """
     """
     raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
-def test_tzset()
+def test_tzset():
     """
     """
     raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
-def test_tzstring()
+def test_tzstring():
     """
     """
     raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
-def test_word_before()
+def test_word_before():
     """
     """
     raise nldt.Stub()
-
-
-
