@@ -890,10 +890,18 @@ def test_tz_context_nested():
 
 
 # -----------------------------------------------------------------------------
-def test_tzname():
+@pytest.mark.parametrize("tz, when, exp", [
+    pytest.param(None, None, time.tzname[time.localtime().tm_isdst],
+                 id='local-now'),
+    pytest.param('US/Eastern', 1293771600, 'EST', id='est'),
+    pytest.param('US/Eastern', 1279166400, 'EDT', id='edt'),
+    ])
+def test_tzname(tz, when, exp):
     """
+    nldt.tzname() returns the name of the timezone at a specified time
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    assert nldt.tzname(tz, when) == exp
 
 
 # -----------------------------------------------------------------------------
