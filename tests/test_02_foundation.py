@@ -795,10 +795,18 @@ def test_dst_utc():
 
 
 # -----------------------------------------------------------------------------
-def test_timegm():
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param((2001, 9, 9, 1, 46, 40), 1000000000, id='1.0'),
+    pytest.param((2004, 11, 9, 11, 33, 20), 1100000000, id='1.1'),
+    pytest.param((2008, 1, 10, 21, 20, 0), 1200000000, id='1.2'),
+    pytest.param((2017, 7, 14, 2, 40, 0), 1500000000, id='1.5')
+    ])
+def test_timegm(inp, exp):
     """
+    Convert a tm tuple/struct to a UTC epoch time
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    assert nldt.timegm(inp) == exp
 
 
 # -----------------------------------------------------------------------------
