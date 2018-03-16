@@ -348,40 +348,91 @@ class Indexable(object):
 
 
 # -----------------------------------------------------------------------------
-class local(object):
+class timezone(object):
     """
     This object will provide the same info as time.timezone, time.altzone,
     time.daylight, and time.tzname. Note that the time items are variables but
     the nldt.local items are methods and should be called with parentheses.
+
+    This class would be better called 'timezone'. Initialized with no argument,
+    it would contain info about the local timezone. Initialized with a timezone
+    name, it would provide info about that timezone. It would provide a more
+    convenient wrapper for pytz.
     """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, tz=None):
+        """
+        Set up a local object
+        """
+        tz = tz or 'local'
+        if tz == 'local':
+            self._tzinfo = get_localzone()
+            self._zone = 'local'
+            ctx_zone = self._tzinfo.zone
+        else:
+            self._tzinfo = pytz.timezone(tz)
+            self._zone = self._tzinfo.zone
+            ctx_zone = tz
+        with tz_context(ctx_zone):
+            self._timezone = time.timezone
+            self._altzone = time.altzone
+            self._daylight = time.daylight
+            self._tzname = time.tzname
+
+    # -------------------------------------------------------------------------
+    def std_offset(self):
+        """
+        Return the offset to add to local time to get UTC (class timezone)
+        """
+        return -1 * self._timezone
 
     # -------------------------------------------------------------------------
     def timezone(self):
         """
-        Return the UTC offset for the local standard time (class local)
+        Return the offset to add to UTC to get local time (class timezone)
         """
-        return time.timezone
+        return self._timezone
+
+    # -------------------------------------------------------------------------
+    def dst_offset(self):
+        """
+        Return the offset to add to local time to get UTC during DST (class
+        timezone)
+        """
+        return -1 * self._altzone
 
     # -------------------------------------------------------------------------
     def altzone(self):
         """
-        Return the UTC offset for the local time during DST (class local)
+        Return the offset to add to UTC to get local time during DST (class
+        timezone)
         """
-        return time.altzone
+        return self._altzone
 
     # -------------------------------------------------------------------------
     def daylight(self):
         """
-        Return 1 if DST info is defined for the local timezone (class local)
+        Return 1 if DST info is defined for the timezone represented by self
+        (class timezone)
         """
-        return time.daylight
+        return self._daylight
 
     # -------------------------------------------------------------------------
     def tzname(self):
         """
-        Return tuple of standard and DST timezone abbreviation (class local)
+        Return tuple of standard and DST timezone abbreviation for self
+        (class timezone)
         """
-        return time.tzname
+        return self._tzname
+
+    # -------------------------------------------------------------------------
+    def zone(self):
+        """
+        Return the name of the timezone represented by self
+        (class timezone)
+        """
+        return self._zone
 
 
 # -----------------------------------------------------------------------------
