@@ -1702,25 +1702,6 @@ def offset_list(tzname):
 
 
 # -----------------------------------------------------------------------------
-def timezone():
-    """
-    Returns the locally configured timezone name
-
-    The timezone name may vary with whether DST is in effect or not. The
-    example shows a timezone of 'EST' for Eastern Standard Time. At times of
-    the year when DST is in effect, the timezone is EDT.
-
-    Examples:
-        >>> import nldt
-        >>> nldt.timezone()
-        EST
-    """
-    now = time.localtime()
-    rval = time.tzname[now.tm_isdst]
-    return rval
-
-
-# -----------------------------------------------------------------------------
 def timegm(*args):
     """
     This is a wrapper for calendar.timegm
