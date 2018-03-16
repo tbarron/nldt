@@ -22,19 +22,6 @@ nldt.moment.default_tz('clear')
 
 
 # -----------------------------------------------------------------------------
-def test_indexable_abc():
-    """
-    Indexable is an abstract base class that should not be instantiated
-    directly.
-    """
-    pytest.debug_func()
-    with pytest.raises(TypeError) as err:
-        _ = nldt.Indexable()
-        assert isinstance(_, nldt.Indexable)
-    assert txt['ABC_noinst'] in str(err)
-
-
-# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("zname, std, soff, dst, doff", [
     pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='001'),
     pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='002'),
@@ -127,101 +114,6 @@ def test_weekday_names():
     exp = ['monday', 'tuesday', 'wednesday', 'thursday',
            'friday', 'saturday', 'sunday']
     assert result == exp
-
-
-# -----------------------------------------------------------------------------
-def test_dst_now():
-    """
-    The module dst function should return True or False indicating whether
-    Daylight Savings Time is in force or not.
-    """
-    pytest.debug_func()
-    loc = time.localtime()
-    assert nldt.dst() == (loc.tm_isdst == 1)
-
-
-# -----------------------------------------------------------------------------
-def test_dst_off():
-    """
-    The dst function should always return False for for a moment object set to
-    2010-12-31 in timezone 'US/Eastern' (the local zone at the time of
-    writing).
-    """
-    pytest.debug_func()
-    then = nldt.moment(txt['date03'], txt['iso_date'])
-    assert not nldt.dst(then.epoch())
-
-
-# -----------------------------------------------------------------------------
-def test_dst_on():
-    """
-    The dst function should always return True for a moment object set to
-    2012-07-01 in timezone 'US/Eastern' (the local zone at the time of
-    writing).
-    """
-    pytest.debug_func()
-    then = nldt.moment(txt['date04'], txt['iso_date'])
-    assert nldt.dst(then.epoch(), tz=txt['tz_est'])
-
-
-# -----------------------------------------------------------------------------
-def test_dst_elsewhere_off():
-    """
-    The dst function should return False for non local timezones that support
-    DST during times of the year when DST is not in force.
-
-    NOTE: It seems that DST flags are reversed in the southern hemisphere (just
-    like the seasons, duh), so we expect New Zealand's flag to be off when most
-    others are on.
-
-    NOTE: The pytz table indicates that the last transition time for the
-    Africa/Addis_Ababa timezone was in 1959 and that the last time segment has
-    a dst offset of 0, so we're using that as an example of DST being
-    permanently off.
-    """
-    pytest.debug_func()
-    then = nldt.moment(txt['date01'])
-    assert not nldt.dst(then.epoch(), txt['tz_ak'])
-    assert not nldt.dst(then.epoch(), txt['tz_addis'])
-    assert nldt.dst(then.epoch(), txt['tz_nz'])
-
-
-# -----------------------------------------------------------------------------
-def test_dst_list():
-    """
-    If function dst() gets an argument that is not str, number, or moment it
-    throws an exception
-    """
-    pytest.debug_func()
-    with pytest.raises(TypeError) as err:
-        nldt.dst(time.gmtime())
-    assert txt['dst_when'] in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_dst_elsewhere_on():
-    """
-    The dst function should return True for non local timezones that support
-    DST during times of the year when DST IS in force.
-    """
-    pytest.debug_func()
-    then = nldt.moment(txt['date04'])
-    assert nldt.dst(then.epoch(), txt['tz_ak'])
-    assert not nldt.dst(then.epoch(), txt['tz_nz'])
-
-
-# -----------------------------------------------------------------------------
-def test_dst_utc():
-    """
-    For UTC, dst should always be off
-    """
-    pytest.debug_func()
-    now = nldt.moment()
-    curyear = int(now("%Y"))
-    for year in range(curyear-5, curyear+6):
-        for pitstr in ["{}-01-01".format(year), "{}-07-01".format(year)]:
-            pit = nldt.moment(pitstr)
-            assert not nldt.dst(pit.epoch(), "UTC")
 
 
 # -----------------------------------------------------------------------------
@@ -639,16 +531,3 @@ def test_parser_research():
         if prs.research("boofar", "one two boofar three four", frink):
             assert frink == "this is a string"
     assert "result must be an empty list" in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_Stub():
-    """
-    The Stub class raises an exception reporting the current function that
-    needs attention
-    """
-    pytest.debug_func()
-    with pytest.raises(nldt.Stub) as err:
-        raise nldt.Stub("extra text")
-    msg = "test_Stub() is a stub -- please complete it. (extra text)"
-    assert msg in str(err)
