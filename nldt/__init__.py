@@ -1741,8 +1741,11 @@ def tzname(tz=None, epoch=None):
     if *tz* is None.
     """
     zone = pytz.timezone(tz) if tz else get_localzone()
-    epoch = epoch or moment()
-    return zone.tzname(datetime.fromtimestamp(epoch))
+    if epoch:
+        when = moment(epoch)
+    else:
+        when = moment()
+    return zone.tzname(datetime.fromtimestamp(when.epoch()))
 
 
 # -----------------------------------------------------------------------------
