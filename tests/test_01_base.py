@@ -74,3 +74,16 @@ def test_offset_list(tz, exp):
     pytest.debug_func()
     result = nldt.offset_list(tz)
     assert result == exp
+
+
+# -----------------------------------------------------------------------------
+def test_Stub():
+    """
+    The Stub class raises an exception reporting the current function that
+    needs attention
+    """
+    pytest.debug_func()
+    with pytest.raises(nldt.Stub) as err:
+        raise nldt.Stub("extra text")
+    msg = "test_Stub() is a stub -- please complete it. (extra text)"
+    assert msg in str(err)
