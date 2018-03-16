@@ -1638,7 +1638,7 @@ def dst(when=None, tz=None):
         >>> nldt.dst()
         False
     """
-    when = when or moment(txt['date01'])
+    when = when or moment()
     if isinstance(when, numbers.Number) or isinstance(when, str):
         when = moment(when)
     if not isinstance(when, moment):
