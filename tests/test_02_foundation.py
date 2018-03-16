@@ -606,40 +606,98 @@ def test_tu_unit_list():
 
 
 # -----------------------------------------------------------------------------
-def test_tu_magnitude()
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param('US/Pacific', 'US/Pacific', id='US/Pacific'),
+    pytest.param('local', 'local', id='local'),
+    pytest.param(None, 'local', id='none'),
+    ])
+def test_tz_constructor(inp, exp):
     """
+    The class local should have a constructor that accepts the name of a
+    timezone, calls tzset(), and records the resulting values from
+    time.{timezone,altzone,daylight,tzname} and then is able to return them on
+    request.
+
+    We should be able to have multiple local objects active at the same time.
+
+    The local object should be able to report which timezone designator
+    ('US/Eastern', 'Asia/Jakarta') it was initialized with.
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    lz = nldt.timezone(inp)
+    assert hasattr(lz, '_zone')         # contains the tzinfo struct from pytz
+    assert hasattr(lz, 'timezone')      # reports std utc offset in seconds
+    assert hasattr(lz, 'std_offset')    # alias for timezone
+    assert hasattr(lz, 'altzone')       # reports dst utc offset in seconds
+    assert hasattr(lz, 'dst_offset')    # alias for altzone
+    assert hasattr(lz, 'daylight')      # reports whether dst supported for tz
+    assert hasattr(lz, 'tzname')        # short timezone name
+    assert hasattr(lz, 'zone')          # input (long) timezone name
+    assert lz._zone == exp
 
 
 # -----------------------------------------------------------------------------
-def test_tu_unit_list()
+def test_tz_timezone():
     """
+    The timezone() method returns the value of time.timezone:
+
+        UTC + self.timezone() => local time
+
+    The std_offset() method returns the inverse offset:
+
+        local time + self.std_offset() => UTC
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    lz = nldt.timezone('US/Eastern')
+    exp = 18000
+    assert lz.timezone() == exp
+    assert lz.std_offset() == -1 * exp
+    assert lz.altzone() == exp - 3600
+    assert lz.dst_offset() == -1 * (exp - 3600)
+    assert lz.timezone() == -1 * lz.std_offset()
 
 
 # -----------------------------------------------------------------------------
+def test_tz_altzone():
     """
+    The altzone() method returns the value of time.altzone:
+
+        UTC + self.altzone() => local DST
+
+    The dst_offset() method returns the inverse offset:
+
+        local DST + self.dst_offset() => UTC
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    lz = nldt.timezone('US/Pacific')
+    assert lz.altzone() == 25200
+    assert lz.dst_offset() == -25200
+    assert lz.altzone() == -1 * lz.dst_offset()
 
 
 # -----------------------------------------------------------------------------
-def test_clock()
+def test_tz_daylight():
     """
+    Return 1 if the timezone has a DST definition, else 0
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    lz = nldt.timezone('US/Central')
+    assert lz.daylight() == 1
+    hz = nldt.timezone('US/Hawaii')
+    assert hz.daylight() == 0
 
 
 # -----------------------------------------------------------------------------
-def test_local_constructor()
+def test_tz_tzname():
     """
-    class local should have a constructor that accepts the name of a timezone,
-    calls tzset(), and records the resulting values from
-    time.{timezone,altzone,daylight,tzname}
+    Method tzname() returns a tuple containing the abbreviated timezone names.
+    Method zone() returns the name used to initialize the object.
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    inp = 'US/Mountain'
+    lz = nldt.timezone(inp)
+    assert lz.tzname() == ('MST', 'MDT')
+    assert lz.zone() == inp
 
 
 # -----------------------------------------------------------------------------
