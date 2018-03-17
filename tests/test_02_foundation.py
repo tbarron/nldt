@@ -480,13 +480,20 @@ def test_week_index(inp, exp):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inpl, exp", [
-    pytest.param([0, 'mon', 'mond', 'monday'], "monday", id='mon'),
-    pytest.param([1, 'tue', 'tues', 'tuesday'], "tuesday", id='tue'),
-    pytest.param([2, 'wed', 'wednes', 'wednesday'], "wednesday", id='wed'),
-    pytest.param([3, 'thu', 'thurs', 'thursday'], "thursday", id='thu'),
-    pytest.param([4, 'fri', 'frid', 'friday'], "friday", id='fri'),
-    pytest.param([5, 'sat', 'satur', 'saturday'], "saturday", id='sat'),
-    pytest.param([6, 'sun', 'sunda', 'sunday'], "sunday", id='sun'),
+    pytest.param([0, '0', 'mon', 'mond', 'monday'], "monday",
+                 id='mon'),
+    pytest.param([1, '1', 'tue', 'tues', 'tuesday'], "tuesday",
+                 id='tue'),
+    pytest.param([2, '2', 'wed', 'wednes', 'wednesday'], "wednesday",
+                 id='wed'),
+    pytest.param([3, '3', 'thu', 'thurs', 'thursday'], "thursday",
+                 id='thu'),
+    pytest.param([4, '4', 'fri', 'frid', 'friday'], "friday",
+                 id='fri'),
+    pytest.param([5, '5', 'sat', 'satur', 'saturday'], "saturday",
+                 id='sat'),
+    pytest.param([6, '6', 'sun', 'sunda', 'sunday'], "sunday",
+                 id='sun'),
     ])
 def test_week_fullname(inpl, exp):
     """
