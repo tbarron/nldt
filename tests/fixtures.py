@@ -82,7 +82,7 @@ def nl_oracle(spec):
         now.parse(txt["xpr-nfri"])
         return now(otz='utc')
     elif spec == 'today':
-        return local_formatted(txt['iso_date'], None, time.gmtime)
+        return local_formatted(txt['iso-date'], None, time.gmtime)
     elif spec == 'tomorrow':
         tm = time.gmtime()
         then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday+1,
