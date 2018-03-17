@@ -9,6 +9,7 @@ from fixtures import local_formatted
 import nldt
 from nldt import moment as M
 from nldt import duration as D
+import numbers
 import pytest
 import time
 from nldt.text import txt
@@ -1264,6 +1265,79 @@ def test_moment_time():
     now = M()
     # payload
     assert now.time() == now.epoch()
+
+
+# -----------------------------------------------------------------------------
+def test_prep_init():
+    """
+    Verify that class prepositions instantiates properly
+    """
+    pytest.debug_func()
+    prp = nldt.prepositions()
+    assert prp.preps['of'] == 1
+    assert prp.preps['in'] == 1
+    assert prp.preps['from'] == 1
+    assert prp.preps['after'] == 1
+    assert prp.preps['before'] == -1
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param("first of thirteenth", ("of", ["first", "of", "thirteenth"]),
+                 id='001'),
+    pytest.param("last week in January",
+                 ("in", ["last week", "in", "January"]), id='002'),
+    pytest.param("three weeks from yesterday",
+                 ("from", ["three weeks", "from", "yesterday"]), id='003'),
+    pytest.param("five days after tomorrow",
+                 ("after", ["five days", "after", "tomorrow"]), id='004'),
+    pytest.param("day before tomorrow",
+                 ("before", ["day", "before", "tomorrow"]), id='005'),
+    pytest.param("one two three four five",
+                 (None, ["one two three four five"]), id='006'),
+    ])
+def test_prep_split(inp, exp):
+    """
+    Verify that prepositions.split() does what's expected
+    """
+    pytest.debug_func()
+    prp = nldt.prepositions()
+    assert prp.split(inp) == exp
+
+
+# -----------------------------------------------------------------------------
+def test_prep_are_in():
+    """
+    Verify that method prepositions.are_in() accurately reports whether any
+    prepositions are present
+    """
+    pytest.debug_func()
+    prp = nldt.prepositions()
+    assert prp.are_in("preposition in this phrase")
+    assert not prp.are_in("no prepositions here sin doff")
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.parametrize("inp, exp", [
+    pytest.param("of", 1, id='001'),
+    pytest.param("in", 1, id='002'),
+    pytest.param("from", 1, id='003'),
+    pytest.param("after", 1, id='004'),
+    pytest.param("before", -1, id='005'),
+    pytest.param("foobar", "", id='006'),
+    ])
+def test_prep_direction(inp, exp):
+    """
+    Test for prepositions.direction()
+    """
+    pytest.debug_func()
+    prp = nldt.prepositions()
+    if isinstance(exp, numbers.Number):
+        assert prp.direction(inp) == exp
+    else:
+        with pytest.raises(KeyError) as err:
+            assert prp.direction(inp) == exp
+        assert "'foobar'" in str(err)
 
 
 # -----------------------------------------------------------------------------
