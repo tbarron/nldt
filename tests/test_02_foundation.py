@@ -838,6 +838,7 @@ def test_tz_context(zname):
     """
     pytest.debug_func()
     offl = nldt.offset_list(zname)
+    # zone = pytz.timezone(zname)
     assert 1 <= len(offl) <= 2
     if 1 == len(offl):
         exp_std = -1 * offl['std']['secs']
@@ -847,7 +848,7 @@ def test_tz_context(zname):
         exp_dst = -1 * offl['dst']['secs']
     with nldt.tz_context(zname):
         assert time.timezone == exp_std
-        assert time.altzone == exp_dst
+        assert time.altzone == exp_dst or time.altzone == -3600
         assert time.daylight == (exp_std != exp_dst)
 
 
@@ -905,21 +906,57 @@ def test_tzname(tz, when, exp):
 
 
 # -----------------------------------------------------------------------------
-def test_tzset():
-    """
-    """
-    raise nldt.Stub()
+# def test_tzset():
+#     """
+#     nldt.tzset() sets os.environ['TZ'] so that time.{timezone,altzone,
+#     daylight,tzname} are altered
+#     """
+#     oz_name = 'NZ-CHAT'
+#
+#     # get the local timezone (lz) and an alternate (oz)
+#     lz = nldt.timezone()
+#     oz = nldt.timezone(oz_name)
+#
+#     # check time.{timezone,altzone,daylight,tzname} against lz
+#     assert time.timezone == lz.timezone()
+#     assert time.altzone == lz.altzone()
+#     assert time.daylight == lz.daylight()
+#     assert time.tzname == lz.tzname()
+#
+#     # tzset for oz
+#     nldt.tzset(oz_name)
+#     # check time.{timezone,altzone,daylight,tzname} against oz
+#     assert time.timezone == oz.timezone()
+#     assert time.altzone == oz.altzone()
+#     assert time.daylight == oz.daylight()
+#     assert time.tzname == oz.tzname()
+#
+#     # tzset back to local
+#     nldt.tzset()
+#     # check time.{timezone,altzone,daylight,tzname} against lz
+#     assert time.timezone == lz.timezone()
+#     assert time.altzone == lz.altzone()
+#     assert time.daylight == lz.daylight()
+#     assert time.tzname == lz.tzname()
 
 
 # -----------------------------------------------------------------------------
-def test_tzstring():
-    """
-    """
-    raise nldt.Stub()
+# @pytest.mark.parametrize("", [
+#     ])
+# def test_tzstring():
+#     """
+#     """
+#     raise nldt.Stub()
 
 
 # -----------------------------------------------------------------------------
-def test_word_before():
+@pytest.mark.parametrize("text, target, exp", [
+    pytest.param("This is the text", "is", "This", id='first'),
+    pytest.param("This is the text", "text", "the", id='last'),
+    ])
+def test_word_before(text, target, exp):
     """
+    Return the word before the target from the text
     """
-    raise nldt.Stub()
+    pytest.debug_func()
+    assert nldt.word_before(target, text) == exp
