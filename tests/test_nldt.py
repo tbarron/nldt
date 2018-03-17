@@ -181,7 +181,7 @@ def test_parse_yesterday():
 @pytest.mark.parametrize("inp, exp", [
     pytest.param(3.4, 3, id='numfloat'),
     pytest.param(11, 11, id='numint'),
-    pytest.param(17, ValueError(txt['err_indxfy'].format(17)),
+    pytest.param(17, ValueError(txt['err-indxfy'].format(17)),
                  id='year-range'),
     pytest.param('5', 5, id='numstr'),
     pytest.param('October', 10, id='str'),

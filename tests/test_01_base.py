@@ -33,7 +33,7 @@ def test_indexable_abc():
     with pytest.raises(TypeError) as err:
         _ = nldt.Indexable()
         assert isinstance(_, nldt.Indexable)
-    assert txt['ABC_noinst'] in str(err)
+    assert txt['ABC-noinst'] in str(err)
 
 
 # -----------------------------------------------------------------------------

@@ -73,7 +73,7 @@ def test_utc_offset():
 
     with pytest.raises(TypeError) as err:
         nldt.utc_offset(txt['nan'])
-    assert txt['utc_offset'] in str(err)
+    assert txt['utc-offset'] in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -174,7 +174,7 @@ def test_month_index():
     assert m.index('December') == 12
     with pytest.raises(ValueError) as err:
         assert m.index('frobble')
-    assert txt['not_indxfy'].format('frobble') in str(err)
+    assert txt['not-indxfy'].format('frobble') in str(err)
 
 
 # -----------------------------------------------------------------------------
@@ -504,12 +504,12 @@ def test_week_fullname(inpl, exp):
 # catalog extension file that will import txt from text and then add test
 # strings to it.
 @pytest.mark.parametrize("inp, exp", [
-    pytest.param(txt['rgx_mon'], ["Mon"], id='mon'),
-    pytest.param(txt['rgx_tue'], ["Tues"], id='tue'),
-    pytest.param(txt['rgx_wed'], ["Wednes"], id='wed'),
-    pytest.param(txt['rgx_thu'], ["Thurs", "Satur"], id='thu-sat'),
-    pytest.param(txt['rgx_fri'], ["Fri"], id='fri'),
-    pytest.param(txt['rgx_sun'], ["Sun"], id='sun'),
+    pytest.param(txt['rgx-mon'], ["Mon"], id='mon'),
+    pytest.param(txt['rgx-tue'], ["Tues"], id='tue'),
+    pytest.param(txt['rgx-wed'], ["Wednes"], id='wed'),
+    pytest.param(txt['rgx-thu'], ["Thurs", "Satur"], id='thu-sat'),
+    pytest.param(txt['rgx-fri'], ["Fri"], id='fri'),
+    pytest.param(txt['rgx-sun'], ["Sun"], id='sun'),
     ])
 def test_week_match_weekdays(inp, exp):
     """
@@ -751,9 +751,9 @@ def test_dst_elsewhere_off():
     """
     pytest.debug_func()
     then = nldt.moment(txt['date01'])
-    assert not nldt.dst(then, txt['tz_ak'])
-    assert not nldt.dst(then, txt['tz_addis'])
-    assert nldt.dst(then, txt['tz_nz'])
+    assert not nldt.dst(then, txt['tz-ak'])
+    assert not nldt.dst(then, txt['tz-addis'])
+    assert nldt.dst(then, txt['tz-nz'])
 
 
 # -----------------------------------------------------------------------------
@@ -764,8 +764,8 @@ def test_dst_elsewhere_on():
     """
     pytest.debug_func()
     then = nldt.moment(txt['date04'])
-    assert nldt.dst(then, txt['tz_ak'])
-    assert not nldt.dst(then, txt['tz_nz'])
+    assert nldt.dst(then, txt['tz-ak'])
+    assert not nldt.dst(then, txt['tz-nz'])
 
 
 # -----------------------------------------------------------------------------
@@ -777,7 +777,7 @@ def test_dst_exc():
     pytest.debug_func()
     with pytest.raises(TypeError) as err:
         nldt.dst(time.gmtime())
-    assert txt['dst_when'] in str(err)
+    assert txt['dst-when'] in str(err)
 
 
 # -----------------------------------------------------------------------------

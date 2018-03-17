@@ -104,7 +104,7 @@ class duration(object):
         if start or end:
             # build duration from the difference between end and start
             if not start or not end:
-                raise InitError(txt['mctor_001'])
+                raise InitError(txt['mctor-001'])
             start = self._resolve_value(start)
             end = self._resolve_value(end)
             self.seconds = end.epoch() - start.epoch()
@@ -210,9 +210,9 @@ class duration(object):
         elif isinstance(other, duration):
             rval = self.seconds - other.seconds
         elif isinstance(other, moment):
-            raise TypeError(txt['optypes_01'])
+            raise TypeError(txt['optypes-01'])
         else:
-            raise TypeError(txt['optypes_02'].format(type(self), type(other)))
+            raise TypeError(txt['optypes-02'].format(type(self), type(other)))
         return rval
 
     # -------------------------------------------------------------------------
@@ -316,7 +316,7 @@ class Indexable(object):
         Don't instantiate this class. It is an abstract base for month and
         week. (class Indexable)
         """
-        raise TypeError(txt['ABC_noinst'])
+        raise TypeError(txt['ABC-noinst'])
 
     # -------------------------------------------------------------------------
     def indexify(self, name_or_idx):
@@ -343,7 +343,7 @@ class Indexable(object):
             if int(name_or_idx) in self._dict:
                 rval = self._dict[int(name_or_idx)]['idx']
         if rval is None:
-            raise ValueError(txt['not_indxfy'].format(name_or_idx))
+            raise ValueError(txt['not-indxfy'].format(name_or_idx))
         return rval
 
 
@@ -603,7 +603,7 @@ class moment(object):
         self.moment = None
         if dspec is None:
             if itz or fmt:
-                raise InitError(txt['no_args'])
+                raise InitError(txt['no-args'])
             else:
                 self.moment = int(time.time())
         elif any([isinstance(dspec, numbers.Number),
@@ -611,14 +611,14 @@ class moment(object):
                   isinstance(dspec, moment)
                   ]):
             if itz or fmt:
-                raise ValueError(txt['epc_nofmttz'])
+                raise ValueError(txt['epc-nofmttz'])
             elif isinstance(dspec, moment):
                 self.moment = dspec.epoch()
             else:
                 self.moment = int(dspec)
         elif isinstance(dspec, time.struct_time):
             if fmt:
-                raise InitError(txt['fmt_str'])
+                raise InitError(txt['fmt-str'])
             if itz:
                 self.moment = self._normalize(timegm(dspec), tz=itz)
             else:
@@ -626,7 +626,7 @@ class moment(object):
                                               tz=self.__class__.deftz)
         elif isinstance(dspec, tuple):
             if fmt:
-                raise InitError(txt['fmt_str'])
+                raise InitError(txt['fmt-str'])
             if 6 <= len(dspec) <= 9:
                 if itz:
                     self.moment = self._normalize(timegm(dspec), tz=itz)
@@ -652,7 +652,7 @@ class moment(object):
                 self.moment = self._normalize(self._guess_format(dspec),
                                               tz=self.__class__.deftz)
         else:
-            raise ValueError(txt['valid_calls'])
+            raise ValueError(txt['valid-calls'])
 
     # -------------------------------------------------------------------------
     def __call__(self, fmt=None, otz=None):
@@ -708,9 +708,9 @@ class moment(object):
         elif isinstance(other, numbers.Number):
             rval = moment(self.epoch() + other)
         elif isinstance(other, moment):
-            raise TypeError(txt['mom_sum'])
+            raise TypeError(txt['mom-sum'])
         else:
-            raise TypeError(txt['optypes_02'].format(type(self), type(other)))
+            raise TypeError(txt['optypes-02'].format(type(self), type(other)))
         return rval
 
     # -------------------------------------------------------------------------
@@ -779,7 +779,7 @@ class moment(object):
         elif isinstance(other, duration):
             rval = moment(self.epoch() - other.seconds)
         else:
-            raise ValueError(txt['inv_subtrahend'])
+            raise ValueError(txt['inv-subtrahend'])
         return rval
 
     # -------------------------------------------------------------------------
@@ -831,7 +831,7 @@ class moment(object):
         if tm:
             return timegm(tm)
         else:
-            raise ValueError(txt['no_match'])
+            raise ValueError(txt['no-match'])
 
     # -------------------------------------------------------------------------
     def _normalize(self, when, tz):
@@ -851,9 +851,9 @@ class moment(object):
         wk = week()
         if start:
             if unit != 'week':
-                raise ValueError(txt['start_inv01'])
+                raise ValueError(txt['start-inv01'])
             elif all([start not in x for x in wk.day_list()]):
-                raise ValueError(txt['start_inv02'])
+                raise ValueError(txt['start-inv02'])
 
     # -------------------------------------------------------------------------
     def asctime(self, tz=None):
@@ -954,7 +954,7 @@ class moment(object):
         elif unit == 'year':
             ceil = timegm((tm.tm_year, 12, 31, 23, 59, 59, 0, 0, 0))
         else:
-            raise ValueError(txt['not_timeu'].format(unit))
+            raise ValueError(txt['not-timeu'].format(unit))
         return moment(ceil)
 
     # -------------------------------------------------------------------------
@@ -1004,7 +1004,7 @@ class moment(object):
             nflr = timegm((tm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0))
             rval = moment(nflr)
         else:
-            raise ValueError(txt['not_timeu'].format(unit))
+            raise ValueError(txt['not-timeu'].format(unit))
         return rval
 
     # -------------------------------------------------------------------------
@@ -1174,7 +1174,7 @@ class Parser(object):
         elif self.research(self.wkday_rgx, expr, result):
             rval = self.parse_weekday(expr, result, start)
         else:
-            raise ParseError(txt['parse_fail'].format(expr))
+            raise ParseError(txt['parse-fail'].format(expr))
         return rval
 
     # -------------------------------------------------------------------------
@@ -1218,7 +1218,7 @@ class Parser(object):
             count = 1
         unit = self.tu.find_unit(expr)
         if unit is None:
-            raise ValueError(txt['no_unit'].format(expr))
+            raise ValueError(txt['no-unit'].format(expr))
         rval = moment()
         rval = moment(rval.epoch() - count * self.tu.magnitude(unit))
         return rval
@@ -1236,7 +1236,7 @@ class Parser(object):
             count = 1
         unit = self.tu.find_unit(expr)
         if unit is None:
-            raise ValueError(txt['no_unit'].format(expr))
+            raise ValueError(txt['no-unit'].format(expr))
         rval = moment()
         rval = moment(rval.epoch() + count * self.tu.magnitude(unit))
         return rval
@@ -1345,7 +1345,7 @@ class Parser(object):
         Parser)
         """
         if not isinstance(result, list):
-            raise TypeError(txt['not_empty'])
+            raise TypeError(txt['not-empty'])
         q = re.search(pattern, text)
         if q:
             result.append(q)
@@ -1541,7 +1541,7 @@ class week(Indexable):
         """
         Returns a regex that will match all weekdays (class week)
         """
-        return txt['wday_rgx']
+        return txt['wday-rgx']
 
     # -------------------------------------------------------------------------
     def day_number(self, moment_or_epoch, count=None):
@@ -1570,7 +1570,7 @@ class week(Indexable):
         elif isinstance(moment_or_epoch, numbers.Number):
             epoch = moment_or_epoch
         else:
-            raise TypeError(txt['arg_more'])
+            raise TypeError(txt['arg-more'])
         tm = time.gmtime(epoch)
         if count == 'mon0':
             return tm.tm_wday
@@ -1642,7 +1642,7 @@ def dst(when=None, tz=None):
     if isinstance(when, numbers.Number) or isinstance(when, str):
         when = moment(when)
     if not isinstance(when, moment):
-        raise TypeError(txt['dst_when'])
+        raise TypeError(txt['dst-when'])
 
     tz = tz or 'local'
     zone = get_localzone() if tz == 'local' else pytz.timezone(tz)
@@ -1785,7 +1785,7 @@ def utc_offset(epoch=None, tz=None):
     """
     epoch = epoch or time.time()
     if not isinstance(epoch, numbers.Number):
-        raise TypeError(txt['utc_offset'])
+        raise TypeError(txt['utc-offset'])
 
     tz = tz or 'local'
     if tz == 'local':
