@@ -553,7 +553,7 @@ def test_duration_minus():
     with pytest.raises(TypeError) as err:
         # payload (duration - moment => exception
         assert D(seconds=25) - M("2018-02-01")
-    assert txt['optypes_01'] in str(err)
+    assert txt['optypes-01'] in str(err)
 
 
 # -----------------------------------------------------------------------------
