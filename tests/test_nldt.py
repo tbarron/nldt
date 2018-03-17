@@ -10,7 +10,7 @@ from fixtures import nl_oracle
 # from tzlocal import get_localzone
 # from datetime import datetime
 import numbers
-import os
+# import os
 import pytest
 # import pytz
 from nldt.text import txt
@@ -19,101 +19,6 @@ import nldt
 from nldt import moment as M
 
 nldt.moment.default_tz('clear')
-
-
-# -----------------------------------------------------------------------------
-@pytest.mark.parametrize("zname, std, soff, dst, doff", [
-    pytest.param('US/Eastern', 'EST', 18000, 'EDT', 14400, id='001'),
-    pytest.param('US/Central', 'CST', 21600, 'CDT', 18000, id='002'),
-    pytest.param('US/Mountain', 'MST', 25200, 'MDT', 21600, id='003'),
-    pytest.param('US/Pacific', 'PST', 28800, 'PDT', 25200, id='004'),
-    ])
-def test_local(zname, std, soff, dst, doff):
-    """
-    nldt.local.timezone() should return the same value as time.timezone() for
-    the currently configured local timezone
-    """
-    pytest.debug_func()
-    seed = "{}{}{}{}".format(std, int(soff/3600), dst, int(doff/3600))
-    os.environ['TZ'] = seed
-    time.tzset()
-    lz = nldt.local()
-    assert time.timezone == lz.timezone()
-    assert time.altzone == lz.altzone()
-    assert time.daylight == lz.daylight()
-    assert time.tzname == lz.tzname()
-
-
-# -----------------------------------------------------------------------------
-def test_month_init():
-    """
-    nldt.month() constructor should return an object with dict of months
-    """
-    pytest.debug_func()
-    m = nldt.month()
-    assert hasattr(m, '_dict')
-    for midx in range(1, 13):
-        assert midx in m._dict
-    for mname in ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
-                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']:
-        assert mname in m._dict
-
-
-# -----------------------------------------------------------------------------
-def test_month_index():
-    """
-    nldt.month_index() takes a month name and returns its index. On bad input,
-    it will raise a KeyError.
-    """
-    pytest.debug_func()
-    m = nldt.month()
-    assert m.index('jan') == 1
-    assert m.index('February') == 2
-    assert m.index('marc') == 3
-    assert m.index('apr') == 4
-    assert m.index('May') == 5
-    assert m.index('june') == 6
-    assert m.index('jul') == 7
-    assert m.index('August') == 8
-    assert m.index('sep') == 9
-    assert m.index('Octob') == 10
-    assert m.index('nov') == 11
-    assert m.index('December') == 12
-    with pytest.raises(ValueError) as err:
-        assert m.index('frobble')
-    assert txt['not_indxfy'].format('frobble') in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_weekday_index():
-    """
-    nldt.weekday_index() takes a weekday name and returns its index. On bad
-    input, it will raise a KeyError.
-    """
-    pytest.debug_func()
-    w = nldt.week()
-    assert w.index('Monday') == 0
-    assert w.index('tue') == 1
-    assert w.index('wednesday') == 2
-    assert w.index('thur') == 3
-    assert w.index('fri') == 4
-    assert w.index('Saturday') == 5
-    assert w.index('sunda') == 6
-    with pytest.raises(KeyError):
-        assert w.index('foobar')
-
-
-# -----------------------------------------------------------------------------
-def test_weekday_names():
-    """
-    nldt.weekday_names() returns the list of weekday names in order
-    """
-    pytest.debug_func()
-    w = nldt.week()
-    result = w.day_list()
-    exp = ['monday', 'tuesday', 'wednesday', 'thursday',
-           'friday', 'saturday', 'sunday']
-    assert result == exp
 
 
 # -----------------------------------------------------------------------------
