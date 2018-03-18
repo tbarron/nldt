@@ -16,6 +16,15 @@ import tbx
 
 
 # -----------------------------------------------------------------------------
+def xtime(when=None, fmt=None, tz=None):
+    """
+    Generate expected times. This should replace local_formatted and ftime.
+    """
+    point = nldt.moment(when)
+    return point(fmt, otz=tz)
+
+
+# -----------------------------------------------------------------------------
 def local_formatted(fmt, epoch=None, dstor=None):
     """
     Format the epoch time as local
