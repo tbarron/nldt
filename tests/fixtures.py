@@ -48,6 +48,15 @@ def fx_git_last_tag():
 
 
 # -----------------------------------------------------------------------------
+def local_dst():
+    """
+    Return True if DST is in force for the local timezone, else False
+    """
+    tm = time.localtime()
+    return bool(tm.tm_isdst)
+
+
+# -----------------------------------------------------------------------------
 def nl_oracle(spec):
     """
     This function provides an oracle for tests of nldt.Parser. In this
