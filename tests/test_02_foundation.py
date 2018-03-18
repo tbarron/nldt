@@ -733,97 +733,31 @@ def test_tz_tzname():
 
 
 # -----------------------------------------------------------------------------
-def test_dst():
+@pytest.mark.parametrize("when, zone, exp", [
+    pytest.param(None, None, local_dst(), id='none-none'),
+    pytest.param(txt['date01'], txt['tz-ak'], False, id='dt1-ak'),
+    pytest.param(txt['date01'], txt['tz-addis'], False, id='dt1-addis'),
+    pytest.param(txt['date01'], txt['tz-nz'], True, id='dt1-nz'),
+    pytest.param(txt['date01'], 'utc', False, id='dt1-utc'),
+    pytest.param(txt['date03'], txt['tz-est'], False, id='dt3-est'),
+    pytest.param(txt['date03'], 'utc', False, id='dt3-utc'),
+    pytest.param(txt['date04'], txt['tz-ak'], True, id='dt4-ak'),
+    pytest.param(txt['date04'], txt['tz-nz'], False, id='dt4-nz'),
+    pytest.param(txt['date04'], txt['tz-est'], True, id='dt4-est'),
+    pytest.param(txt['date04'], 'utc', False, id='dt4-utc'),
+    pytest.param(time.gmtime(), None, TypeError(txt['dst-when']), id='except'),
+    ])
+def test_dst(when, zone, exp):
     """
-    The function nldt.dst() with no argument returns True or False indicating
-    whether Daylight Savings Time is currently in force or not
+    Testing dst function
     """
     pytest.debug_func()
-    tm = time.localtime()
-    if tm.tm_isdst:
-        assert nldt.dst()
+    if isinstance(exp, Exception):
+        with pytest.raises(type(exp)) as err:
+            assert nldt.dst(when, zone)
+        assert str(exp) in str(err)
     else:
-        assert not nldt.dst()
-
-
-# -----------------------------------------------------------------------------
-def test_dst_off():
-    """
-    The function nldt.dst() always returns False for a moment object set to
-    2010-12-31 in timezone 'US/Eastern'.
-    """
-    pytest.debug_func()
-    assert not nldt.dst(nldt.moment(txt['date03']), tz=txt['tz-est'])
-
-
-# -----------------------------------------------------------------------------
-def test_dst_on():
-    """
-    The function nldt.dst() always returns True for a moment object set to
-    2012-07-01 in timezone 'US/Eastern'.
-    """
-    pytest.debug_func()
-    assert nldt.dst(nldt.moment(txt['date04']), tz=txt['tz-est'])
-
-
-# -----------------------------------------------------------------------------
-def test_dst_elsewhere_off():
-    """
-    The dst function should return False for non local timezones that support
-    DST during times of the year when DST is not in force.
-
-    NOTE: It seems that DST flags are reversed in the southern hemisphere (just
-    like the seasons, duh), so we expect New Zealand's flag to be off when most
-    others are on and vice versa.
-
-    NOTE: The pytz table indicates that the last transition time for the
-    Africa/Addis_Ababa timezone was in 1959 and that the last time segment has
-    a dst offset of 0, so we're using that as an example of DST being
-    permanently off.
-    """
-    pytest.debug_func()
-    then = nldt.moment(txt['date01'])
-    assert not nldt.dst(then, txt['tz-ak'])
-    assert not nldt.dst(then, txt['tz-addis'])
-    assert nldt.dst(then, txt['tz-nz'])
-
-
-# -----------------------------------------------------------------------------
-def test_dst_elsewhere_on():
-    """
-    The dst function should return True for non local timezones that support
-    DST during times of the year when DST IS in force.
-    """
-    pytest.debug_func()
-    then = nldt.moment(txt['date04'])
-    assert nldt.dst(then, txt['tz-ak'])
-    assert not nldt.dst(then, txt['tz-nz'])
-
-
-# -----------------------------------------------------------------------------
-def test_dst_exc():
-    """
-    If function dst() gets an argument that is not str, number, or moment it
-    throws an exception
-    """
-    pytest.debug_func()
-    with pytest.raises(TypeError) as err:
-        nldt.dst(time.gmtime())
-    assert txt['dst-when'] in str(err)
-
-
-# -----------------------------------------------------------------------------
-def test_dst_utc():
-    """
-    For UTC, dst should always be off
-    """
-    pytest.debug_func()
-    now = nldt.moment()
-    curyear = int(now("%Y"))
-    for year in range(curyear-5, curyear+6):
-        for pitstr in ["{}-01-01".format(year), "{}-07-01".format(year)]:
-            pit = nldt.moment(pitstr)
-            assert not nldt.dst(pit, "UTC")
+        assert nldt.dst(when, zone) == exp
 
 
 # -----------------------------------------------------------------------------
