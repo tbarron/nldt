@@ -1,4 +1,8 @@
 """
+nldt - Natural Language Date/Time support
+Copyright (c) 2017 - <the end of time>  Tom Barron
+See file LICENSING for details
+-------------------------------------------------------------------------------
 This module defines strings used in nldt to minimize repetition (DRY).
 
 txt['err-*']      Error messages

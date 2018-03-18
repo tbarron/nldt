@@ -1,3 +1,15 @@
+"""
+nldt - Natural Language Date/Time support
+Copyright (c) 2017 - <the end of time>  Tom Barron
+See file LICENSING for details
+-------------------------------------------------------------------------------
+
+This file contains code for converting words describing numbers into the
+numbers described. For example, it will convert the string 'seventy-five' to
+the number 75.
+"""
+
+
 # -----------------------------------------------------------------------------
 def scan(text):
     """
