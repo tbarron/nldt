@@ -7,6 +7,7 @@ This file contains code for testing nldt functionality.
 """
 from datetime import datetime
 from tzlocal import get_localzone
+from fixtures import local_dst
 from nldt import moment as M
 import nldt
 import numbers
