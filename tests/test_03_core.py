@@ -5,7 +5,7 @@ See file LICENSING for details
 
 This file contains code for testing nldt functionality.
 """
-from fixtures import local_formatted
+from fixtures import xtime
 import nldt
 from nldt import moment as M
 from nldt import duration as D
@@ -75,7 +75,7 @@ def test_display():
     """
     pytest.debug_func()
     now = time.time()
-    exp = local_formatted("%Y-%m-%d", now)
+    exp = xtime(fmt="%Y-%m-%d", when=now)
     wobj = nldt.moment(now)
     # payload
     assert wobj() == exp
@@ -90,7 +90,7 @@ def test_display_formatted():
     pytest.debug_func()
     fmt = "%H:%M %p on %B %d, %Y"
     now = time.time()
-    exp = local_formatted(fmt, now)
+    exp = xtime(fmt=fmt, when=now)
     wobj = nldt.moment(now)
     # payload
     assert wobj(fmt) == exp
@@ -946,14 +946,14 @@ def test_moment_gmtime():
     pytest.param("2018-01-01 00:00:00", "%F %T", "US/Eastern", 1514782800,
                  id='004'),
     # ?TRAVIS
-    pytest.param(local_formatted(txt['iso-datetime'], 1514782800),
+    pytest.param(xtime(fmt=txt['iso-datetime'], when=1514782800),
                  "%F %T", None, 1514782800,
                  id='local-iso'),
 
     pytest.param("2018.0101 01:02:03", None, "Pacific/Truk", 1514732523,
                  id='006'),
     # ?TRAVIS
-    pytest.param(local_formatted(txt['iso-ymdhms'], 1530710637),
+    pytest.param(xtime(fmt=txt['iso-ymdhms'], when=1530710637),
                  None, None, 1530710637,
                  id='local-ymdhms'),
 
@@ -1134,7 +1134,7 @@ def test_moment_tz(zone):
     pytest.debug_func()
     now = M()
     adjusted = now.epoch() + nldt.utc_offset(tz=zone)
-    expected = local_formatted("%F %T", adjusted, time.gmtime)
+    expected = xtime(fmt="%F %T", when=adjusted, tz='utc')
     # payload
     actual = now("%F %T", otz=zone)
     assert actual == expected
@@ -1387,7 +1387,7 @@ def test_local():
     c = nldt.moment()
     fmt = "%Y.%m%d %H:%M:%S"
     # payload
-    assert c(fmt, otz='local') == local_formatted(fmt)
+    assert c(fmt, otz='local') == xtime(fmt=fmt)
 
 
 # -----------------------------------------------------------------------------
@@ -1398,7 +1398,7 @@ def test_str():
     pytest.debug_func()
     c = nldt.moment()
     fmt = "%Y-%m-%d %H:%M:%S"
-    exp = local_formatted(fmt, c.epoch(), time.gmtime)
+    exp = xtime(fmt=fmt, when=c.epoch(), tz='utc')
     # payload
     assert str(c) == exp
 

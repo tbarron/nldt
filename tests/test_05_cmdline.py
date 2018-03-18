@@ -6,8 +6,6 @@ See file LICENSING for details
 This file contains code for testing nldt functionality.
 """
 from fixtures import fx_calls_debug      # noqa
-from fixtures import ftime
-from fixtures import local_formatted
 from fixtures import xtime
 from fixtures import nl_oracle
 import pexpect
@@ -58,7 +56,7 @@ def test_unanchored_now():
     epoch = int(epoch)
     now = time.time()
     assert abs(int(now) - epoch) < 2
-    assert ymd.strip() == local_formatted("%F %T", epoch)
+    assert ymd.strip() == xtime(fmt="%F %T", when=epoch)
 
 
 # -----------------------------------------------------------------------------
@@ -74,7 +72,7 @@ def test_unanchored_noarg():
     epoch = int(epoch)
     now = time.time()
     assert abs(int(now) - epoch) < 2
-    assert ymd.strip() == local_formatted("%F %T", epoch)
+    assert ymd.strip() == xtime(fmt="%F %T", when=epoch)
 
 
 # -----------------------------------------------------------------------------
@@ -100,34 +98,35 @@ def test_next_weekday(weekday):
     pytest.param('nldt next week', nl_oracle('next week'), id='next-week'),
 
     # today
-    pytest.param('nldt today', ftime('%Y-%m-%d'), id='001'),
+    pytest.param('nldt today', xtime(fmt='%Y-%m-%d'), id='001'),
 
-    pytest.param('nldt -z local today', ftime('%Y-%m-%d', local=True),
+    pytest.param('nldt -z local today', xtime(fmt='%Y-%m-%d', tz='local'),
                  id='002'),
 
     pytest.param('nldt -w "2000.1231 09:07:43" today', '2000-12-31',
                  id='003'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H" today',
-                 ftime('%Y.%m%d %H', True),
+                 xtime(fmt='%Y.%m%d %H', tz='local'),
                  id='004'),
 
-    pytest.param('nldt -f "%Y.%m%d %H" today', ftime('%Y.%m%d %H', False),
+    pytest.param('nldt -f "%Y.%m%d %H" today',
+                 xtime(fmt='%Y.%m%d %H', tz='utc'),
                  id='005'),
 
     pytest.param('nldt -z local -w "2000.1231 09:07:43" today',
-                 ftime('%Y-%m-%d', local=True, anchor='2000.1231 09:07:43'),
+                 xtime(fmt='%Y-%m-%d', tz='local', when='2000.1231 09:07:43'),
                  id='006'),
 
     # ?TRAVIS
     pytest.param('nldt -f "{}" -w 978253663 today'.format(txt["iso-datetime"]),
-                 local_formatted(txt["iso-datetime"], 978253663, time.gmtime),
+                 xtime(fmt=txt["iso-datetime"], when=978253663, tz='utc'),
                  id='anchored-today-iso'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" '
                  '-w "2000-12-31 15:07:43" today',
-                 ftime('%Y.%m%d %H:%M:%S', local=True,
-                       anchor='2000.1231 15:07:43'),
+                 xtime(fmt='%Y.%m%d %H:%M:%S', tz='local',
+                       when='2000.1231 15:07:43'),
                  id='008'),
 
     pytest.param('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" -w 978275263 today',
@@ -136,18 +135,18 @@ def test_next_weekday(weekday):
 
     # tomorrow
     pytest.param('nldt tomorrow',
-                 ftime("%Y-%m-%d", anchor=time.time()+24*3600),
+                 xtime(fmt="%Y-%m-%d", when=time.time()+24*3600),
                  id='010'),
 
     pytest.param('nldt -z local tomorrow',
-                 ftime('%Y-%m-%d', local=True, anchor=time.time()+24*3600),
+                 xtime(fmt='%Y-%m-%d', tz='local', when=time.time()+24*3600),
                  id='011'),
 
     pytest.param('nldt -w "2000.1231 09:07:43" tomorrow', '2001-01-01',
                  id='012'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H" tomorrow',
-                 ftime('%Y.%m%d %H', True, anchor=time.time()+24*3600),
+                 xtime(fmt='%Y.%m%d %H', tz='local', when=time.time()+24*3600),
                  id='013'),
 
     pytest.param('nldt -f "%Y.%m%d %H" tomorrow',
@@ -155,7 +154,7 @@ def test_next_weekday(weekday):
                  id='014'),
 
     pytest.param('nldt -z local -w "2000.1231 09:07:43" tomorrow',
-                 ftime('%Y-%m-%d', local=True, anchor='2001.0101 09:07:43'),
+                 xtime(fmt='%Y-%m-%d', tz='local', when='2001.0101 09:07:43'),
                  id='015'),
 
     # ?TRAVIS
@@ -167,8 +166,8 @@ def test_next_weekday(weekday):
 
     pytest.param('nldt -z local -f "%Y.%m%d %H:%M:%S" -w "2000.1231 15:07:43"'
                  ' tomorrow',
-                 ftime('%Y.%m%d %H:%M:%S', local=True,
-                       anchor='2001.0101 15:07:43'),
+                 xtime(fmt='%Y.%m%d %H:%M:%S', tz='local',
+                       when='2001.0101 15:07:43'),
                  id='017'),
 
     pytest.param('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" '
@@ -178,18 +177,18 @@ def test_next_weekday(weekday):
 
     # yesterday
     pytest.param('nldt yesterday',
-                 ftime("%Y-%m-%d", anchor=time.time()-24*3600),
+                 xtime(fmt="%Y-%m-%d", when=time.time()-24*3600),
                  id='019'),
 
     pytest.param('nldt -z local yesterday',
-                 ftime('%Y-%m-%d', local=True, anchor=time.time()-24*3600),
+                 xtime(fmt='%Y-%m-%d', tz='local', when=time.time()-24*3600),
                  id='020'),
 
     pytest.param('nldt -w "2000.1231 09:07:43" yesterday', '2000-12-30',
                  id='021'),
 
     pytest.param('nldt -z local -f "%Y.%m%d %H" yesterday',
-                 ftime('%Y.%m%d %H', True, anchor=time.time()-24*3600),
+                 xtime(fmt='%Y.%m%d %H', tz='local', when=time.time()-24*3600),
                  id='022'),
 
     pytest.param('nldt -f "%Y.%m%d %H" yesterday',
@@ -197,7 +196,7 @@ def test_next_weekday(weekday):
                  id='023'),
 
     pytest.param('nldt -z local -w "2000.1231 09:07:43" yesterday',
-                 ftime('%Y-%m-%d', local=True, anchor='2000.1230 09:07:43'),
+                 xtime(fmt='%Y-%m-%d', tz='local', when='2000.1230 09:07:43'),
                  id='024'),
 
     # ?TRAVIS
@@ -205,12 +204,12 @@ def test_next_weekday(weekday):
                  .format(txt["iso-datetime"]),
                  xtime(fmt=txt["iso-datetime"], when=978253663 - 24*3600,
                        tz='utc'),
-                 id='anchored-yester-iso'),
+                 id='ystr-fmt-anchr'),
 
     pytest.param('nldt yesterday -z local -f "%Y.%m%d %H:%M:%S" '
                  '-w "2000.1231 15:07:43"',
-                 ftime('%Y.%m%d %H:%M:%S', local=True,
-                       anchor='2000.1230 15:07:43'),
+                 xtime(fmt='%Y.%m%d %H:%M:%S', tz='local',
+                       when='2000.1230 15:07:43'),
                  id='026'),
 
     pytest.param('nldt -z US/Pacific -f "%Y.%m%d %H:%M:%S" '

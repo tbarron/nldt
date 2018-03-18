@@ -25,29 +25,6 @@ def xtime(when=None, fmt=None, tz=None):
 
 
 # -----------------------------------------------------------------------------
-def local_formatted(fmt, epoch=None, dstor=None):
-    """
-    Format the epoch time as local
-    """
-    dstor = dstor or time.localtime
-    return time.strftime(fmt, dstor(epoch))
-
-
-# -----------------------------------------------------------------------------
-def ftime(fmt, local=True, anchor=None):
-    """
-    Provide an oracle for test_cmdline
-    """
-    point = nldt.moment(anchor)
-    if local:
-        tm = time.localtime(point.epoch())
-    else:
-        tm = time.gmtime(point.epoch())
-    rval = time.strftime(fmt, tm)
-    return rval
-
-
-# -----------------------------------------------------------------------------
 @pytest.fixture(autouse=True)
 def fx_calls_debug(request):
     """
@@ -91,7 +68,7 @@ def nl_oracle(spec):
         now.parse(txt["xpr-nfri"])
         return now(otz='utc')
     elif spec == 'today':
-        return local_formatted(txt['iso-date'], None, time.gmtime)
+        return xtime(fmt=txt['iso-date'], tz='utc')
     elif spec == 'tomorrow':
         tm = time.gmtime()
         then = M(time.mktime((tm.tm_year, tm.tm_mon, tm.tm_mday+1,
