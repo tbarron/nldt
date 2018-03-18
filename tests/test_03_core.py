@@ -729,6 +729,19 @@ def test_intuit(inp, fmt, exp):
 
 
 # -----------------------------------------------------------------------------
+def test_local():
+    """
+    Moments don't have timezones -- they are strictly UTC. However, when they
+    can project themselves into the locally configured timezone.
+    """
+    pytest.debug_func()
+    c = nldt.moment()
+    fmt = "%Y.%m%d %H:%M:%S"
+    # payload
+    assert c(fmt, otz='local') == xtime(fmt=fmt)
+
+
+# -----------------------------------------------------------------------------
 @pytest.mark.parametrize("inp, loc, exp", [
     pytest.param('2015.0703 12:00:00', 'Pacific/Pago_Pago',
                  'Fri Jul  3 01:00:00 2015', id='Pago_Pago'),
@@ -1378,16 +1391,9 @@ def test_nodst():
 
 
 # -----------------------------------------------------------------------------
-def test_local():
     """
-    Moments don't have timezones -- they are strictly UTC. However, when they
-    can project themselves into the locally configured timezone.
     """
     pytest.debug_func()
-    c = nldt.moment()
-    fmt = "%Y.%m%d %H:%M:%S"
-    # payload
-    assert c(fmt, otz='local') == xtime(fmt=fmt)
 
 
 # -----------------------------------------------------------------------------

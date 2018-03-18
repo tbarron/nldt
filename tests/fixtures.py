@@ -16,15 +16,6 @@ import tbx
 
 
 # -----------------------------------------------------------------------------
-def xtime(when=None, fmt=None, tz=None):
-    """
-    Generate expected times. This should replace local_formatted and ftime.
-    """
-    point = nldt.moment(when)
-    return point(fmt, otz=tz)
-
-
-# -----------------------------------------------------------------------------
 @pytest.fixture(autouse=True)
 def fx_calls_debug(request):
     """
@@ -234,3 +225,12 @@ def nl_oracle(spec):
         start = M(when + tu.magnitude('week'))
 
     return start(otz='utc')
+
+
+# -----------------------------------------------------------------------------
+def xtime(when=None, fmt=None, tz=None):
+    """
+    Generate expected times. This should replace local_formatted and ftime.
+    """
+    point = nldt.moment(when)
+    return point(fmt, otz=tz)
