@@ -1,4 +1,22 @@
 ---------------------------------------------------------------------------
+2018-03-18 13:55:10    formatters not used by strftime
+
+    %f
+    %i
+    %J
+    %K
+    %L
+    %N
+    %o
+    %P
+
+I'm thinking about using one of the above (right this minute I'm thinking
+%K) as a user-definable format. By default, %K will be formatted into
+'%FT%T', that is the basic ISO 8601 format. However, NLDT will provide a
+call that will accept any time format string and store it as the expansion
+of %K.
+
+---------------------------------------------------------------------------
 2018-03-11 10:54:41    better organization
 
 I need a complete design document to resolve all the discrepancies I'm
