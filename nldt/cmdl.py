@@ -41,27 +41,47 @@ def main():
     opts = docopt.docopt(__doc__)
     if opts['--debug']:
         pdb.set_trace()
+
     expr = " ".join(opts['DATE_TIME_EXPR']) or 'now'
-    fmt = opts['--format']
-    zone = opts['--zone'] or 'local'
+    fmt = opts['--format'] if opts['--format'] else default_format(expr)
+    zone = opts['--zone'] if opts['--zone'] else default_zone(expr)
+
     prs = nldt.Parser()
     when = nldt.moment(opts['--when'])
     ref = prs(expr, start=when)
-    if expr in ['today', 'tomorrow', 'yesterday']:
-        print(ref(fmt, otz=zone))
-    elif expr in ['now']:
-        if fmt:
-            print(ref(fmt, otz=zone))
-        elif zone:
-            print(ref("%Y-%m-%d %H:%M:%S", otz=zone))
-        else:
-            print(ref)
+
+    print(ref(**{'fmt': fmt, 'otz': zone}))
+
+
+# -----------------------------------------------------------------------------
+def big_unit(expr):
+    """
+    Return True if *expr* is based on a 'big' unit (day or larger), otherwise
+    False.
+    """
+    big_units = ['day', 'week', 'month', 'year', 'morrow']
+    return any([x in expr for x in big_units])
+
+
+# -----------------------------------------------------------------------------
+def default_format(expr):
+    """
+    Select a default display format for this *expr*
+    """
+    if big_unit(expr):
+        rval = "%F"
     else:
-        if fmt and zone:
-            print(ref(fmt, otz=zone))
-        elif fmt:
-            print(ref(fmt, otz='local'))
-        elif zone:
-            print(ref(otz=zone))
-        else:
-            print(ref)
+        rval = "%F %T"
+    return rval
+
+
+# -----------------------------------------------------------------------------
+def default_zone(expr):
+    """
+    Select a display zone that will work best for this *expr*
+    """
+    if big_unit(expr):
+        rval = 'utc'
+    else:
+        rval = 'local'
+    return rval
