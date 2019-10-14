@@ -69,7 +69,7 @@ def test_version():
     Verify that nldt.version() returns a valid version string.
     test_deployable() late in the test sequence will verify the correctness of
     the version returned. This test just makes sure the version string is
-    reasonable (i.e., matches regexp r'\d+\.\d+\.\d+').
+    reasonable (i.e., matches the regexp).
     """
     pytest.debug_func()
     assert re.match(r"\d+\.\d+\.\d+", nldt.version())
