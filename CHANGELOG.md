@@ -1,3 +1,9 @@
+## 0.0.20 ... 2019-10-14 13:30:35
+
+ * Protect escape sequence strings with a prepended 'r'.
+ * Comment tests based on timezone 'Pacific/Norfolk' since it's not
+   functional on TravisCI.
+
 ## 0.0.19 ... 2019-10-14 10:36:35
 
  * On travis CI, only build branch travis or versioned releases.

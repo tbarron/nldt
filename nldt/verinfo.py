@@ -4,4 +4,4 @@ Copyright (c) 2017 - <the end of time>  Tom Barron
 See file LICENSING for details
 -------------------------------------------------------------------------------
 """
-_version = "0.0.19"
+_version = "0.0.20"
