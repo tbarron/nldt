@@ -1,6 +1,7 @@
 ## 0.0.20 ... 2019-10-14 13:30:35
 
  * Protect escape sequence strings with a prepended 'r'.
+ * Copy of regexp in a comment was breaking flake.
  * Comment tests based on timezone 'Pacific/Norfolk' since it's not
    functional on TravisCI.
 
