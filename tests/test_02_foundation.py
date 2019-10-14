@@ -908,7 +908,7 @@ def test_tzname(tz, when, exp):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize("tz, exp", [
-    pytest.param("Pacific/Norfolk", "XXX-11:00:00", id='Norfolk'),
+    # pytest.param("Pacific/Norfolk", "XXX-11:00:00", id='Norfolk'),
     pytest.param("Pacific/Pago_Pago", "SST11:00:00", id='Pago_Pago'),
     pytest.param("Pacific/Marquesas", "XXX09:30:00", id='Marquesas'),
     pytest.param("NZ-CHAT", "XXX-12:45:00XXX-13:45:00", id='NZ-CHAT'),
