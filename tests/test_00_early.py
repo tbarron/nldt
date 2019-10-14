@@ -59,7 +59,7 @@ def test_pydoc():
     for item in present:
         assert item in result
     for item in absent:
-        pattern = "\W" + item + "\W"
+        pattern = r"\W" + item + r"\W"
         assert not re.search(pattern, result)
 
 
@@ -69,10 +69,10 @@ def test_version():
     Verify that nldt.version() returns a valid version string.
     test_deployable() late in the test sequence will verify the correctness of
     the version returned. This test just makes sure the version string is
-    reasonable (i.e., matches regexp '\d+\.\d+\.\d+').
+    reasonable (i.e., matches regexp r'\d+\.\d+\.\d+').
     """
     pytest.debug_func()
-    assert re.match("\d+\.\d+\.\d+", nldt.version())
+    assert re.match(r"\d+\.\d+\.\d+", nldt.version())
 
 
 # -----------------------------------------------------------------------------

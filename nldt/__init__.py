@@ -1153,7 +1153,7 @@ class Parser(object):
 
         result = []
         start = start or moment()
-        if self.research("\s(of|in)\s", expr, result):
+        if self.research(r"\s(of|in)\s", expr, result):
             rval = self.parse_of_in(expr, result[0].group(), start)
         elif expr.strip().lower() in self.mon.names():
             rval = self.parse_mon_name(expr, start)
@@ -1163,11 +1163,11 @@ class Parser(object):
             rval = self.parse_ago(expr, start)
         elif 'from now' in expr:
             rval = self.parse_from_now(expr, start)
-        elif self.research("(\s|^)month(\s|$)", expr, result):
+        elif self.research(r"(\s|^)month(\s|$)", expr, result):
             rval = self.parse_month(expr, start)
-        elif self.research("(\s|^)week(\s|$)", expr, result):
+        elif self.research(r"(\s|^)week(\s|$)", expr, result):
             rval = self.parse_week(expr, start)
-        elif self.research("(\s|^)year(\s|$)", expr, result):
+        elif self.research(r"(\s|^)year(\s|$)", expr, result):
             rval = self.parse_year(expr, start)
         elif self.research(self.wkday_rgx, expr, result):
             rval = self.parse_weekday(expr, result, start)
@@ -1420,7 +1420,7 @@ class time_units(object):
         Scans *text* and return the first unit found or None (class time_units)
         """
         found = [unit for unit in self._units.keys()
-                 if re.search("(^|\W){}s?(\W|$)".format(unit), text)]
+                 if re.search(r"(^|\W){}s?(\W|$)".format(unit), text)]
         if found:
             return found[0]
         else:
@@ -1478,7 +1478,7 @@ class week(Indexable):
         Finds and returns the first weekday name in *text* (class week)
         """
         found = [wday for wday in self.day_list()
-                 if re.search("(^|\W){}(\W|$)".format(wday),
+                 if re.search(r"(^|\W){}(\W|$)".format(wday),
                               text,
                               re.IGNORECASE)]
         if found:
