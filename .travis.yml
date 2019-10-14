@@ -21,10 +21,12 @@ install:
 script:
  - py.test -vv --tb short
 
-# addons:
-#   apt:
-#     packages:
-#     - git
+# only build branches named 'travis' or tagged with a numeric version
+# (major.minor.micro format)
+branches:
+  only:
+  - /^\d+\.\d+\.\d+$/
+  - travis
 
 # Not ready for this yet. travis_pypi_setup.py is in .attic
 # ---------------------------------------------------------
