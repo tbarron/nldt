@@ -1,4 +1,8 @@
-## 0.0.18
+## 0.0.19 ... 2019-10-14 10:36:35
+
+ * On travis CI, only build branch travis or versioned releases.
+
+## 0.0.18 ... 2018-03-18 16:54:26
 
  * 'nldt now' reports local time, not UTC.
  * Reorganized tests to represent the layer cake.
